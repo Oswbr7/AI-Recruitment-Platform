@@ -6,6 +6,8 @@ using AuthService.Domain.Entities;
 using AuthService.Domain.Enums;
 using MediatR;
 
+namespace AuthService.Application.Features.Auth.Register;
+
 public class RegisterUserHandler
     : IRequestHandler<RegisterUserCommand, Result<Guid>>
 {

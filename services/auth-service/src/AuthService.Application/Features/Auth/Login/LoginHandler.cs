@@ -5,6 +5,8 @@ using AuthService.Application.Common.Results;
 using AuthService.Application.Features.Auth.Commands;
 using MediatR;
 
+namespace AuthService.Application.Features.Auth.Login;
+
 public class LoginHandler
     : IRequestHandler<LoginCommand, Result<string>>
 {

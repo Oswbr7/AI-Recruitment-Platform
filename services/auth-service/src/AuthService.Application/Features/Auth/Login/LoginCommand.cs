@@ -1,3 +1,4 @@
+using AuthService.Application.Common.Results;
 using MediatR;
 
 namespace AuthService.Application.Features.Auth.Commands;

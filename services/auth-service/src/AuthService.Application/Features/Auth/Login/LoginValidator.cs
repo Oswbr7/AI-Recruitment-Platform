@@ -1,10 +1,10 @@
 using FluentValidation;
 using AuthService.Application.Features.Auth.Commands;
 
-public class LoginCommandValidator
+public class LoginValidator
     : AbstractValidator<LoginCommand>
 {
-    public LoginCommandValidator()
+    public LoginValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty()
