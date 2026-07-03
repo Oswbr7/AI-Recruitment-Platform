@@ -1,0 +1,30 @@
+# .NET
+
+bin/
+obj/
+*.user
+*.suo
+
+# React
+
+node_modules/
+dist/
+build/
+
+# Python
+
+__pycache__/
+*.pyc
+
+# Docker
+
+*.log
+
+# Environment
+
+.env
+
+# IDE
+
+.vscode/
+.idea/
