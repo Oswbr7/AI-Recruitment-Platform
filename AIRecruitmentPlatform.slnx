@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/building-blocks/">
+    <Project Path="building-blocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj" />
+    <Project Path="building-blocks/BuildingBlocks.Domain/BuildingBlocks.Domain.csproj" />
+  </Folder>
+  <Folder Name="/services/" />
+  <Folder Name="/services/auth-service/" />
+  <Folder Name="/services/auth-service/src/">
+    <Project Path="services/auth-service/src/AuthService.Api/AuthService.Api.csproj" />
+    <Project Path="services/auth-service/src/AuthService.Application/AuthService.Application.csproj" />
+    <Project Path="services/auth-service/src/AuthService.Domain/AuthService.Domain.csproj" />
+    <Project Path="services/auth-service/src/AuthService.Infrastructure/AuthService.Infrastructure.csproj" />
+  </Folder>
+</Solution>

@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using System.Reflection;
 using FluentValidation;
-using AuthService.Application.Behaviors;
+using BuildingBlocks.Application.Common.Behaviors;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -38,13 +40,10 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddValidatorsFromAssembly(
     Assembly.Load("AuthService.Application"));
 
-builder.Services.AddTransient(
-    typeof(IPipelineBehavior<,>),
-    typeof(ValidationBehavior<,>));
-
-var app = builder.Build();
-
-app.MapControllers();
+//Order Matters
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.AddCors(options =>
 {
@@ -67,11 +66,14 @@ builder.Services.AddCors(options =>
 
 });
 
+var app = builder.Build();
+
+app.UseExceptionHandler();
+
+app.MapControllers();
+
+
+
 app.UseCors("frontend");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
