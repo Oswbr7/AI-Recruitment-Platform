@@ -1,5 +1,6 @@
 using AuthService.Application.Abstractions.Authentication;
 using AuthService.Application.Abstractions.Persistence;
+using AuthService.Application.Abstractions.Security;
 using AuthService.Infrastructure.Persistence;
 using AuthService.Infrastructure.Persistence.Repositories;
 using AuthService.Infrastructure.Services;
@@ -15,20 +16,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("Postgres"));
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? builder.Configuration.GetConnectionString("Postgres");
+
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
-builder.Services.AddScoped<PasswordHasher>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -67,6 +71,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 app.UseExceptionHandler();
 

@@ -1,35 +1,62 @@
 services:
-
   postgres:
     image: postgres:17
     container_name: recruitment-postgres
     restart: unless-stopped
-
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: recruitmentdb
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d recruitmentdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - recruitment-network
 
   redis:
     image: redis:8
     container_name: recruitment-redis
-
     ports:
       - "6379:6379"
+    networks:
+      - recruitment-network
 
   rabbitmq:
     image: rabbitmq:4-management
     container_name: recruitment-rabbitmq
-
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - recruitment-network
+
+  auth-service:
+    container_name: recruitment-auth-api
+    build:
+      context: ../..
+      dockerfile: services/auth-service/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Secret: SuperSecretKeyForDevelopment
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - recruitment-network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+
+networks:
+  recruitment-network:
+    driver: bridge
