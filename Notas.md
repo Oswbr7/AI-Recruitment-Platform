@@ -107,3 +107,39 @@ Interview Service
 AI Service
 
 Cada uno tendrá su propia base de datos.
+
+
+------------------------
+
+1.- Registro de usuairo
+
+URL:  http://localhost:5000/api/auth/register
+Método: POST
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "Password123!",
+  "firstName": "Juan",
+  "lastName": "Pérez"
+}
+
+Respuesta esperada:
+
+201/200: Guid del usuario creado (ej: "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+400: Error si el email ya existe o los datos son inválidos
+
+2. Login
+URL: http://localhost:5000/api/auth/login
+Método: POST
+Content-Type: application/json
+Body (JSON):
+
+{
+  "email": "usuario@example.com",
+  "password": "Password123!"
+}
+
+Respuesta esperada:
+
+200:

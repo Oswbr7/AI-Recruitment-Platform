@@ -72,6 +72,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+await DatabaseInitializer.InitializeAsync(app.Services);
+
 app.MapHealthChecks("/health");
 
 app.UseExceptionHandler();
