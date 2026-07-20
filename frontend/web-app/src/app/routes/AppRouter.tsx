@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 
 import { LoginPage } from '@/features/auth/pages/LoginPage';
-import { DashboardPage } from '@/features/dashboard/DashboardPage';
+import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
 import { JobsPage } from '@/features/jobs/pages/JobsPage';
 import { ProtectedRoute } from './ProtectedRoute';
