@@ -3,13 +3,7 @@ Navigate
 }
 from "react-router-dom";
 
-
-import {
-useAuth
-}
-from "./AuthContext";
-
-
+import { useAuthStore } from "./store/authStore";
 
 export default function ProtectedRoute(
 {
@@ -19,8 +13,7 @@ children:React.ReactNode
 })
 {
 
-
-const {token}=useAuth();
+const token = useAuthStore((state) => state.accessToken);
 
 
 

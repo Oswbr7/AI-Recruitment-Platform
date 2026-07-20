@@ -1,10 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "@/shared/components/Sidebar";
-import { Navbar } from "@/shared/components/Navbar";
+
+import { Sidebar } from "@/shared/components/navigation/Sidebar";
+import { Navbar } from "@/shared/components/navigation/Navbar";
 
 export function DashboardLayout() {
+
     return (
-        <div className="flex h-screen">
+
+        <div className="flex h-screen bg-muted/20">
 
             <Sidebar />
 
@@ -12,7 +15,7 @@ export function DashboardLayout() {
 
                 <Navbar />
 
-                <main className="flex-1 overflow-auto p-8 bg-slate-100">
+                <main className="flex-1 overflow-auto p-8">
 
                     <Outlet />
 
@@ -21,5 +24,7 @@ export function DashboardLayout() {
             </div>
 
         </div>
+
     );
+
 }

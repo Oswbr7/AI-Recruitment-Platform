@@ -9,6 +9,7 @@ import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
 import { JobsPage } from '@/features/jobs/pages/JobsPage';
 import { ProtectedRoute } from './ProtectedRoute';
+import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
 
 export function AppRouter() {
   return (
@@ -18,25 +19,44 @@ export function AppRouter() {
           path="/login"
           element={<LoginPage />}
         />
+        
+        <Route
+          element={
+              <ProtectedRoute>
+                  <DashboardLayout />
+              </ProtectedRoute>
+          }
+      >
+          <Route
+              index
+              element={<DashboardPage />}
+          />
 
-        <Route element={<ProtectedRoute />}>
+          <Route
+              path="candidates"
+              element={<CandidatesPage />}
+          />
 
-            <Route
-                path="/"
-                element={<DashboardPage />}
-            />
+          <Route
+              path="jobs"
+              element={<JobsPage />}
+          />
 
-            <Route
-                path="/candidates"
-                element={<CandidatesPage />}
-            />
+          {/* <Route
+              path="matching"
+              element={<MatchingPage />}
+          /> */}
 
-            <Route
-                path="/jobs"
-                element={<JobsPage />}
-            />
+          {/* <Route
+              path="interviews"
+              element={<InterviewsPage />}
+          /> */}
 
-        </Route>
+          {/* <Route
+              path="settings"
+              element={<SettingsPage />}
+          /> */}
+      </Route>
       </Routes>
     </BrowserRouter>
   );

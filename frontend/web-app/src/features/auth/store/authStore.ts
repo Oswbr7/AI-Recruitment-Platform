@@ -1,29 +1,49 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+import type { User } from "../types";
 
 type AuthState = {
-  accessToken: string | null;
-  setToken: (token: string) => void;
-  logout: () => void;
+
+    accessToken: string | null;
+
+    user: User | null;
+
+    isAuthenticated: boolean;
+
+    login: (
+        token: string,
+        user: User
+    ) => void;
+
+    logout: () => void;
 };
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      accessToken: null,
+    persist(
+        (set) => ({
+            accessToken: null,
 
-      setToken: (token) =>
-        set({
-          accessToken: token
+            user: null,
+
+            isAuthenticated: false,
+
+            login: (token, user) =>
+                set({
+                    accessToken: token,
+                    user,
+                    isAuthenticated: true,
+                }),
+
+            logout: () =>
+                set({
+                    accessToken: null,
+                    user: null,
+                    isAuthenticated: false,
+                }),
         }),
-
-      logout: () =>
-        set({
-          accessToken: null
-        })
-    }),
-    {
-      name: 'auth-storage'
-    }
-  )
+        {
+            name: "auth-storage",
+        }
+    )
 );
