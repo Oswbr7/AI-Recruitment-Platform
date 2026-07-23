@@ -1,4 +1,4 @@
-import { PanelLeft, LogOut } from "lucide-react";
+import { PanelLeft, LogOut, Sun, Moon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -26,6 +26,10 @@ export function Navbar() {
     return (
 
         <header className="flex h-16 items-center border-b px-6 justify-between">
+            
+            <Sun/>
+
+            <Moon/>
 
             <Button
                 variant="ghost"

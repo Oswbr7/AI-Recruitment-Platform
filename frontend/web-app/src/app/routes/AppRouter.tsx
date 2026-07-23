@@ -10,6 +10,7 @@ import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
 import { JobsPage } from '@/features/jobs/pages/JobsPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
+import { UiShowcasePage } from '@/features/ui/pages/UiShowcasePage';
 
 export function AppRouter() {
   return (
@@ -41,6 +42,11 @@ export function AppRouter() {
               path="jobs"
               element={<JobsPage />}
           />
+
+          <Route
+                path="/ui"
+                element={<UiShowcasePage/>}
+            />
 
           {/* <Route
               path="matching"

@@ -1,8 +1,43 @@
+import { DataTable } from "@/shared/components/data-table/DataTable";
+
+import { jobColumns } from "../table/jobColumns";
+
+import { useJobs } from "../hooks/useJobs";
+
 export function JobsPage() {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Jobs</h1>
-      <p className="text-muted-foreground">Manage your job openings here</p>
-    </div>
-  );
+
+    const {
+
+        data,
+
+        isLoading,
+
+    } = useJobs();
+
+    if (isLoading)
+
+        return <div>Loading...</div>;
+
+    return (
+
+        <div className="space-y-6">
+
+            <h1 className="text-3xl font-bold">
+
+                Jobs
+
+            </h1>
+
+            <DataTable
+
+                columns={jobColumns}
+
+                data={data ?? []}
+
+            />
+
+        </div>
+
+    );
+
 }

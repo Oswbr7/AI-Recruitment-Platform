@@ -11,4 +11,12 @@
     <Project Path="services/auth-service/src/AuthService.Domain/AuthService.Domain.csproj" />
     <Project Path="services/auth-service/src/AuthService.Infrastructure/AuthService.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/job-service/" />
+  <Folder Name="/services/job-service/src/">
+    <Project Path="services/job-service/src/JobService.Api/JobService.Api.csproj" />
+    <Project Path="services/job-service/src/JobService.Application/JobService.Application.csproj" />
+    <Project Path="services/job-service/src/JobService.Domain/JobService.Domain.csproj" />
+    <Project Path="services/job-service/src/JobService.Infrastructure/JobService.Infrastructure.csproj" />
+    <Project Path="services/job-service/src/JobService.Shared/JobService.Shared.csproj" />
+  </Folder>
 </Solution>

@@ -13,13 +13,16 @@ public class RegisterUserHandler
 {
     private readonly IUserRepository _users;
     private readonly IPasswordHasher _hasher;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RegisterUserHandler(
         IUserRepository users,
-        IPasswordHasher hasher)
+        IPasswordHasher hasher,
+        IUnitOfWork unitOfWork)
     {
         _users = users;
         _hasher = hasher;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid>> Handle(
@@ -43,7 +46,7 @@ public class RegisterUserHandler
         };
 
         await _users.AddAsync(user);
-        await _users.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<Guid>.Success(user.Id);
     }
