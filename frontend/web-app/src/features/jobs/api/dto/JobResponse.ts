@@ -1,4 +1,4 @@
-export interface Job {
+export interface JobResponse {
 
     id: string;
 
@@ -8,8 +8,12 @@ export interface Job {
 
     location: string;
 
+    description: string;
+
     status: string;
 
     createdAt: string;
+
+    updatedAt: string;
 
 }

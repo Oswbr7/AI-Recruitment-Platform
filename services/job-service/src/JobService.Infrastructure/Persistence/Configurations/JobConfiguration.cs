@@ -27,8 +27,30 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.Property(x => x.Description)
             .HasColumnType("text");
 
+        builder.Property(x => x.EmploymentType)
+            .HasConversion<int>();
+
+        builder.Property(x => x.ExperienceLevel)
+            .HasConversion<int>();
+
+        builder.Property(x => x.RemoteType)
+            .HasConversion<int>();
+
+        builder.Property(x => x.SalaryMin)
+            .HasColumnType("decimal(18,2)");
+
+        builder.Property(x => x.SalaryMax)
+            .HasColumnType("decimal(18,2)");
+
+        builder.Property(x => x.Currency)
+            .HasMaxLength(3);
+
         builder.Property(x => x.Status)
             .HasConversion<int>();
+
+        builder.Property(x => x.PublishedAt);
+
+        builder.Property(x => x.ClosedAt);
 
         builder.Property(x => x.CreatedAt);
 

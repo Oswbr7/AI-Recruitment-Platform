@@ -1,12 +1,33 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
+import { useAuthStore } from "@/features/auth/store/authStore";
+
 type Props = {
     collapsed: boolean;
 };
 
+function getInitials(fullName: string) {
+
+    return fullName
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0]?.toUpperCase())
+        .join("");
+
+}
+
 export function UserSection({
     collapsed
 }: Props) {
+
+    const user = useAuthStore((state) => state.user);
+
+    if (!user) {
+
+        return null;
+
+    }
 
     return (
 
@@ -18,7 +39,7 @@ export function UserSection({
 
                     <AvatarFallback>
 
-                        OR
+                        {getInitials(user.fullName)}
 
                     </AvatarFallback>
 
@@ -30,13 +51,13 @@ export function UserSection({
 
                         <p className="font-medium">
 
-                            Oswaldo
+                            {user.fullName}
 
                         </p>
 
                         <p className="text-xs text-muted-foreground">
 
-                            Software Engineer
+                            {user.email}
 
                         </p>
 

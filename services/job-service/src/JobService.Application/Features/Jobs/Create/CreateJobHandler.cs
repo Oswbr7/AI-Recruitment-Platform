@@ -23,11 +23,17 @@ public class CreateJobHandler
         CreateJobCommand request,
         CancellationToken cancellationToken)
     {
-        var job = new Job(
+        var job = Job.Create(
             request.Title,
+            request.Description,
             request.Department,
             request.Location,
-            request.Description);
+            request.EmploymentType,
+            request.ExperienceLevel,
+            request.RemoteType,
+            request.SalaryMin,
+            request.SalaryMax,
+            request.Currency);
 
         await _jobs.AddAsync(job, cancellationToken);
 

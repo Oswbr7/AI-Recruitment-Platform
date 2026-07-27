@@ -1,43 +1,14 @@
-import { DataTable } from "@/shared/components/data-table/DataTable";
+import { useState } from "react";
 
-import { jobColumns } from "../table/jobColumns";
+import { JobToolbar } from "../components/toolbar/JobToolbar";
+import { JobSheet } from "../components/sheet";
 
-import { useJobs } from "../hooks/useJobs";
+export default function JobsPage() {
 
-export function JobsPage() {
+    export default function JobsPage() {
 
-    const {
+    return <JobsView/>;
 
-        data,
-
-        isLoading,
-
-    } = useJobs();
-
-    if (isLoading)
-
-        return <div>Loading...</div>;
-
-    return (
-
-        <div className="space-y-6">
-
-            <h1 className="text-3xl font-bold">
-
-                Jobs
-
-            </h1>
-
-            <DataTable
-
-                columns={jobColumns}
-
-                data={data ?? []}
-
-            />
-
-        </div>
-
-    );
+}
 
 }
