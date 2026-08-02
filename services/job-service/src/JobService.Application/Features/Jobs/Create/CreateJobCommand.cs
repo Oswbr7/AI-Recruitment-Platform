@@ -1,4 +1,3 @@
-using BuildingBlocks.Application.Common.Errors;
 using JobService.Domain.Enums;
 using MediatR;
 
@@ -14,4 +13,4 @@ public record CreateJobCommand(
     RemoteType RemoteType,
     decimal? SalaryMin,
     decimal? SalaryMax,
-    string? Currency) : IRequest<Result<Guid>>;
+    string? Currency) : IRequest<CreateJobResponse>;

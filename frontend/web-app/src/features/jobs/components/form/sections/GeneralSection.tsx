@@ -1,4 +1,4 @@
-import { Control } from "react-hook-form";
+import type { Control } from "react-hook-form";
 
 import {
     FormControl,
@@ -24,9 +24,9 @@ import {
     EmploymentType,
     ExperienceLevel,
     RemoteType,
-} from "../../types/job";
+} from "../../../models/Job";
 
-import { JobFormValues } from "../../schemas/jobSchema";
+import type { JobFormValues } from "../../../schemas/jobSchema";
 
 interface Props {
     control: Control<JobFormValues>;
@@ -144,7 +144,7 @@ export function GeneralSection({ control }: Props) {
 
                                     <SelectContent>
 
-                                        {Object.values(EmploymentType).map(type => (
+                                        {(Object.values(EmploymentType) as EmploymentType[]).map(type => (
 
                                             <SelectItem
                                                 key={type}
@@ -192,7 +192,7 @@ export function GeneralSection({ control }: Props) {
 
                                     <SelectContent>
 
-                                        {Object.values(ExperienceLevel).map(level => (
+                                        {(Object.values(ExperienceLevel) as ExperienceLevel[]).map(level => (
 
                                             <SelectItem
                                                 key={level}
@@ -240,7 +240,7 @@ export function GeneralSection({ control }: Props) {
 
                                     <SelectContent>
 
-                                        {Object.values(RemoteType).map(type => (
+                                        {(Object.values(RemoteType) as RemoteType[]).map(type => (
 
                                             <SelectItem
                                                 key={type}

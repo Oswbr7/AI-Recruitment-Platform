@@ -23,11 +23,17 @@ export const jobSchema = z.object({
         .trim()
         .min(20, "Description must contain at least 20 characters"),
 
-    employmentType: z.string().optional(),
+    employmentType: z
+        .string()
+        .min(1, "Employment type is required"),
 
-    experienceLevel: z.string().optional(),
+    experienceLevel: z
+        .string()
+        .min(1, "Experience level is required"),
 
-    remoteType: z.string().optional(),
+    remoteType: z
+        .string()
+        .min(1, "Remote type is required"),
 
     salaryMin: z.coerce.number().optional(),
 

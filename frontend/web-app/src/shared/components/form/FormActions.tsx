@@ -39,6 +39,9 @@ export function FormActions({
                 disabled={isSubmitting}
 
             >
+                {isSubmitting
+                    ? "Creating..."
+                    : "Create Job"}
 
                 Save
 

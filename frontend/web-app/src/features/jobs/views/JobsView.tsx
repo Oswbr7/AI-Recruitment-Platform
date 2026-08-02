@@ -1,35 +1,45 @@
-const [open, setOpen] = useState(false);
+import { useState } from "react";
 
-    const handleCreateJob = async () => {
+import { useJobs } from "../hooks/useJobs";
 
-        console.log("Create");
+import { JobToolbar } from "../components/toolbar/JobToolbar";
+import { JobTable } from "../components/table/JobTable";
+import { JobSheet } from "../components/sheet";
+import { DataTableSkeleton } from "@/shared/components/data-table/DataTableSkeleton";
 
-        setOpen(false);
+export function JobsView() {
 
-    };
+    const [open, setOpen] = useState(false);
+
+    const { data: jobs, isLoading } = useJobs();
 
     return (
 
         <div className="space-y-8">
 
             <JobToolbar
-
                 onCreateJob={() => setOpen(true)}
-
             />
 
-            {/* Aquí irá JobTable */}
+            {isLoading ? (
+
+                <DataTableSkeleton columns={6} />
+
+            ) : (
+
+                <JobTable
+                    jobs={jobs ?? []}
+                />
+
+            )}
 
             <JobSheet
-
                 open={open}
-
                 onOpenChange={setOpen}
-
-                onSubmit={handleCreateJob}
-
             />
 
         </div>
 
     );
+
+}

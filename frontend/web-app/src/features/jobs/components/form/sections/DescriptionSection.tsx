@@ -1,4 +1,4 @@
-import { Control } from "react-hook-form";
+import type { Control } from "react-hook-form";
 
 import {
     FormControl,
@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { FormSection } from "@/shared/components/form";
 
-import { JobFormValues } from "../../schemas/jobSchema";
+import type { JobFormValues } from "../../../schemas/jobSchema";
 
 interface Props {
     control: Control<JobFormValues>;

@@ -4,13 +4,29 @@ export interface JobResponse {
 
     title: string;
 
+    description: string;
+
     department: string;
 
     location: string;
 
-    description: string;
+    employmentType: string;
+
+    experienceLevel: string;
+
+    remoteType: string;
+
+    salaryMin: number | null;
+
+    salaryMax: number | null;
+
+    currency: string | null;
 
     status: string;
+
+    publishedAt: string | null;
+
+    closedAt: string | null;
 
     createdAt: string;
 

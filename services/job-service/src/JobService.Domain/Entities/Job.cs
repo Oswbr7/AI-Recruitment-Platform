@@ -106,6 +106,21 @@ public class Job
 
     public void Publish()
     {
+        if (Status != JobStatus.Draft)
+            throw new InvalidOperationException(
+                $"Cannot publish a job in '{Status}' status. Only draft jobs can be published.");
+
+        Status = JobStatus.Published;
+        PublishedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Reopen()
+    {
+        if (Status != JobStatus.Closed && Status != JobStatus.Archived)
+            throw new InvalidOperationException(
+                $"Cannot reopen a job in '{Status}' status. Only closed or archived jobs can be reopened.");
+
         Status = JobStatus.Published;
         PublishedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
@@ -113,8 +128,22 @@ public class Job
 
     public void Close()
     {
+        if (Status != JobStatus.Published)
+            throw new InvalidOperationException(
+                $"Cannot close a job in '{Status}' status. Only published jobs can be closed.");
+
         Status = JobStatus.Closed;
         ClosedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Archive()
+    {
+        if (Status == JobStatus.Archived)
+            throw new InvalidOperationException(
+                "This job is already archived.");
+
+        Status = JobStatus.Archived;
         UpdatedAt = DateTime.UtcNow;
     }
 

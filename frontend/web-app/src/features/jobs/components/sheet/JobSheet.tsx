@@ -4,8 +4,10 @@ import {
 } from "@/shared/components/entity";
 
 import { JobForm } from "../form";
-
-import { JobFormValues } from "../../schemas/jobSchema";
+import { useCreateJob } from "../../hooks/useCreateJob";
+import { useUpdateJob } from "../../hooks/useUpdateJob";
+import { toJobFormValues } from "../../api/mappers/jobFormMapper";
+import type { Job } from "../../models/Job";
 
 interface JobSheetProps {
 
@@ -13,9 +15,7 @@ interface JobSheetProps {
 
     onOpenChange: (open: boolean) => void;
 
-    onSubmit: (values: JobFormValues) => void | Promise<void>;
-
-    isSubmitting?: boolean;
+    job?: Job;
 
 }
 
@@ -25,11 +25,19 @@ export function JobSheet({
 
     onOpenChange,
 
-    onSubmit,
-
-    isSubmitting = false
+    job,
 
 }: JobSheetProps) {
+
+    const createMutation = useCreateJob();
+
+    const updateMutation = useUpdateJob(job?.id ?? "");
+
+    const isEditing = Boolean(job);
+
+    const isSubmitting = isEditing
+        ? updateMutation.isPending
+        : createMutation.isPending;
 
     return (
 
@@ -40,19 +48,34 @@ export function JobSheet({
 
             <EntitySheetHeader
 
-                title="Create Job"
+                title={isEditing ? "Edit Job" : "Create Job"}
 
-                description="Create a new job posting."
+                description={
+                    isEditing
+                        ? "Update this job posting."
+                        : "Create a new job posting."
+                }
 
             />
 
             <JobForm
 
-                onSubmit={onSubmit}
+                initialValues={job ? toJobFormValues(job) : undefined}
+
+                isSubmitting={isSubmitting}
 
                 onCancel={() => onOpenChange(false)}
 
-                isSubmitting={isSubmitting}
+                onSubmit={async values => {
+
+                    if (isEditing)
+                        await updateMutation.mutateAsync(values);
+                    else
+                        await createMutation.mutateAsync(values);
+
+                    onOpenChange(false);
+
+                }}
 
             />
 

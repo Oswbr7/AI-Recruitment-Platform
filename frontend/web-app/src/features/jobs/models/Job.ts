@@ -1,28 +1,40 @@
-export enum JobStatus {
-    Draft = "Draft",
-    Published = "Published",
-    Closed = "Closed",
-}
+export const JobStatus = {
+    Draft: "Draft",
+    Published: "Published",
+    Closed: "Closed",
+    Archived: "Archived",
+} as const;
 
-export enum EmploymentType {
-    FullTime = "FullTime",
-    PartTime = "PartTime",
-    Contract = "Contract",
-    Internship = "Internship",
-}
+export type JobStatus = typeof JobStatus[keyof typeof JobStatus];
 
-export enum ExperienceLevel {
-    Junior = "Junior",
-    Mid = "Mid",
-    Senior = "Senior",
-    Lead = "Lead",
-}
+export const EmploymentType = {
+    FullTime: "FullTime",
+    PartTime: "PartTime",
+    Contract: "Contract",
+    Internship: "Internship",
+    Temporary: "Temporary",
+} as const;
 
-export enum RemoteType {
-    OnSite = "OnSite",
-    Hybrid = "Hybrid",
-    Remote = "Remote",
-}
+export type EmploymentType = typeof EmploymentType[keyof typeof EmploymentType];
+
+export const ExperienceLevel = {
+    EntryLevel: "EntryLevel",
+    Junior: "Junior",
+    MidLevel: "MidLevel",
+    Senior: "Senior",
+    Lead: "Lead",
+    Executive: "Executive",
+} as const;
+
+export type ExperienceLevel = typeof ExperienceLevel[keyof typeof ExperienceLevel];
+
+export const RemoteType = {
+    OnSite: "OnSite",
+    Remote: "Remote",
+    Hybrid: "Hybrid",
+} as const;
+
+export type RemoteType = typeof RemoteType[keyof typeof RemoteType];
 
 export interface Job {
 
@@ -49,6 +61,10 @@ export interface Job {
     salaryMax?: number;
 
     currency?: string;
+
+    publishedAt?: Date;
+
+    closedAt?: Date;
 
     createdAt: Date;
 

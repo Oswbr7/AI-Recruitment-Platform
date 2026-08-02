@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { JobApi } from "../api/JobApi";
+import { queryKeys } from "@/shared/query/queryKeys";
+import { jobApi } from "../services/JobApi";
 
 export function useJobs() {
 
     return useQuery({
 
-        queryKey: ["jobs"],
+        queryKey: queryKeys.jobs.all,
 
-        queryFn: JobApi.getJobs
+        queryFn: jobApi.getJobs
 
     });
 

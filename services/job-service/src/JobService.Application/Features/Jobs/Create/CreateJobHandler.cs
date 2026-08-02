@@ -1,12 +1,11 @@
-using BuildingBlocks.Application.Common.Errors;
 using JobService.Domain.Entities;
 using JobService.Domain.Repositories;
 using MediatR;
 
 namespace JobService.Application.Features.Jobs.Create;
 
-public class CreateJobHandler
-    : IRequestHandler<CreateJobCommand, Result<Guid>>
+public sealed class CreateJobHandler
+    : IRequestHandler<CreateJobCommand, CreateJobResponse>
 {
     private readonly IJobRepository _jobs;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,7 +18,7 @@ public class CreateJobHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid>> Handle(
+    public async Task<CreateJobResponse> Handle(
         CreateJobCommand request,
         CancellationToken cancellationToken)
     {
@@ -39,6 +38,6 @@ public class CreateJobHandler
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result<Guid>.Success(job.Id);
+        return new CreateJobResponse(job.Id);
     }
 }

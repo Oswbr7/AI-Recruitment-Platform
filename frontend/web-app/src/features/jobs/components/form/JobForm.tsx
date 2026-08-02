@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
 
@@ -13,7 +13,7 @@ import {
 
 import {
     jobSchema,
-    JobFormValues,
+    type JobFormValues,
 } from "../../schemas/jobSchema";
 
 import { DescriptionSection } from "./sections/DescriptionSection";
@@ -41,11 +41,11 @@ const defaultValues: JobFormValues = {
 
     description: "",
 
-    employmentType: undefined,
+    employmentType: "",
 
-    experienceLevel: undefined,
+    experienceLevel: "",
 
-    remoteType: undefined,
+    remoteType: "",
 
     salaryMin: undefined,
 
@@ -69,7 +69,7 @@ export function JobForm({
 
     const form = useForm<JobFormValues>({
 
-        resolver: zodResolver(jobSchema),
+        resolver: zodResolver(jobSchema) as Resolver<JobFormValues>,
 
         defaultValues: {
 

@@ -46,6 +46,17 @@ public sealed class GlobalExceptionHandler
 
                 break;
 
+            case InvalidOperationException invalidOperationException:
+
+                problemDetails = new ProblemDetails
+                {
+                    Status = StatusCodes.Status409Conflict,
+                    Title = "Invalid operation",
+                    Detail = invalidOperationException.Message
+                };
+
+                break;
+
             default:
 
                 problemDetails = new ProblemDetails

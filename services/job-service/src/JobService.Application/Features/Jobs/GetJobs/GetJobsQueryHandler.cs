@@ -1,3 +1,4 @@
+using JobService.Application.Features.Jobs.Common;
 using JobService.Domain.Repositories;
 using MediatR;
 
@@ -19,14 +20,6 @@ public sealed class GetJobsQueryHandler
     {
         var jobs = await _repository.GetAllAsync(cancellationToken);
 
-        return jobs.Select(job => new JobResponse
-        {
-            Id = job.Id,
-            Title = job.Title,
-            Department = job.Department,
-            Location = job.Location,
-            Status = job.Status.ToString(),
-            CreatedAt = job.CreatedAt
-        }).ToList();
+        return jobs.Select(job => job.ToResponse()).ToList();
     }
 }

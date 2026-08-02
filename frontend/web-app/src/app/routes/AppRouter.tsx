@@ -8,6 +8,7 @@ import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
 import { JobsPage } from '@/features/jobs/pages/JobsPage';
+import { JobDetailPage } from '@/features/jobs/pages/JobDetailPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
 import { UiShowcasePage } from '@/features/ui/pages/UiShowcasePage';
@@ -41,6 +42,11 @@ export function AppRouter() {
           <Route
               path="jobs"
               element={<JobsPage />}
+          />
+
+          <Route
+              path="jobs/:id"
+              element={<JobDetailPage />}
           />
 
           <Route

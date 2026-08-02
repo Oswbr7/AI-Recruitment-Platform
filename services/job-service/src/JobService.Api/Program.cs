@@ -1,8 +1,10 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using BuildingBlocks.Application.Common.Behaviors;
 using FluentValidation;
 using JobService.Api.Common.Exceptions;
+using JobService.Api.Endpoints;
 using JobService.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
-builder.Services.AddControllers();
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -53,6 +58,27 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+
+    options.AddPolicy(
+    "frontend",
+    policy =>
+    {
+
+        policy
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .SetIsOriginAllowed(
+    origin =>
+    origin == "http://localhost:5173"
+    );
+
+    });
+
+});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -95,10 +121,12 @@ app.UseHttpsRedirection();
 
 app.UseExceptionHandler();
 
+app.UseCors("frontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapEndpoints();
 
 app.MapHealthChecks("/health");
 

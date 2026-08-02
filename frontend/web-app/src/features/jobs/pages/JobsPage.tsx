@@ -1,14 +1,7 @@
-import { useState } from "react";
+import { JobsView } from "../views/JobsView";
 
-import { JobToolbar } from "../components/toolbar/JobToolbar";
-import { JobSheet } from "../components/sheet";
+export function JobsPage() {
 
-export default function JobsPage() {
-
-    export default function JobsPage() {
-
-    return <JobsView/>;
-
-}
+    return <JobsView />;
 
 }

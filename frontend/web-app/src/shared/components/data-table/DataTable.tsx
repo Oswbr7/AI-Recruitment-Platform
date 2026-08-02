@@ -1,9 +1,20 @@
+import { useState } from "react";
+import type { ReactNode } from "react";
 import {
     flexRender,
     getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
+import type {
+    ColumnDef,
+    ColumnFiltersState,
+    RowSelectionState,
+    SortingState,
+    VisibilityState,
+} from "@tanstack/react-table";
 
 import {
     Table,
@@ -14,18 +25,40 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+import { DataTableToolbar } from "./DataTableToolbar";
+import { DataTablePagination } from "./DataTablePagination";
+import type { RenderBulkActions, RenderFilters } from "./Types";
+
 type Props<TData> = {
 
     columns: ColumnDef<TData>[];
 
     data: TData[];
 
+    searchPlaceholder?: string;
+
+    exportFilename?: string;
+
+    renderBulkActions?: RenderBulkActions<TData>;
+
+    renderFilters?: RenderFilters<TData>;
+
 };
 
 export function DataTable<TData>({
     columns,
     data,
+    searchPlaceholder,
+    exportFilename,
+    renderBulkActions,
+    renderFilters,
 }: Props<TData>) {
+
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [globalFilter, setGlobalFilter] = useState("");
 
     const table = useReactTable({
 
@@ -33,69 +66,131 @@ export function DataTable<TData>({
 
         columns,
 
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+            globalFilter,
+        },
+
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        onGlobalFilterChange: setGlobalFilter,
+
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
 
     });
 
+    const selectedRows = table
+        .getFilteredSelectedRowModel()
+        .rows.map(row => row.original);
+
+    const clearSelection = () => setRowSelection({});
+
+    let bulkActionsBar: ReactNode;
+
+    if (selectedRows.length > 0 && renderBulkActions)
+        bulkActionsBar = renderBulkActions(selectedRows, clearSelection);
+
     return (
 
-        <div className="rounded-lg border">
+        <div className="space-y-4">
 
-            <Table>
+            <DataTableToolbar
+                table={table}
+                searchPlaceholder={searchPlaceholder}
+                exportFilename={exportFilename}
+                bulkActionsBar={bulkActionsBar}
+                filtersSlot={renderFilters?.(table)}
+            />
 
-                <TableHeader>
+            <div className="rounded-lg border">
 
-                    {table.getHeaderGroups().map(headerGroup => (
+                <Table>
 
-                        <TableRow key={headerGroup.id}>
+                    <TableHeader>
 
-                            {headerGroup.headers.map(header => (
+                        {table.getHeaderGroups().map(headerGroup => (
 
-                                <TableHead key={header.id}>
+                            <TableRow key={headerGroup.id}>
 
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                              header.column.columnDef.header,
-                                              header.getContext()
-                                          )}
+                                {headerGroup.headers.map(header => (
 
-                                </TableHead>
+                                    <TableHead key={header.id}>
 
-                            ))}
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                  header.column.columnDef.header,
+                                                  header.getContext()
+                                              )}
 
-                        </TableRow>
+                                    </TableHead>
 
-                    ))}
+                                ))}
 
-                </TableHeader>
+                            </TableRow>
 
-                <TableBody>
+                        ))}
 
-                    {table.getRowModel().rows.map(row => (
+                    </TableHeader>
 
-                        <TableRow key={row.id}>
+                    <TableBody>
 
-                            {row.getVisibleCells().map(cell => (
+                        {table.getRowModel().rows.length ? (
 
-                                <TableCell key={cell.id}>
+                            table.getRowModel().rows.map(row => (
 
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() ? "selected" : undefined}
+                                >
 
+                                    {row.getVisibleCells().map(cell => (
+
+                                        <TableCell key={cell.id}>
+
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+
+                                        </TableCell>
+
+                                    ))}
+
+                                </TableRow>
+
+                            ))
+
+                        ) : (
+
+                            <TableRow>
+
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center text-muted-foreground"
+                                >
+                                    No results.
                                 </TableCell>
 
-                            ))}
+                            </TableRow>
 
-                        </TableRow>
+                        )}
 
-                    ))}
+                    </TableBody>
 
-                </TableBody>
+                </Table>
 
-            </Table>
+            </div>
+
+            <DataTablePagination table={table} />
 
         </div>
 
