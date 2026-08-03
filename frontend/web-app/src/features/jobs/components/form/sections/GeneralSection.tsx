@@ -20,6 +20,8 @@ import {
 
 import { FormSection } from "@/shared/components/form";
 
+import { useCompanies } from "@/features/companies/hooks/useCompanies";
+
 import {
     EmploymentType,
     ExperienceLevel,
@@ -33,6 +35,8 @@ interface Props {
 }
 
 export function GeneralSection({ control }: Props) {
+
+    const { data: companies } = useCompanies({ pageSize: 200 });
 
     return (
 
@@ -58,6 +62,54 @@ export function GeneralSection({ control }: Props) {
                                     {...field}
                                 />
                             </FormControl>
+
+                            <FormMessage />
+
+                        </FormItem>
+
+                    )}
+                />
+
+                <FormField
+                    control={control}
+                    name="companyId"
+                    render={({ field }) => (
+
+                        <FormItem>
+
+                            <FormLabel>Company</FormLabel>
+
+                            <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                            >
+
+                                <FormControl>
+
+                                    <SelectTrigger>
+
+                                        <SelectValue placeholder="No company"/>
+
+                                    </SelectTrigger>
+
+                                </FormControl>
+
+                                <SelectContent>
+
+                                    {(companies?.items ?? []).map(company => (
+
+                                        <SelectItem
+                                            key={company.id}
+                                            value={company.id}
+                                        >
+                                            {company.name}
+                                        </SelectItem>
+
+                                    ))}
+
+                                </SelectContent>
+
+                            </Select>
 
                             <FormMessage />
 

@@ -97,6 +97,26 @@ services:
       - recruitment-network
     restart: unless-stopped
 
+  company-service:
+    container_name: recruitment-company-api
+    build:
+      context: ../..
+      dockerfile: services/company-service/Dockerfile
+    ports:
+      - "5003:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=companydb;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - recruitment-network
+    restart: unless-stopped
+
 volumes:
   postgres_data:
 

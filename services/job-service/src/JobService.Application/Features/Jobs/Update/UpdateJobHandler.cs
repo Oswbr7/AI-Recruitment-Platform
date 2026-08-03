@@ -40,6 +40,8 @@ public sealed class UpdateJobHandler
             request.SalaryMax,
             request.Currency);
 
+        job.AssignCompany(request.CompanyId);
+
         await _jobs.UpdateAsync(job, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

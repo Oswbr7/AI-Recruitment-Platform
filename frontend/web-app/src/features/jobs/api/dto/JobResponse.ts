@@ -22,6 +22,8 @@ export interface JobResponse {
 
     currency: string | null;
 
+    companyId: string | null;
+
     status: string;
 
     publishedAt: string | null;

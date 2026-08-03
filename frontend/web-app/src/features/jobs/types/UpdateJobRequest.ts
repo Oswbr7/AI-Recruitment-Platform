@@ -20,4 +20,6 @@ export interface UpdateJobRequest {
 
     currency?: string;
 
+    companyId?: string;
+
 }

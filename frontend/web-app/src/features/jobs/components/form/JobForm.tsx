@@ -51,7 +51,9 @@ const defaultValues: JobFormValues = {
 
     salaryMax: undefined,
 
-    currency: "USD"
+    currency: "USD",
+
+    companyId: ""
 
 };
 

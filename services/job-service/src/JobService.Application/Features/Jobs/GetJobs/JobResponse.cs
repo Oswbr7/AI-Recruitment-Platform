@@ -24,6 +24,8 @@ public sealed class JobResponse
 
     public string? Currency { get; init; }
 
+    public Guid? CompanyId { get; init; }
+
     public string Status { get; init; } = string.Empty;
 
     public DateTime? PublishedAt { get; init; }

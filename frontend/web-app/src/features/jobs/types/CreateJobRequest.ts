@@ -20,4 +20,6 @@ export interface CreateJobRequest {
 
     currency?: string;
 
+    companyId?: string;
+
 }

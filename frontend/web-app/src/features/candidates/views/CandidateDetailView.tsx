@@ -14,7 +14,7 @@ import { CandidateActionsMenu } from "../components/actions/CandidateActionsMenu
 import { CandidateSheet } from "../components/sheet";
 import { CandidateTimeline } from "../components/timeline/CandidateTimeline";
 import { CandidateNotesSection } from "../components/notes/CandidateNotesSection";
-import { PlaceholderSection } from "../components/PlaceholderSection";
+import { PlaceholderSection } from "@/shared/components/PlaceholderSection";
 
 interface Props {
 

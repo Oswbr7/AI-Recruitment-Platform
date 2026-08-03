@@ -33,7 +33,8 @@ public sealed class UpdateJobEndpoint : IEndpoint
             body.RemoteType,
             body.SalaryMin,
             body.SalaryMax,
-            body.Currency);
+            body.Currency,
+            body.CompanyId);
 
         var response = await sender.Send(command, cancellationToken);
 
@@ -54,4 +55,5 @@ public sealed record UpdateJobRequestBody(
     RemoteType RemoteType,
     decimal? SalaryMin,
     decimal? SalaryMax,
-    string? Currency);
+    string? Currency,
+    Guid? CompanyId);

@@ -15,4 +15,5 @@ public record UpdateJobCommand(
     RemoteType RemoteType,
     decimal? SalaryMin,
     decimal? SalaryMax,
-    string? Currency) : IRequest<JobResponse?>;
+    string? Currency,
+    Guid? CompanyId) : IRequest<JobResponse?>;

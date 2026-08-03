@@ -29,6 +29,8 @@ export function toJob(response: JobResponse): Job {
 
         currency: response.currency ?? undefined,
 
+        companyId: response.companyId ?? undefined,
+
         publishedAt: response.publishedAt ? new Date(response.publishedAt) : undefined,
 
         closedAt: response.closedAt ? new Date(response.closedAt) : undefined,

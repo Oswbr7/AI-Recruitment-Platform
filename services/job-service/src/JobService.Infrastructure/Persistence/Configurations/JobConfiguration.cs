@@ -45,6 +45,10 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.Property(x => x.Currency)
             .HasMaxLength(3);
 
+        builder.Property(x => x.CompanyId);
+
+        builder.HasIndex(x => x.CompanyId);
+
         builder.Property(x => x.Status)
             .HasConversion<int>();
 

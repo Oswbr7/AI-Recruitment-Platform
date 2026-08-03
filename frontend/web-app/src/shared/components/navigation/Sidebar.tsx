@@ -9,6 +9,7 @@ import {
     LayoutDashboard,
     Users,
     BriefcaseBusiness,
+    Building2,
     BrainCircuit,
     CalendarDays,
     Settings
@@ -72,6 +73,12 @@ export const menu = [
         title: "Jobs",
         icon: BriefcaseBusiness,
         href: "/jobs"
+    },
+
+    {
+        title: "Companies",
+        icon: Building2,
+        href: "/companies"
     },
 
     {

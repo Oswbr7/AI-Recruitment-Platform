@@ -30,6 +30,24 @@ export const queryKeys = {
 
             [...queryKeys.candidates.detail(candidateId), "notes"] as const,
 
+    },
+
+    companies: {
+
+        all: ["companies"] as const,
+
+        list: (filters?: object) =>
+
+            [...queryKeys.companies.all, "list", filters] as const,
+
+        detail: (id: string) =>
+
+            [...queryKeys.companies.all, "detail", id] as const,
+
+        contacts: (companyId: string) =>
+
+            [...queryKeys.companies.detail(companyId), "contacts"] as const,
+
     }
 
 };

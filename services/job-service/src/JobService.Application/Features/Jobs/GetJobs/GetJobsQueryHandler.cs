@@ -20,6 +20,9 @@ public sealed class GetJobsQueryHandler
     {
         var jobs = await _repository.GetAllAsync(cancellationToken);
 
+        if (request.CompanyId.HasValue)
+            jobs = jobs.Where(job => job.CompanyId == request.CompanyId.Value).ToList();
+
         return jobs.Select(job => job.ToResponse()).ToList();
     }
 }

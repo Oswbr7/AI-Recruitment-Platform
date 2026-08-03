@@ -27,4 +27,12 @@
     <Project Path="services/candidate-service/src/CandidateService.Infrastructure/CandidateService.Infrastructure.csproj" />
     <Project Path="services/candidate-service/src/CandidateService.Shared/CandidateService.Shared.csproj" />
   </Folder>
+  <Folder Name="/services/company-service/" />
+  <Folder Name="/services/company-service/src/">
+    <Project Path="services/company-service/src/CompanyService.Api/CompanyService.Api.csproj" />
+    <Project Path="services/company-service/src/CompanyService.Application/CompanyService.Application.csproj" />
+    <Project Path="services/company-service/src/CompanyService.Domain/CompanyService.Domain.csproj" />
+    <Project Path="services/company-service/src/CompanyService.Infrastructure/CompanyService.Infrastructure.csproj" />
+    <Project Path="services/company-service/src/CompanyService.Shared/CompanyService.Shared.csproj" />
+  </Folder>
 </Solution>

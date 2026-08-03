@@ -27,6 +27,8 @@ export function toCreateJobRequest(values: JobFormValues): CreateJobRequest {
 
         currency: values.currency,
 
+        companyId: values.companyId || undefined,
+
     };
 
 }
@@ -60,6 +62,8 @@ export function toJobFormValues(job: Job): JobFormValues {
         salaryMax: job.salaryMax,
 
         currency: job.currency,
+
+        companyId: job.companyId ?? "",
 
     };
 

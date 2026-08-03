@@ -11,6 +11,8 @@ import { CandidateDetailPage } from '@/features/candidates/pages/CandidateDetail
 import { CandidatePipelinePage } from '@/features/candidates/pages/CandidatePipelinePage';
 import { JobsPage } from '@/features/jobs/pages/JobsPage';
 import { JobDetailPage } from '@/features/jobs/pages/JobDetailPage';
+import { CompaniesPage } from '@/features/companies/pages/CompaniesPage';
+import { CompanyDetailPage } from '@/features/companies/pages/CompanyDetailPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
 import { UiShowcasePage } from '@/features/ui/pages/UiShowcasePage';
@@ -59,6 +61,16 @@ export function AppRouter() {
           <Route
               path="jobs/:id"
               element={<JobDetailPage />}
+          />
+
+          <Route
+              path="companies"
+              element={<CompaniesPage />}
+          />
+
+          <Route
+              path="company/:id"
+              element={<CompanyDetailPage />}
           />
 
           <Route

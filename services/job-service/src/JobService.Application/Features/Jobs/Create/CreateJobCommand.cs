@@ -13,4 +13,5 @@ public record CreateJobCommand(
     RemoteType RemoteType,
     decimal? SalaryMin,
     decimal? SalaryMax,
-    string? Currency) : IRequest<CreateJobResponse>;
+    string? Currency,
+    Guid? CompanyId) : IRequest<CreateJobResponse>;

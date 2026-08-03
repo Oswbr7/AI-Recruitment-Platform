@@ -26,6 +26,8 @@ public class Job
 
     public string? Currency { get; private set; }
 
+    public Guid? CompanyId { get; private set; }
+
     public JobStatus Status { get; private set; }
 
     public DateTime? PublishedAt { get; private set; }
@@ -48,7 +50,8 @@ public class Job
         RemoteType remoteType,
         decimal? salaryMin,
         decimal? salaryMax,
-        string? currency)
+        string? currency,
+        Guid? companyId)
     {
         Id = Guid.NewGuid();
 
@@ -72,6 +75,8 @@ public class Job
 
         Currency = currency;
 
+        CompanyId = companyId;
+
         Status = JobStatus.Draft;
 
         CreatedAt = DateTime.UtcNow;
@@ -89,7 +94,8 @@ public class Job
         RemoteType remoteType,
         decimal? salaryMin = null,
         decimal? salaryMax = null,
-        string? currency = null)
+        string? currency = null,
+        Guid? companyId = null)
     {
         return new Job(
             title,
@@ -101,7 +107,14 @@ public class Job
             remoteType,
             salaryMin,
             salaryMax,
-            currency);
+            currency,
+            companyId);
+    }
+
+    public void AssignCompany(Guid? companyId)
+    {
+        CompanyId = companyId;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void Publish()

@@ -62,6 +62,8 @@ export interface Job {
 
     currency?: string;
 
+    companyId?: string;
+
     publishedAt?: Date;
 
     closedAt?: Date;

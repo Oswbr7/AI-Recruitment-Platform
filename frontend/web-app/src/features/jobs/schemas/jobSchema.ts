@@ -39,7 +39,9 @@ export const jobSchema = z.object({
 
     salaryMax: z.coerce.number().optional(),
 
-    currency: z.string().optional()
+    currency: z.string().optional(),
+
+    companyId: z.string().optional()
 
 });
 

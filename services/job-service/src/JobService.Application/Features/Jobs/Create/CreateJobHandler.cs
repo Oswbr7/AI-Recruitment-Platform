@@ -32,7 +32,8 @@ public sealed class CreateJobHandler
             request.RemoteType,
             request.SalaryMin,
             request.SalaryMax,
-            request.Currency);
+            request.Currency,
+            request.CompanyId);
 
         await _jobs.AddAsync(job, cancellationToken);
 

@@ -16,10 +16,11 @@ public sealed class GetJobsEndpoint : IEndpoint
 
     private static async Task<IResult> Handle(
         ISender sender,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Guid? companyId = null)
     {
         var response = await sender.Send(
-            new GetJobsQuery(),
+            new GetJobsQuery(companyId),
             cancellationToken);
 
         return Results.Ok(

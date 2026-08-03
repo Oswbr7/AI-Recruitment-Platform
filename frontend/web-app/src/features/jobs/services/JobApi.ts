@@ -7,6 +7,7 @@ import type { Job } from "../models/Job";
 import type { CreateJobRequest } from "../types/CreateJobRequest";
 import type { CreateJobResponse } from "../types/CreateJobResponse";
 import type { UpdateJobRequest } from "../types/UpdateJobRequest";
+import type { GetJobsParams } from "../types/GetJobsParams";
 
 export const jobApi = {
 
@@ -21,10 +22,11 @@ export const jobApi = {
 
     },
 
-    async getJobs(): Promise<Job[]> {
+    async getJobs(params?: GetJobsParams): Promise<Job[]> {
 
         const response = await jobsApi.get<ApiResponse<JobResponse[]>>(
-            "/jobs"
+            "/jobs",
+            { params }
         );
 
         return response.data.data.map(toJob);

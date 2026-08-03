@@ -20,6 +20,7 @@ public static class JobResponseExtensions
             SalaryMin = job.SalaryMin,
             SalaryMax = job.SalaryMax,
             Currency = job.Currency,
+            CompanyId = job.CompanyId,
             Status = job.Status.ToString(),
             PublishedAt = job.PublishedAt,
             ClosedAt = job.ClosedAt,

@@ -1,6 +1,7 @@
 import {
   BrainCircuit,
   BriefcaseBusiness,
+  Building2,
   CalendarDays,
   LayoutDashboard,
   Settings,
@@ -22,6 +23,11 @@ export const navigation = [
     title: "Jobs",
     href: "/jobs",
     icon: BriefcaseBusiness,
+  },
+  {
+    title: "Companies",
+    href: "/companies",
+    icon: Building2,
   },
   {
     title: "AI Matching",
