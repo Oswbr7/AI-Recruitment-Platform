@@ -7,6 +7,8 @@ import {
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
+import { CandidateDetailPage } from '@/features/candidates/pages/CandidateDetailPage';
+import { CandidatePipelinePage } from '@/features/candidates/pages/CandidatePipelinePage';
 import { JobsPage } from '@/features/jobs/pages/JobsPage';
 import { JobDetailPage } from '@/features/jobs/pages/JobDetailPage';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -37,6 +39,16 @@ export function AppRouter() {
           <Route
               path="candidates"
               element={<CandidatesPage />}
+          />
+
+          <Route
+              path="candidates/pipeline"
+              element={<CandidatePipelinePage />}
+          />
+
+          <Route
+              path="candidates/:id"
+              element={<CandidateDetailPage />}
           />
 
           <Route

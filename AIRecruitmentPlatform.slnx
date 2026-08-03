@@ -19,4 +19,12 @@
     <Project Path="services/job-service/src/JobService.Infrastructure/JobService.Infrastructure.csproj" />
     <Project Path="services/job-service/src/JobService.Shared/JobService.Shared.csproj" />
   </Folder>
+  <Folder Name="/services/candidate-service/" />
+  <Folder Name="/services/candidate-service/src/">
+    <Project Path="services/candidate-service/src/CandidateService.Api/CandidateService.Api.csproj" />
+    <Project Path="services/candidate-service/src/CandidateService.Application/CandidateService.Application.csproj" />
+    <Project Path="services/candidate-service/src/CandidateService.Domain/CandidateService.Domain.csproj" />
+    <Project Path="services/candidate-service/src/CandidateService.Infrastructure/CandidateService.Infrastructure.csproj" />
+    <Project Path="services/candidate-service/src/CandidateService.Shared/CandidateService.Shared.csproj" />
+  </Folder>
 </Solution>

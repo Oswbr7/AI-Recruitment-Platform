@@ -40,10 +40,8 @@ export function FormActions({
 
             >
                 {isSubmitting
-                    ? "Creating..."
-                    : "Create Job"}
-
-                Save
+                    ? "Saving..."
+                    : "Save"}
 
             </Button>
 

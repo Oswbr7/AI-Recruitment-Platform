@@ -11,6 +11,8 @@ import {
 import type {
     ColumnDef,
     ColumnFiltersState,
+    OnChangeFn,
+    PaginationState,
     RowSelectionState,
     SortingState,
     VisibilityState,
@@ -29,6 +31,18 @@ import { DataTableToolbar } from "./DataTableToolbar";
 import { DataTablePagination } from "./DataTablePagination";
 import type { RenderBulkActions, RenderFilters } from "./Types";
 
+function useTableState<T>(
+    controlled: T | undefined,
+    onChange: OnChangeFn<T> | undefined,
+    initial: T
+): [T, OnChangeFn<T>] {
+
+    const [internal, setInternal] = useState<T>(initial);
+
+    return [controlled ?? internal, onChange ?? setInternal];
+
+}
+
 type Props<TData> = {
 
     columns: ColumnDef<TData>[];
@@ -43,6 +57,32 @@ type Props<TData> = {
 
     renderFilters?: RenderFilters<TData>;
 
+    // Server-side / manual mode. Omit these to keep the default
+    // client-side pagination/sorting/filtering behavior.
+    manualPagination?: boolean;
+
+    pageCount?: number;
+
+    pagination?: PaginationState;
+
+    onPaginationChange?: OnChangeFn<PaginationState>;
+
+    manualSorting?: boolean;
+
+    sorting?: SortingState;
+
+    onSortingChange?: OnChangeFn<SortingState>;
+
+    manualFiltering?: boolean;
+
+    globalFilter?: string;
+
+    onGlobalFilterChange?: OnChangeFn<string>;
+
+    columnFilters?: ColumnFiltersState;
+
+    onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
+
 };
 
 export function DataTable<TData>({
@@ -52,13 +92,38 @@ export function DataTable<TData>({
     exportFilename,
     renderBulkActions,
     renderFilters,
+    manualPagination = false,
+    pageCount,
+    pagination: paginationProp,
+    onPaginationChange,
+    manualSorting = false,
+    sorting: sortingProp,
+    onSortingChange,
+    manualFiltering = false,
+    globalFilter: globalFilterProp,
+    onGlobalFilterChange,
+    columnFilters: columnFiltersProp,
+    onColumnFiltersChange,
 }: Props<TData>) {
 
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [pagination, setPagination] = useTableState<PaginationState>(
+        paginationProp, onPaginationChange, { pageIndex: 0, pageSize: 10 }
+    );
+
+    const [sorting, setSorting] = useTableState<SortingState>(
+        sortingProp, onSortingChange, []
+    );
+
+    const [columnFilters, setColumnFilters] = useTableState<ColumnFiltersState>(
+        columnFiltersProp, onColumnFiltersChange, []
+    );
+
+    const [globalFilter, setGlobalFilter] = useTableState<string>(
+        globalFilterProp, onGlobalFilterChange, ""
+    );
+
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-    const [globalFilter, setGlobalFilter] = useState("");
 
     const table = useReactTable({
 
@@ -72,13 +137,20 @@ export function DataTable<TData>({
             columnVisibility,
             rowSelection,
             globalFilter,
+            pagination,
         },
+
+        manualPagination,
+        pageCount: manualPagination ? pageCount ?? -1 : undefined,
+        manualSorting,
+        manualFiltering,
 
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
         onGlobalFilterChange: setGlobalFilter,
+        onPaginationChange: setPagination,
 
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
