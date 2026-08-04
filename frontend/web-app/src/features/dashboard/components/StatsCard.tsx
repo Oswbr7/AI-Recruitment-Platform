@@ -10,6 +10,8 @@ type Props = {
 
     icon: LucideIcon;
 
+    description?: string;
+
 };
 
 export function StatsCard({
@@ -18,7 +20,9 @@ export function StatsCard({
 
     value,
 
-    icon: Icon
+    icon: Icon,
+
+    description,
 
 }: Props) {
 
@@ -41,6 +45,12 @@ export function StatsCard({
                         {value}
 
                     </h2>
+
+                    {description && (
+
+                        <p className="text-xs text-muted-foreground">{description}</p>
+
+                    )}
 
                 </div>
 

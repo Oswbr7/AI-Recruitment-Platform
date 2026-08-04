@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { useJobs } from "../hooks/useJobs";
 
@@ -10,6 +11,15 @@ import { DataTableSkeleton } from "@/shared/components/data-table/DataTableSkele
 export function JobsView() {
 
     const [open, setOpen] = useState(false);
+
+    const location = useLocation();
+
+    useEffect(() => {
+
+        if ((location.state as { openCreate?: boolean } | null)?.openCreate)
+            setOpen(true);
+
+    }, [location.state]);
 
     const { data: jobs, isLoading } = useJobs();
 

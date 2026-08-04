@@ -4,18 +4,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state/EmptyState";
 
-type Candidate = {
-
-    id: number;
-
-    name: string;
-
-    position: string;
-
-    score: number;
-
-};
+import type { Candidate } from "@/features/candidates/models/Candidate";
 
 type Props = {
 
@@ -43,42 +34,53 @@ export function RecentCandidates({
 
             <CardContent>
 
-                <div className="space-y-4">
+                {candidates.length === 0 ? (
 
-                    {candidates.map(candidate => (
+                    <EmptyState
+                        title="No candidates yet"
+                        description="New candidates will appear here."
+                    />
 
-                        <div
-                            key={candidate.id}
-                            className="flex items-center justify-between border-b pb-3"
-                        >
+                ) : (
 
-                            <div>
+                    <div className="space-y-4">
 
-                                <h4 className="font-medium">
+                        {candidates.map(candidate => (
 
-                                    {candidate.name}
+                            <div
+                                key={candidate.id}
+                                className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0"
+                            >
 
-                                </h4>
+                                <div>
 
-                                <p className="text-sm text-muted-foreground">
+                                    <h4 className="font-medium">
 
-                                    {candidate.position}
+                                        {candidate.firstName} {candidate.lastName}
 
-                                </p>
+                                    </h4>
+
+                                    <p className="text-sm text-muted-foreground">
+
+                                        {candidate.currentPosition ?? candidate.headline ?? "—"}
+
+                                    </p>
+
+                                </div>
+
+                                <span className="text-sm text-muted-foreground">
+
+                                    {candidate.stage}
+
+                                </span>
 
                             </div>
 
-                            <span className="font-semibold">
+                        ))}
 
-                                {candidate.score}%
+                    </div>
 
-                            </span>
-
-                        </div>
-
-                    ))}
-
-                </div>
+                )}
 
             </CardContent>
 

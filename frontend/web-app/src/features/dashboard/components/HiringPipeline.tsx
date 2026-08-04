@@ -6,6 +6,7 @@ import {
     YAxis,
     Tooltip,
     Bar,
+    LabelList,
 } from "recharts";
 
 import {
@@ -19,6 +20,7 @@ type Props = {
     data: {
         stage: string;
         value: number;
+        percentage?: number;
     }[];
 };
 
@@ -29,7 +31,7 @@ export function HiringPipeline({ data }: Props) {
             <CardHeader>
 
                 <CardTitle>
-                    Hiring Pipeline
+                    Hiring Funnel
                 </CardTitle>
 
             </CardHeader>
@@ -44,11 +46,21 @@ export function HiringPipeline({ data }: Props) {
 
                         <XAxis dataKey="stage" />
 
-                        <YAxis />
+                        <YAxis allowDecimals={false} />
 
                         <Tooltip />
 
-                        <Bar dataKey="value" radius={6} />
+                        <Bar dataKey="value" radius={6}>
+
+                            <LabelList
+                                dataKey="percentage"
+                                position="top"
+                                formatter={(value: string | number | boolean | null | undefined) =>
+                                    value == null ? "" : `${value}%`
+                                }
+                            />
+
+                        </Bar>
 
                     </BarChart>
 

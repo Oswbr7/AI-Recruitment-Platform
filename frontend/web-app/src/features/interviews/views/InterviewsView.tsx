@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import type { ColumnFiltersState, PaginationState, SortingState } from "@tanstack/react-table";
 
 import { DataTableSkeleton } from "@/shared/components/data-table/DataTableSkeleton";
@@ -18,6 +19,15 @@ const sortByColumnId: Record<string, string> = {
 export function InterviewsView() {
 
     const [open, setOpen] = useState(false);
+
+    const location = useLocation();
+
+    useEffect(() => {
+
+        if ((location.state as { openCreate?: boolean } | null)?.openCreate)
+            setOpen(true);
+
+    }, [location.state]);
 
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 

@@ -1,22 +1,49 @@
-export function DashboardHeader() {
+import { RefreshCw } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
+type Props = {
+    lastUpdated: Date;
+    onRefresh: () => void;
+};
+
+export function DashboardHeader({ lastUpdated, onRefresh }: Props) {
+
+    const today = new Date().toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
 
     return (
 
-        <div className="mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4">
 
-            <h1 className="text-3xl font-bold">
+            <div>
 
-                Dashboard
+                <h1 className="text-3xl font-bold">
+                    Dashboard
+                </h1>
 
-            </h1>
+                <p className="text-muted-foreground">
+                    Welcome back. Here's what's happening today — {today}.
+                </p>
 
-            <p className="text-muted-foreground">
+            </div>
 
-                Welcome back.
+            <div className="flex items-center gap-3">
 
-                Here's what's happening today.
+                <span className="text-xs text-muted-foreground">
+                    Updated {lastUpdated.toLocaleTimeString()}
+                </span>
 
-            </p>
+                <Button variant="outline" size="sm" onClick={onRefresh}>
+                    <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+                    Refresh
+                </Button>
+
+            </div>
 
         </div>
 
