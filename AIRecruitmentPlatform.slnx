@@ -35,4 +35,12 @@
     <Project Path="services/company-service/src/CompanyService.Infrastructure/CompanyService.Infrastructure.csproj" />
     <Project Path="services/company-service/src/CompanyService.Shared/CompanyService.Shared.csproj" />
   </Folder>
+  <Folder Name="/services/interview-service/" />
+  <Folder Name="/services/interview-service/src/">
+    <Project Path="services/interview-service/src/InterviewService.Api/InterviewService.Api.csproj" />
+    <Project Path="services/interview-service/src/InterviewService.Application/InterviewService.Application.csproj" />
+    <Project Path="services/interview-service/src/InterviewService.Domain/InterviewService.Domain.csproj" />
+    <Project Path="services/interview-service/src/InterviewService.Infrastructure/InterviewService.Infrastructure.csproj" />
+    <Project Path="services/interview-service/src/InterviewService.Shared/InterviewService.Shared.csproj" />
+  </Folder>
 </Solution>

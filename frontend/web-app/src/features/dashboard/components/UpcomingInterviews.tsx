@@ -1,29 +1,34 @@
+import { useNavigate } from "react-router-dom";
+
 import {
     Card,
     CardHeader,
     CardTitle,
     CardContent,
 } from "@/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state/EmptyState";
 
-type Interview = {
+export interface UpcomingInterviewItem {
 
-    id: number;
+    id: string;
 
-    candidate: string;
+    candidateName: string;
 
-    date: string;
+    scheduledAt: Date;
 
-};
+}
 
 type Props = {
 
-    interviews: Interview[];
+    interviews: UpcomingInterviewItem[];
 
 };
 
 export function UpcomingInterviews({
     interviews,
 }: Props) {
+
+    const navigate = useNavigate();
 
     return (
 
@@ -41,32 +46,44 @@ export function UpcomingInterviews({
 
             <CardContent>
 
-                <div className="space-y-4">
+                {interviews.length === 0 ? (
 
-                    {interviews.map(interview => (
+                    <EmptyState
+                        title="No upcoming interviews"
+                        description="Scheduled interviews will appear here."
+                    />
 
-                        <div
-                            key={interview.id}
-                            className="flex items-center justify-between border-b pb-3"
-                        >
+                ) : (
 
-                            <span>
+                    <div className="space-y-4">
 
-                                {interview.candidate}
+                        {interviews.map(interview => (
 
-                            </span>
+                            <button
+                                key={interview.id}
+                                onClick={() => navigate(`/interviews/${interview.id}`)}
+                                className="flex w-full items-center justify-between border-b pb-3 text-left last:border-0 last:pb-0 hover:opacity-80"
+                            >
 
-                            <span className="text-sm text-muted-foreground">
+                                <span>
 
-                                {interview.date}
+                                    {interview.candidateName}
 
-                            </span>
+                                </span>
 
-                        </div>
+                                <span className="text-sm text-muted-foreground">
 
-                    ))}
+                                    {interview.scheduledAt.toLocaleString()}
 
-                </div>
+                                </span>
+
+                            </button>
+
+                        ))}
+
+                    </div>
+
+                )}
 
             </CardContent>
 

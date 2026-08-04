@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/InterviewService.Api/InterviewService.Api.csproj" />
+    <Project Path="src/InterviewService.Application/InterviewService.Application.csproj" />
+    <Project Path="src/InterviewService.Domain/InterviewService.Domain.csproj" />
+    <Project Path="src/InterviewService.Infrastructure/InterviewService.Infrastructure.csproj" />
+    <Project Path="src/InterviewService.Shared/InterviewService.Shared.csproj" />
+  </Folder>
+</Solution>

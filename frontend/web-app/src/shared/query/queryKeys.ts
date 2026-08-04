@@ -48,6 +48,30 @@ export const queryKeys = {
 
             [...queryKeys.companies.detail(companyId), "contacts"] as const,
 
+    },
+
+    interviews: {
+
+        all: ["interviews"] as const,
+
+        list: (filters?: object) =>
+
+            [...queryKeys.interviews.all, "list", filters] as const,
+
+        detail: (id: string) =>
+
+            [...queryKeys.interviews.all, "detail", id] as const,
+
+        feedback: (interviewId: string) =>
+
+            [...queryKeys.interviews.detail(interviewId), "feedback"] as const,
+
+    },
+
+    recruiters: {
+
+        all: ["recruiters"] as const,
+
     }
 
 };

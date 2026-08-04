@@ -36,24 +36,6 @@ export class DashboardService {
                     score: 87,
                 },
             ],
-
-            upcomingInterviews: [
-                {
-                    id: 1,
-                    candidate: "John Smith",
-                    date: "Today 10:00 AM",
-                },
-                {
-                    id: 2,
-                    candidate: "Maria Garcia",
-                    date: "Today 2:00 PM",
-                },
-                {
-                    id: 3,
-                    candidate: "Carlos Perez",
-                    date: "Tomorrow 9:00 AM",
-                },
-            ],
         };
     }
 }

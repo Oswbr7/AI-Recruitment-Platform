@@ -1,12 +1,16 @@
+using AuthService.Api.Endpoints;
 using AuthService.Application.Abstractions.Authentication;
 using AuthService.Application.Abstractions.Persistence;
 using AuthService.Application.Abstractions.Security;
 using AuthService.Infrastructure.Persistence;
 using AuthService.Infrastructure.Persistence.Repositories;
 using AuthService.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MediatR;
 using System.Reflection;
+using System.Text;
 using FluentValidation;
 using BuildingBlocks.Application.Common.Behaviors;
 
@@ -51,6 +55,25 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExce
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddCors(options =>
 {
 
@@ -80,9 +103,12 @@ app.MapHealthChecks("/health");
 
 app.UseExceptionHandler();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
-
+app.MapEndpoints();
 
 app.UseCors("frontend");
 

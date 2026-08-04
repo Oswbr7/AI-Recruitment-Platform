@@ -25,6 +25,13 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<List<User>> GetAllAsync()
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task AddAsync(User user)
     {
         await _context.Users.AddAsync(user);

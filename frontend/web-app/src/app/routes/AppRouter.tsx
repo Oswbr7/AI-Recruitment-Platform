@@ -13,6 +13,9 @@ import { JobsPage } from '@/features/jobs/pages/JobsPage';
 import { JobDetailPage } from '@/features/jobs/pages/JobDetailPage';
 import { CompaniesPage } from '@/features/companies/pages/CompaniesPage';
 import { CompanyDetailPage } from '@/features/companies/pages/CompanyDetailPage';
+import { InterviewsPage } from '@/features/interviews/pages/InterviewsPage';
+import { InterviewDetailPage } from '@/features/interviews/pages/InterviewDetailPage';
+import { InterviewCalendarPage } from '@/features/interviews/pages/InterviewCalendarPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
 import { UiShowcasePage } from '@/features/ui/pages/UiShowcasePage';
@@ -74,6 +77,21 @@ export function AppRouter() {
           />
 
           <Route
+              path="interviews"
+              element={<InterviewsPage />}
+          />
+
+          <Route
+              path="interviews/calendar"
+              element={<InterviewCalendarPage />}
+          />
+
+          <Route
+              path="interviews/:id"
+              element={<InterviewDetailPage />}
+          />
+
+          <Route
                 path="/ui"
                 element={<UiShowcasePage/>}
             />
@@ -81,11 +99,6 @@ export function AppRouter() {
           {/* <Route
               path="matching"
               element={<MatchingPage />}
-          /> */}
-
-          {/* <Route
-              path="interviews"
-              element={<InterviewsPage />}
           /> */}
 
           {/* <Route
