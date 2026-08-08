@@ -1,6 +1,6 @@
 using CandidateService.Application.Features.Candidates.Common;
 using CandidateService.Domain.Repositories;
-using CandidateService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CandidateService.Application.Features.Candidates.GetCandidates;

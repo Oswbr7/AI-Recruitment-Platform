@@ -1,26 +1,19 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace JobService.Api.Common.Exceptions;
+namespace BuildingBlocks.Infrastructure.Middlewares;
 
-public sealed class GlobalExceptionHandler
-    : IExceptionHandler
+public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-    private readonly ILogger<GlobalExceptionHandler> _logger;
-
-    public GlobalExceptionHandler(
-        ILogger<GlobalExceptionHandler> logger)
-    {
-        _logger = logger;
-    }
-
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
-        _logger.LogError(
+        logger.LogError(
             exception,
             "Exception occurred: {Message}",
             exception.Message);
@@ -36,12 +29,10 @@ public sealed class GlobalExceptionHandler
                         .GroupBy(e => e.PropertyName)
                         .ToDictionary(
                             g => g.Key,
-                            g => g
-                                .Select(e => e.ErrorMessage)
-                                .ToArray()))
+                            g => g.Select(e => e.ErrorMessage).ToArray()))
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Validation failed"
+                    Title = "Validation failed",
                 };
 
                 break;
@@ -52,7 +43,7 @@ public sealed class GlobalExceptionHandler
                 {
                     Status = StatusCodes.Status409Conflict,
                     Title = "Invalid operation",
-                    Detail = invalidOperationException.Message
+                    Detail = invalidOperationException.Message,
                 };
 
                 break;
@@ -63,18 +54,15 @@ public sealed class GlobalExceptionHandler
                 {
                     Status = StatusCodes.Status500InternalServerError,
                     Title = "Internal Server Error",
-                    Detail = exception.Message
+                    Detail = exception.Message,
                 };
 
                 break;
         }
 
-        httpContext.Response.StatusCode =
-            problemDetails.Status ?? 500;
+        httpContext.Response.StatusCode = problemDetails.Status ?? 500;
 
-        await httpContext.Response.WriteAsJsonAsync(
-            problemDetails,
-            cancellationToken);
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
         return true;
     }

@@ -1,7 +1,7 @@
 using InterviewService.Application.Features.Interviews.Feedback.Common;
 using InterviewService.Application.Features.Interviews.Feedback.SubmitFeedback;
 using InterviewService.Domain.Enums;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Api.Endpoints.Interviews;

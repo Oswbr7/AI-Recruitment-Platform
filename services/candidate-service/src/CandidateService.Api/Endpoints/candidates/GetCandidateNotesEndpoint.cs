@@ -1,6 +1,6 @@
 using CandidateService.Application.Features.Candidates.Notes.Common;
 using CandidateService.Application.Features.Candidates.Notes.GetCandidateNotes;
-using CandidateService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CandidateService.Api.Endpoints.Candidates;

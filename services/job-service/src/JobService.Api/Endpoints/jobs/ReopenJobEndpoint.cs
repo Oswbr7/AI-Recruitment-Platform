@@ -1,6 +1,6 @@
 using JobService.Application.Features.Jobs.Reopen;
 using JobService.Application.Jobs.Queries.GetJobs;
-using JobService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace JobService.Api.Endpoints.Jobs;

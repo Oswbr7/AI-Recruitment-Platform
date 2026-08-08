@@ -1,6 +1,6 @@
 using InterviewService.Application.Features.Interviews.Feedback.Common;
 using InterviewService.Application.Features.Interviews.Feedback.GetFeedback;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Api.Endpoints.Interviews;

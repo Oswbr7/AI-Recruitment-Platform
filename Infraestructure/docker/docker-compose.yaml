@@ -18,24 +18,22 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - recruitment-network
+      - backend-network
 
-  redis:
-    image: redis:8
-    container_name: recruitment-redis
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: recruitment-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@recruitment.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
     ports:
-      - "6379:6379"
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
-      - recruitment-network
-
-  rabbitmq:
-    image: rabbitmq:4-management
-    container_name: recruitment-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - recruitment-network
+      - backend-network
 
   auth-service:
     container_name: recruitment-auth-api
@@ -53,8 +51,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - auth_logs:/app/logs
     networks:
-      - recruitment-network
+      - backend-network
+      - frontend-network
     restart: unless-stopped
 
   job-service:
@@ -73,8 +74,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - job_logs:/app/logs
     networks:
-      - recruitment-network
+      - backend-network
+      - frontend-network
     restart: unless-stopped
 
   candidate-service:
@@ -93,8 +97,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - candidate_logs:/app/logs
     networks:
-      - recruitment-network
+      - backend-network
+      - frontend-network
     restart: unless-stopped
 
   company-service:
@@ -113,8 +120,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - company_logs:/app/logs
     networks:
-      - recruitment-network
+      - backend-network
+      - frontend-network
     restart: unless-stopped
 
   interview-service:
@@ -133,13 +143,40 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - interview_logs:/app/logs
     networks:
-      - recruitment-network
+      - backend-network
+      - frontend-network
+    restart: unless-stopped
+
+  frontend:
+    container_name: recruitment-frontend
+    build:
+      context: ../../frontend/web-app
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - auth-service
+      - job-service
+      - candidate-service
+      - company-service
+      - interview-service
+    networks:
+      - frontend-network
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  auth_logs:
+  job_logs:
+  candidate_logs:
+  company_logs:
+  interview_logs:
 
 networks:
-  recruitment-network:
+  backend-network:
+    driver: bridge
+  frontend-network:
     driver: bridge

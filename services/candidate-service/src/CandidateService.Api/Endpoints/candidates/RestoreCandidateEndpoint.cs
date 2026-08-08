@@ -1,6 +1,6 @@
 using CandidateService.Application.Features.Candidates.GetCandidates;
 using CandidateService.Application.Features.Candidates.Restore;
-using CandidateService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CandidateService.Api.Endpoints.Candidates;

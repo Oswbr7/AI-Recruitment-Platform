@@ -1,5 +1,5 @@
 using CandidateService.Application.Features.Candidates.Create;
-using CandidateService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CandidateService.Api.Endpoints.Candidates;

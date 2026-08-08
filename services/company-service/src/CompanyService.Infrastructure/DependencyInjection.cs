@@ -1,3 +1,4 @@
+using BuildingBlocks.Infrastructure.Health;
 using CompanyService.Domain.Repositories;
 using CompanyService.Infrastructure.Persistence;
 using CompanyService.Infrastructure.Persistence.Repositories;
@@ -13,18 +14,21 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var connectionString =
+            configuration.GetConnectionString("DefaultConnection")
+            ?? configuration.GetConnectionString("Postgres")
+            ?? throw new InvalidOperationException("No connection string configured (DefaultConnection/Postgres).");
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            var connectionString =
-                configuration.GetConnectionString("DefaultConnection")
-                ?? configuration.GetConnectionString("Postgres");
-
             options.UseNpgsql(connectionString);
         });
 
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICompanyContactRepository, CompanyContactRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddHealthChecks().AddPlatformDatabaseCheck(connectionString);
 
         return services;
     }

@@ -1,6 +1,6 @@
 using InterviewService.Application.Features.Interviews.Cancel;
 using InterviewService.Application.Features.Interviews.GetInterviews;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Api.Endpoints.Interviews;

@@ -1,4 +1,4 @@
-namespace InterviewService.Shared.Common;
+namespace BuildingBlocks.Application.Common.Http;
 
 public class PagedResponse<T>
 {

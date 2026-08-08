@@ -4,6 +4,7 @@
     <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
     <ProjectReference Include="..\JobService.Domain\JobService.Domain.csproj" />
     <ProjectReference Include="..\JobService.Shared\JobService.Shared.csproj" />
+    <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

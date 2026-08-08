@@ -1,7 +1,7 @@
 using CandidateService.Application.Features.Candidates.GetCandidates;
 using CandidateService.Application.Features.Candidates.MoveStage;
 using CandidateService.Domain.Enums;
-using CandidateService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CandidateService.Api.Endpoints.Candidates;

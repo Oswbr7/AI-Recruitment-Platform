@@ -23,6 +23,7 @@
     <ProjectReference Include="..\InterviewService.Infrastructure\InterviewService.Infrastructure.csproj" />
     <ProjectReference Include="..\InterviewService.Shared\InterviewService.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,10 @@
-namespace InterviewService.Shared.Common;
+namespace BuildingBlocks.Application.Common.Http;
 
+/// <summary>
+/// HTTP response envelope ({Success, Message, Data}). Distinct from
+/// BuildingBlocks.Application.Common.Errors.Result (a domain outcome monad) — that type
+/// answers "did the operation succeed", this one shapes the JSON body returned to callers.
+/// </summary>
 public class Result
 {
     public bool Success { get; init; }
@@ -11,7 +16,7 @@ public class Result
         return new Result
         {
             Success = true,
-            Message = message
+            Message = message,
         };
     }
 
@@ -20,7 +25,7 @@ public class Result
         return new Result
         {
             Success = false,
-            Message = message
+            Message = message,
         };
     }
 }
@@ -35,7 +40,7 @@ public class Result<T> : Result
         {
             Success = true,
             Message = message,
-            Data = data
+            Data = data,
         };
     }
 
@@ -44,7 +49,7 @@ public class Result<T> : Result
         return new Result<T>
         {
             Success = false,
-            Message = message
+            Message = message,
         };
     }
 }

@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/logs/
+**/node_modules/
+**/dist/
+.git/
+.vscode/
+.claude/
+frontend/web-app/node_modules/
+frontend/web-app/dist/

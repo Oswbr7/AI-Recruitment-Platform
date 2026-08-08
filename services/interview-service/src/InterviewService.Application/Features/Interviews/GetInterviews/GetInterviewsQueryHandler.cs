@@ -1,6 +1,6 @@
 using InterviewService.Application.Features.Interviews.Common;
 using InterviewService.Domain.Repositories;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Application.Features.Interviews.GetInterviews;

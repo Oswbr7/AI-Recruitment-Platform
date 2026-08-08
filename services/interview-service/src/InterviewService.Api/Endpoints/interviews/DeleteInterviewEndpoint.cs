@@ -1,5 +1,5 @@
 using InterviewService.Application.Features.Interviews.Delete;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Api.Endpoints.Interviews;

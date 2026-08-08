@@ -1,5 +1,5 @@
 using CompanyService.Application.Features.Companies.Create;
-using CompanyService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CompanyService.Api.Endpoints.Companies;

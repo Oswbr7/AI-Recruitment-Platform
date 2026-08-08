@@ -1,5 +1,5 @@
 using InterviewService.Domain.Enums;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Application.Features.Interviews.GetInterviews;

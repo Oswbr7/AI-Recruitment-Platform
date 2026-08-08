@@ -1,6 +1,6 @@
 using InterviewService.Application.Features.Interviews.GetInterviews;
 using InterviewService.Application.Features.Interviews.Reschedule;
-using InterviewService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace InterviewService.Api.Endpoints.Interviews;

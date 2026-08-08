@@ -4,6 +4,7 @@
     <ProjectReference Include="..\InterviewService.Application\InterviewService.Application.csproj" />
     <ProjectReference Include="..\InterviewService.Domain\InterviewService.Domain.csproj" />
     <ProjectReference Include="..\InterviewService.Shared\InterviewService.Shared.csproj" />
+    <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,6 +20,10 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+RUN mkdir -p /app/logs && chown -R $APP_UID:$APP_UID /app
+
+USER $APP_UID
+
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet","CompanyService.Api.dll"]

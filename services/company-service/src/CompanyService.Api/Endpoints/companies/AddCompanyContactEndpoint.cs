@@ -1,6 +1,6 @@
 using CompanyService.Application.Features.Companies.Contacts.AddContact;
 using CompanyService.Application.Features.Companies.Contacts.Common;
-using CompanyService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CompanyService.Api.Endpoints.Companies;

@@ -1,5 +1,5 @@
 using CompanyService.Domain.Enums;
-using CompanyService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CompanyService.Application.Features.Companies.GetCompanies;

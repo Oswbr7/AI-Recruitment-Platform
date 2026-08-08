@@ -1,5 +1,5 @@
 using CandidateService.Domain.Enums;
-using CandidateService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CandidateService.Application.Features.Candidates.GetCandidates;

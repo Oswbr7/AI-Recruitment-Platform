@@ -1,6 +1,6 @@
 using CompanyService.Application.Features.Companies.GetCompanies;
 using CompanyService.Domain.Enums;
-using CompanyService.Shared.Common;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace CompanyService.Api.Endpoints.Companies;
