@@ -1,0 +1,46 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+
+  backend-validation:
+
+    name: Backend Validation
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          cache: true
+
+      - name: Restore Dependencies
+        run: dotnet restore RecruitmentPlatform.sln
+
+      - name: Build Solution
+        run: dotnet build RecruitmentPlatform.sln --no-restore --configuration Release
+
+      - name: Run Unit Tests
+        run: dotnet test RecruitmentPlatform.sln --no-build --configuration Release
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
