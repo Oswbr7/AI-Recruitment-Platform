@@ -143,3 +143,30 @@ Body (JSON):
 Respuesta esperada:
 
 200:
+
+CI como funciona o lo trabaj github:
+
+Pipeline
+
+↓
+
+Está descrito por
+
+↓
+
+Workflow (.yml)
+
+↓
+
+Es ejecutado por
+
+↓
+
+Runner
+
+Los Jobs son independientes.
+NO es la misma máquina.
+
+Cada Job obtiene un Runner nuevo.
+
+Se debe compilar dependiendo el objetivo del pipeline, no todo el proyecto. Si solo tocaste frontend por un solo boton, no compilar todo
