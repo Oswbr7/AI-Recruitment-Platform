@@ -1,6 +1,8 @@
 # AI Recruitment Platform — Architecture Reference
 
 > Documento generado para servir de contexto completo y preciso del estado real del repositorio, de cara a planificar CI/CD y despliegue en Kubernetes. Refleja el código tal como existe hoy, no las especificaciones originales de los epics (que en varios casos asumían cosas distintas a lo realmente construido).
+>
+> **Última actualización: 2026-11-02** (sesión de consistencia — ver `docs/sessions/2026-11-02-consistencia-bloque-2.md`): `auth-service` migrado por completo a Minimal API (ya no es outlier), sus `Result` unificados con los BuildingBlocks, contrato de login corregido (`{accessToken, expiresAt, user}`), clientes Axios del frontend unificados en una factory, y estados loading/empty conectados al `DataTable`. Historial: sesión de limpieza/organización (`docs/sessions/2026-11-02-organizacion-bloque-1.md`) — corregidas discrepancias (solución `.slnx`, stubs eliminados, `.Shared` removidos, CI, `.env.example`).
 
 ## 1. Qué es esto
 
@@ -13,8 +15,7 @@ ai-recruitment-platform/
 ├── building-blocks/
 │   ├── BuildingBlocks.Application     (real, usado por los 5 servicios)
 │   ├── BuildingBlocks.Infrastructure  (real, usado por los 5 servicios — Epic-006)
-│   ├── BuildingBlocks.Domain          (proyecto vacío, sin usar — stub)
-│   └── BuildingBlocks.Contracts       (proyecto vacío, sin usar — stub)
+│   └── BuildingBlocks.Domain          (proyecto vacío, sin usar — stub; NO existe BuildingBlocks.Contracts)
 ├── services/
 │   ├── auth-service/
 │   ├── job-service/
@@ -24,26 +25,24 @@ ai-recruitment-platform/
 ├── frontend/
 │   └── web-app/                        (React + Vite + TypeScript)
 ├── Infraestructure/
-│   ├── docker/                         (docker-compose.yaml, init-db/, .env)
-│   └── kubernetes/                     (carpeta vacía — sin manifiestos todavía)
-├── postman/ , .postman/                (colecciones/specs de Postman)
-├── docs/                               (specs de cada Epic + este documento)
+│   ├── docker/                         (docker-compose.yaml, init-db/, .env.example — el .env real no se versiona)
+│   └── kubernetes/                     (NO existe todavía — se creará en el epic de K8s)
+├── docs/                               (specs de cada Epic + este documento + sessions/ + learn/)
 └── Directory.Packages.props            (Central Package Management, root del repo)
 ```
 
-**No existe un archivo `.sln`.** Cada proyecto se referencia por `ProjectReference` directo; los Dockerfiles hacen `dotnet restore/publish` apuntando al `.csproj` del `Api` de cada servicio, no a una solución.
+**Existe `AIRecruitmentPlatform.slnx`** (formato de solución XML nuevo, 18 proyectos a fecha de 2026-11-02) e incluye los 3 proyectos de `building-blocks` y los 4 de cada servicio. Los Dockerfiles hacen `dotnet restore/publish` apuntando al `.csproj` del `Api` de cada servicio (no a la solución), lo cual sigue siendo válido. Nota: antes de 2026-11-02 la slnx **omitía `BuildingBlocks.Infrastructure`** y referenciaba 4 proyectos `{Service}.Shared` vacíos que fueron eliminados (ver §3 y `docs/sessions/2026-11-02-organizacion-bloque-1.md`). Los Dockerfiles no se tocaron.
 
 ## 3. Patrón de arquitectura por microservicio
 
-Los 5 servicios (`auth`, `job`, `candidate`, `company`, `interview`) siguen la misma estructura de 5 proyectos (con una salvedad en `auth-service`, ver §7):
+Los 5 servicios (`auth`, `job`, `candidate`, `company`, `interview`) siguen la misma estructura de 4 proyectos (antes eran 5 con un `{Service}.Shared` vacío que fue eliminado el 2026-11-02 por no contener ni un solo `.cs`):
 
 ```
 {Service}/src/
 ├── {Service}.Api/              — Minimal API endpoints, Program.cs, appsettings
 ├── {Service}.Application/      — CQRS: Commands/Queries + Handlers + Validators (MediatR + FluentValidation)
 ├── {Service}.Domain/           — Entidades ricas, Enums, Value Objects, interfaces de Repository
-├── {Service}.Infrastructure/   — EF Core DbContext, implementación de Repository/UnitOfWork, DI
-└── {Service}.Shared/           — hoy prácticamente vacío (ver §6, Result/PagedResponse se movieron a BuildingBlocks)
+└── {Service}.Infrastructure/   — EF Core DbContext, implementación de Repository/UnitOfWork, DI
 ```
 
 **Patrones consistentes en los 5 servicios:**
@@ -61,7 +60,7 @@ Los 5 servicios (`auth`, `job`, `candidate`, `company`, `interview`) siguen la m
 
 | Servicio | Puerto host | Base de datos | Prefijo de rutas | Notas |
 |---|---|---|---|---|
-| `auth-service` | 5000 | `recruitmentdb` | `/api/auth/*` (MVC), `/api/users/*` (Minimal API) | Login/registro vía controller legado; queries de usuarios son Minimal API nuevo |
+| `auth-service` | 5000 | `recruitmentdb` | `/api/auth/*`, `/api/users/*` | Minimal API como los demás (migrado 2026-11-02); login devuelve `{accessToken, expiresAt, user}` |
 | `job-service` | 5001 | `jobservicedb` | `/api/jobs/*` | `GET /api/jobs` **no está paginado** (devuelve `List<JobResponse>` completo), único caso así |
 | `candidate-service` | 5002 | `candidatedb` | `/api/candidates/*` | Paginado (`PagedResponse<T>`); incluye sub-recurso de Notes |
 | `company-service` | 5003 | `companydb` | `/api/companies/*` | Paginado; incluye sub-recurso de Contacts |
@@ -77,15 +76,15 @@ Todos los servicios (excepto `auth-service` para login/register) requieren JWT B
 - Emitido solo por `POST /api/auth/login` (`AuthController`, MVC, en `auth-service`).
 - Firma simétrica HS256. En Development: `Jwt:Key=SuperSecretKeyForDevelopment123456`, `Jwt:Issuer=RecruitmentPlatform`, `Jwt:Audience=RecruitmentPlatform` — **idénticos en los 5 servicios** (se validan localmente en cada uno, no hay introspección remota).
 - Claims: `sub` (user id), `email`, `role`.
+- **Resuelto (2026-11-02)**: el login devuelve ahora `{accessToken, expiresAt, user: {id, fullName, email}}` — coincide exactamente con el tipo `LoginResponse` del frontend (`frontend/web-app/src/features/auth/types/LoginResponse.ts`). La expiración sale de `IJwtProvider`, que devuelve un `GeneratedToken(AccessToken, ExpiresAt)` (vida del token: 8h, definida en `JwtProvider`).
 - **Gap conocido**: `RegisterUserCommand` fija `Role = UserRole.Candidate` para todo registro — no hay forma de crear un Recruiter/Admin vía API pública hoy; se hace con `UPDATE` directo en Postgres para pruebas.
-- **Gap conocido**: el login real (`AuthController.Login`) devuelve solo `{accessToken}`, pero el tipo `LoginResponse` del frontend espera `{accessToken, expiresAt, user}` — mismatch preexistente, no corregido (el frontend decodifica el JWT directamente cuando necesita el user id, ver `SessionService.currentUserId()`).
 
 ## 6. `BuildingBlocks.Application` y `BuildingBlocks.Infrastructure`
 
 ### `BuildingBlocks.Application` (real, todos los servicios lo referencian)
 ```
 Behaviors/{UnhandledExceptionBehavior,LoggingBehavior,ValidationBehavior}.cs
-Common/Errors/{Result,ResultT,Error,ErrorType,ErrorCodes,DomainException}.cs   ← monad de dominio, uso limitado (solo auth-service/UserErrors.cs)
+Common/Errors/{Result,ResultT,Error,ErrorType,ErrorCodes,DomainException}.cs   ← monad de dominio; usada por los handlers de login/register de auth-service (2026-11-02)
 Common/Http/{Result,PagedResponse}.cs                                          ← envelope HTTP real, usado por los 5 servicios (Epic-006)
 ```
 ⚠️ Hay **dos tipos distintos llamados `Result`** en este mismo assembly, en namespaces distintos (`Common.Errors` vs `Common.Http`) — no confundirlos. El primero es un outcome monad de dominio poco usado; el segundo es el envelope JSON real que ven los endpoints.
@@ -104,7 +103,7 @@ Extensions/{WebApplicationBuilderExtensions,WebApplicationExtensions,MigrationEx
 ```
 Expone `AddPlatformInfrastructure(serviceName)` (registro de servicios: Serilog, Options validados con fail-fast, HealthChecks base, ProblemDetails+GlobalExceptionHandler, JWT auth, CORS env-driven, Rate Limiter, Response Compression, Swagger+JWT bearer) y `UsePlatformInfrastructure()` (pipeline de middlewares). Nombrado "Platform" (no "Infrastructure") para no chocar con el `{Service}.Infrastructure.AddInfrastructure()` propio de cada servicio (EF Core + repos), que sigue existiendo sin cambios de nombre.
 
-`BuildingBlocks.Domain` y `BuildingBlocks.Contracts` **existen como proyectos pero están vacíos** (sin archivos `.cs` reales, solo scaffolding) — no asumir que tienen contenido.
+`BuildingBlocks.Domain` **existe como proyecto pero está vacío** (stub sin archivos `.cs`) — no construir sobre la asunción de que tiene contenido real. `BuildingBlocks.Contracts` **nunca existió** como proyecto (aparecía citado por error en versiones anteriores de este documento).
 
 ## 7. `Program.cs` — forma estándar (4 de 5 servicios)
 
@@ -129,12 +128,14 @@ app.MapPlatformHealthChecks();    // /health, /health/live, /health/ready
 app.Run();
 ```
 
-### `auth-service` — el outlier estructural
+### `auth-service` — ya NO es outlier (migrado el 2026-11-02)
 
-`auth-service` sigue el mismo patrón `AddPlatformInfrastructure`/`UsePlatformInfrastructure`, pero además:
-- Mantiene `builder.Services.AddControllers()` + `app.MapControllers()` para un único `AuthController` (MVC) que expone `POST /api/auth/register` y `POST /api/auth/login` — **deliberadamente no migrado** a Minimal API en ningún epic (riesgo de tocar el flujo de login).
-- Tiene además endpoints Minimal API normales (`GET /api/users`, `GET /api/users/{id}`) agregados en un epic posterior, que sí siguen el patrón `IEndpoint` estándar.
-- Tiene sus propios `Result` (dos, en `AuthService.Api/Common/Results` y `AuthService.Application/Common/Results`) — **no relacionados** con `BuildingBlocks.Application.Common.Http.Result`; nunca se tocaron por el riesgo de romper el login.
+`auth-service` sigue el mismo patrón que los otros 4 servicios: solo Minimal APIs vía `IEndpoint` (login, register y users), sin `AddControllers()`/`MapControllers()`, mismo `Program.cs` estándar. Detalles de la migración:
+
+- `POST /api/auth/login` y `POST /api/auth/register` viven en `Endpoints/auth/` y usan el envelope HTTP de `BuildingBlocks.Application.Common.Http` para errores (401 en login con `Results.Json(..., statusCode: 401)` porque `Results.Unauthorized()` no acepta cuerpo; 409 Conflict en register por email duplicado — antes era 400). El éxito de login devuelve el `LoginResponse` **sin envelope** a propósito: es el contrato que el frontend consume.
+- Los handlers de login/register usan la monada de dominio `BuildingBlocks.Application.Common.Errors.Result<T>` (antes tenían su propia copia con strings sueltos). `UserErrors` (InvalidCredentials, EmailAlreadyExists, UserNotFound) se movió del proyecto Api al proyecto Application — donde puede usarse desde los handlers sin violar la dirección de dependencias.
+- Eliminados en la migración: `AuthController`, los dos `Result` propios de auth (Api y Application), los `Response.cs` muertos de Login y Register, y `AddControllers()`.
+- `IJwtProvider.Generate` devuelve `GeneratedToken(string AccessToken, DateTime ExpiresAt)` — la duración del token (8h) se define una sola vez en `JwtProvider` y viaja con el token hacia la respuesta.
 
 ## 8. Infraestructura transversal (Epic-006)
 
@@ -192,16 +193,18 @@ Multi-stage `node:24-slim` (build: `npm ci && npm run build`) → `nginx:alpine`
 
 - **Stack**: Vite + React 19 + TypeScript, Tailwind, TanStack Query v5, TanStack Table, React Hook Form + Zod, Zustand, Axios, Recharts, `@dnd-kit`, `date-fns`.
 - **Estructura por feature** (`src/features/{auth,jobs,candidates,companies,interviews,dashboard}/`), cada una con `api/` (dto + mappers), `models/`, `hooks/`, `components/`, `views/`, `pages/`, `services/`, `schemas/`.
-- Cada feature tiene su **propio cliente Axios apuntando a un `VITE_{FEATURE}_API_URL`** — no hay un API Gateway ni base URL única; el navegador llama a cada microservicio por su puerto publicado directamente.
+- Cada feature tiene su **instancia de cliente** apuntando a un `VITE_{FEATURE}_API_URL` — pero desde 2026-11-02 todas se crean con una factory única (`shared/api/httpClient.ts::createApiClient`) que centraliza los interceptores: adjunta el JWT Bearer en cada request y cierra la sesión local ante un 401. Sigue sin haber un API Gateway ni base URL única; el navegador llama a cada microservicio por su puerto publicado directamente.
+- La ruta `/ui` (showcase interno de componentes) solo existe en desarrollo (`import.meta.env.DEV`) y su página se carga lazy — no forma parte del bundle principal de producción.
 - El **Dashboard** (`features/dashboard`) no tiene backend propio — agrega datos cross-feature enteramente en el cliente (React Query + `useMemo`), reutilizando los hooks/API clients de `jobs`/`candidates`/`companies`/`interviews` directamente. No hay ningún servicio "dashboard-service" ni endpoints `/api/dashboard/*`.
 - `shared/query/queryKeys.ts` centraliza las query keys de TanStack Query por dominio (`jobs`, `candidates`, `companies`, `interviews`, `recruiters`).
 - No hay tests automatizados en frontend ni backend (fuera de alcance explícito en todos los epics de este proyecto hasta ahora).
 
 ## 12. Cosas a tener en cuenta antes de planificar CI/CD y Kubernetes
 
-- **No hay `.sln`** — cualquier pipeline de build debe apuntar a los `.csproj` de cada `*.Api` (y sus dependencias vía `ProjectReference`), no a una solución.
-- **`BuildingBlocks.Domain` y `BuildingBlocks.Contracts` están vacíos** — no construir sobre la asunción de que tienen contenido real.
-- **`Infraestructure/kubernetes/` existe pero está vacía** — no hay ningún manifiesto todavía, ni siquiera un borrador.
+- **Sí hay solución**: `AIRecruitmentPlatform.slnx` (18 proyectos, incluye los 3 `building-blocks`). El workflow `.github/workflows/ci.yml` la usa (corregido el 2026-11-02: antes apuntaba a un `.sln` inexistente e incluía un paso de tests sin ningún test en el repo). Los Dockerfiles siguen apuntando a los `.csproj` individuales, lo cual es independiente de la slnx.
+- **`BuildingBlocks.Domain` está vacío** (stub); `BuildingBlocks.Contracts` no existe — no construir sobre la asunción de que tienen contenido real.
+- **`Infraestructure/kubernetes/` no existe todavía** — se creará como parte del epic de K8s, junto con la decisión de Helm vs Kustomize vs manifiestos planos.
+- **`.env` no se versiona** (está en `.gitignore`); existe `Infraestructure/docker/.env.example` y `frontend/web-app/.env.example` como plantilla documentada para un clone fresco.
 - **El frontend no tiene reverse-proxy hacia los servicios** — cualquier estrategia de Ingress/Service Mesh en K8s necesita decidir si el navegador seguirá golpeando cada servicio por su propio Service/Ingress (replicando el esquema actual de "un puerto por servicio"), o si se introduce un gateway/BFF antes de eso.
 - **Los 5 servicios validan JWT localmente con el mismo secreto simétrico compartido** (`Jwt:Key` idéntico) — para Kubernetes esto probablemente se convierte en un `Secret` compartido entre los 5 Deployments; no hay hoy ningún Identity Provider centralizado ni rotación de llaves.
 - **Migraciones automáticas solo corren en Development** — hace falta decidir la estrategia real para Kubernetes (Job/initContainer, migración manual pre-deploy, etc.) antes de escribir los manifiestos.

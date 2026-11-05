@@ -33,13 +33,14 @@ jobs:
           cache: true
 
       - name: Restore Dependencies
-        run: dotnet restore RecruitmentPlatform.sln
+        run: dotnet restore AIRecruitmentPlatform.slnx
 
       - name: Build Solution
-        run: dotnet build RecruitmentPlatform.sln --no-restore --configuration Release
+        run: dotnet build AIRecruitmentPlatform.slnx --no-restore --configuration Release
 
-      - name: Run Unit Tests
-        run: dotnet test RecruitmentPlatform.sln --no-build --configuration Release
+      # TODO: re-add a test step here once test projects exist in the repo.
+      # Today there are none (backend or frontend), so `dotnet test` would
+      # be a misleading no-op.
 
 concurrency:
   group: ci-${{ github.ref }}

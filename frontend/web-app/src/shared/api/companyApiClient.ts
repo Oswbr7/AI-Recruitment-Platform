@@ -1,14 +1,4 @@
-import axios from 'axios';
-import { useAuthStore } from '@/features/auth/store/authStore';
+import { createApiClient } from "./httpClient";
 
-export const companiesApi = axios.create({
-  baseURL: import.meta.env.VITE_COMPANIES_API_URL
-});
-
-companiesApi.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// company-service
+export const companiesApi = createApiClient(import.meta.env.VITE_COMPANIES_API_URL);

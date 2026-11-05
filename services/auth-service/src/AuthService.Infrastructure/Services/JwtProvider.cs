@@ -10,6 +10,8 @@ namespace AuthService.Infrastructure.Services;
 
 public class JwtProvider : IJwtProvider
 {
+    private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(8);
+
     private readonly IConfiguration _configuration;
 
     public JwtProvider(IConfiguration configuration)
@@ -17,8 +19,10 @@ public class JwtProvider : IJwtProvider
         _configuration = configuration;
     }
 
-    public string Generate(User user)
+    public GeneratedToken Generate(User user)
     {
+        var expiresAt = DateTime.UtcNow.Add(TokenLifetime);
+
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(
                 _configuration["Jwt:Key"]!));
@@ -28,21 +32,23 @@ public class JwtProvider : IJwtProvider
                 key,
                 SecurityAlgorithms.HmacSha256);
 
-        var subClaim = new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString());
-        var emailClaim = new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, user.Email);
-        var roleClaim = new System.Security.Claims.Claim("role", user.Role.ToString());
-        
+        var subClaim = new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString());
+        var emailClaim = new Claim(JwtRegisteredClaimNames.Email, user.Email);
+        var roleClaim = new Claim("role", user.Role.ToString());
+
         var claims = new[] { subClaim, emailClaim, roleClaim };
 
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(8),
+            expires: expiresAt,
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler()
+        var accessToken = new JwtSecurityTokenHandler()
             .WriteToken(token);
+
+        return new GeneratedToken(accessToken, expiresAt);
     }
 }

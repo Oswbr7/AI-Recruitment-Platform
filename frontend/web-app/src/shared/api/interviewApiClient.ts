@@ -1,14 +1,4 @@
-import axios from 'axios';
-import { useAuthStore } from '@/features/auth/store/authStore';
+import { createApiClient } from "./httpClient";
 
-export const interviewsApi = axios.create({
-  baseURL: import.meta.env.VITE_INTERVIEWS_API_URL
-});
-
-interviewsApi.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// interview-service
+export const interviewsApi = createApiClient(import.meta.env.VITE_INTERVIEWS_API_URL);

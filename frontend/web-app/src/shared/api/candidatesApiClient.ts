@@ -1,14 +1,4 @@
-import axios from 'axios';
-import { useAuthStore } from '@/features/auth/store/authStore';
+import { createApiClient } from "./httpClient";
 
-export const candidatesApi = axios.create({
-  baseURL: import.meta.env.VITE_CANDIDATES_API_URL
-});
-
-candidatesApi.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// candidate-service
+export const candidatesApi = createApiClient(import.meta.env.VITE_CANDIDATES_API_URL);

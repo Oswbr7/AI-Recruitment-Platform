@@ -4,6 +4,8 @@ import {
   Route
 } from 'react-router-dom';
 
+import { lazy, Suspense } from 'react';
+
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
@@ -18,7 +20,15 @@ import { InterviewDetailPage } from '@/features/interviews/pages/InterviewDetail
 import { InterviewCalendarPage } from '@/features/interviews/pages/InterviewCalendarPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
-import { UiShowcasePage } from '@/features/ui/pages/UiShowcasePage';
+
+// Showcase interno de componentes: SOLO disponible en desarrollo.
+// Lazy-loaded para que no entre en el bundle de producción, y la ruta se
+// elimina por completo en builds de prod (import.meta.env.DEV === false).
+const UiShowcasePage = lazy(() =>
+  import('@/features/ui/pages/UiShowcasePage').then(m => ({
+    default: m.UiShowcasePage
+  }))
+);
 
 export function AppRouter() {
   return (
@@ -91,10 +101,17 @@ export function AppRouter() {
               element={<InterviewDetailPage />}
           />
 
-          <Route
-                path="/ui"
-                element={<UiShowcasePage/>}
-            />
+          {/* Dev-only: showcase interno de la librería de componentes */}
+          {import.meta.env.DEV && (
+              <Route
+                  path="/ui"
+                  element={
+                      <Suspense fallback={null}>
+                          <UiShowcasePage />
+                      </Suspense>
+                  }
+              />
+          )}
 
           {/* <Route
               path="matching"

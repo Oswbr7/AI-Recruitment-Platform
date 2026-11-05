@@ -1,4 +1,4 @@
-using AuthService.Application.Common.Results;
+using BuildingBlocks.Application.Common.Errors;
 using MediatR;
 
 namespace AuthService.Application.Features.Auth.Commands;

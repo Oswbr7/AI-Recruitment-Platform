@@ -29,6 +29,8 @@ import {
 
 import { DataTableToolbar } from "./DataTableToolbar";
 import { DataTablePagination } from "./DataTablePagination";
+import { EmptyState } from "@/shared/components/empty-state/EmptyState";
+import { LoadingSpinner } from "@/shared/components/loading/LoadingSpinner";
 import type { RenderBulkActions, RenderFilters } from "./Types";
 
 function useTableState<T>(
@@ -48,6 +50,14 @@ type Props<TData> = {
     columns: ColumnDef<TData>[];
 
     data: TData[];
+
+    /** Fetch state: renders a loading row while the query is in flight. */
+    isLoading?: boolean;
+
+    /** Custom copy for the empty state shown when there are no rows. */
+    emptyTitle?: string;
+
+    emptyDescription?: string;
 
     searchPlaceholder?: string;
 
@@ -88,6 +98,9 @@ type Props<TData> = {
 export function DataTable<TData>({
     columns,
     data,
+    isLoading = false,
+    emptyTitle,
+    emptyDescription,
     searchPlaceholder,
     exportFilename,
     renderBulkActions,
@@ -215,7 +228,19 @@ export function DataTable<TData>({
 
                     <TableBody>
 
-                        {table.getRowModel().rows.length ? (
+                        {isLoading ? (
+
+                            <TableRow>
+
+                                <TableCell colSpan={columns.length}>
+
+                                    <LoadingSpinner />
+
+                                </TableCell>
+
+                            </TableRow>
+
+                        ) : table.getRowModel().rows.length ? (
 
                             table.getRowModel().rows.map(row => (
 
@@ -245,11 +270,13 @@ export function DataTable<TData>({
 
                             <TableRow>
 
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center text-muted-foreground"
-                                >
-                                    No results.
+                                <TableCell colSpan={columns.length}>
+
+                                    <EmptyState
+                                        title={emptyTitle ?? "No results"}
+                                        description={emptyDescription ?? "No records found."}
+                                    />
+
                                 </TableCell>
 
                             </TableRow>

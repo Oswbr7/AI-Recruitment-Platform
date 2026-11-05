@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InterviewService.Domain\InterviewService.Domain.csproj" />
-    <ProjectReference Include="..\InterviewService.Shared\InterviewService.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
   </ItemGroup>
 

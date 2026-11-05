@@ -1,6 +1,6 @@
-using AuthService.Api.Common.Results;
 using AuthService.Application.Features.Users.GetUserById;
 using AuthService.Application.Features.Users.GetUsers;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace AuthService.Api.Endpoints.Users;

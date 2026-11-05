@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CandidateService.Domain\CandidateService.Domain.csproj" />
-    <ProjectReference Include="..\CandidateService.Shared\CandidateService.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
   </ItemGroup>
 

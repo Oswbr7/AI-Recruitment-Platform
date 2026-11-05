@@ -4,5 +4,5 @@ namespace AuthService.Application.Abstractions.Authentication;
 
 public interface IJwtProvider
 {
-    string Generate(User user);
+    GeneratedToken Generate(User user);
 }

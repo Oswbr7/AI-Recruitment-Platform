@@ -1,14 +1,15 @@
 using AuthService.Application.Abstractions.Authentication;
 using AuthService.Application.Abstractions.Persistence;
 using AuthService.Application.Abstractions.Security;
-using AuthService.Application.Common.Results;
+using AuthService.Application.Common.Errors;
 using AuthService.Application.Features.Auth.Commands;
+using BuildingBlocks.Application.Common.Errors;
 using MediatR;
 
 namespace AuthService.Application.Features.Auth.Login;
 
 public class LoginHandler
-    : IRequestHandler<LoginCommand, Result<string>>
+    : IRequestHandler<LoginCommand, Result<LoginResponse>>
 {
     private readonly IUserRepository _users;
     private readonly IPasswordHasher _hasher;
@@ -24,20 +25,28 @@ public class LoginHandler
         _jwt = jwt;
     }
 
-    public async Task<Result<string>> Handle(
+    public async Task<Result<LoginResponse>> Handle(
         LoginCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _users.GetByEmailAsync(request.Email);
 
-        if (user == null)
-            return Result<string>.Failure("Invalid credentials");
+        if (user is null)
+            return Result<LoginResponse>.Failure(UserErrors.InvalidCredentials);
 
         if (!_hasher.Verify(request.Password, user.PasswordHash))
-            return Result<string>.Failure("Invalid credentials");
+            return Result<LoginResponse>.Failure(UserErrors.InvalidCredentials);
 
         var token = _jwt.Generate(user);
 
-        return Result<string>.Success(token);
+        var response = new LoginResponse(
+            token.AccessToken,
+            token.ExpiresAt,
+            new UserSummary(
+                user.Id,
+                $"{user.FirstName} {user.LastName}".Trim(),
+                user.Email));
+
+        return Result<LoginResponse>.Success(response);
     }
 }

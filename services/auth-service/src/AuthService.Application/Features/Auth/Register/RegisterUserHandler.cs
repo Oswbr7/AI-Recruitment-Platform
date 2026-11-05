@@ -1,9 +1,10 @@
 using AuthService.Application.Abstractions.Persistence;
 using AuthService.Application.Abstractions.Security;
-using AuthService.Application.Common.Results;
+using AuthService.Application.Common.Errors;
 using AuthService.Application.Features.Auth.Commands;
 using AuthService.Domain.Entities;
 using AuthService.Domain.Enums;
+using BuildingBlocks.Application.Common.Errors;
 using MediatR;
 
 namespace AuthService.Application.Features.Auth.Register;
@@ -32,7 +33,7 @@ public class RegisterUserHandler
         var exists = await _users.GetByEmailAsync(request.Email);
 
         if (exists != null)
-            return Result<Guid>.Failure("Email already exists");
+            return Result<Guid>.Failure(UserErrors.EmailAlreadyExists);
 
         var user = new User
         {

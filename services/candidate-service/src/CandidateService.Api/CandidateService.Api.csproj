@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CandidateService.Application\CandidateService.Application.csproj" />
     <ProjectReference Include="..\CandidateService.Infrastructure\CandidateService.Infrastructure.csproj" />
-    <ProjectReference Include="..\CandidateService.Shared\CandidateService.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>

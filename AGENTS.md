@@ -1,0 +1,38 @@
+# AGENTS.md — AI Recruitment Platform
+
+Guía para agentes/sesiones de trabajo en este repositorio.
+
+## Qué es el proyecto
+
+Plataforma de reclutamiento (ATS) de aprendizaje: 5 microservicios .NET 10 (`services/`: auth, job, candidate, company, interview) con Clean Architecture + CQRS + Vertical Slice, `building-blocks/` compartidos, y un frontend React 19 + Vite + TypeScript (`frontend/web-app`). El propósito del proyecto es **aprender** las tecnologías y arquitecturas implementadas, no solo construir el producto.
+
+## Convenciones obligatorias de documentación
+
+1. **Worklog por sesión**: cada sesión de trabajo crea `docs/sessions/AAAA-MM-DD-nombre-de-la-sesion.md` con:
+   - contexto/problema, verificación previa (qué se comprobó antes de tocar nada), cambios realizados (archivo por archivo), verificación post-cambio (comandos + resultado), descubrimientos para la siguiente sesión, y qué NO se hizo y por qué.
+2. **Documento educativo** en `docs/learn/` cuando la sesión tenga contenido de aprendizaje: explicar *por qué* se hace cada cosa y el concepto detrás, no solo el qué.
+3. **Actualizar `docs/architecture.md`** siempre que cambie la estructura, proyectos, CI o configuración que ese documento describe (lleva encabezado de "última actualización" — mantenerlo).
+4. Si se modifica algo descrito en este archivo, actualizarlo.
+
+## Disciplina de trabajo
+
+- **Nada se borra sin evidencia**: grep de referencias → revisar barrels/DI/registro → borrar → compilar todo.
+- **Verificar con builds reales al final**:
+  - Backend: `dotnet build AIRecruitmentPlatform.slnx -c Release` (la solución incluye todo lo que importa; los Dockerfiles apuntan a `.csproj` individuales).
+  - Frontend: `npm ci` (si falta node_modules) y `npm run build` (tsc + vite) en `frontend/web-app`.
+- **Cambios mínimos y enfocados**: no "arreglar de paso" warnings o deuda ajena a la sesión; registrarla en "descubrimientos" del worklog.
+- **No crear carpetas/archivos placeholder vacíos**: es exactamente la deuda que el Bloque 1 (2026-11-02) eliminó.
+- No ejecutar git mutations (commit/push/etc.) salvo que el usuario lo pida explícitamente.
+
+## Estado actual (ver worklogs en docs/sessions/)
+
+- Bloque 1 (2026-11-02) ✅: limpieza de código muerto (proyectos `.Shared` eliminados, stubs, archivos huérfanos frontend, carpeta `@/`), fix de CI, `.env.example` (docker + frontend), corrección de `architecture.md`.
+- Bloque 2 (2026-11-02) ✅: auth-service migrado por completo a Minimal API (eliminado el último controller MVC de la plataforma), `Result` unificados con BuildingBlocks (Errors monad en handlers + Http envelope en endpoints), contrato de login corregido (`{accessToken, expiresAt, user}` — cierra el gap que dejaba al usuario en `null` en el store), clientes Axios unificados en `createApiClient` (interceptor de 401 → logout), `DataTable` con estados `isLoading`/empty conectados a `LoadingSpinner`/`EmptyState`, `UiShowcasePage` en ruta dev-only lazy. ⚠️ Smoke test de runtime del login **pendiente** (Docker Desktop detenido; ver descubrimientos del worklog del Bloque 2).
+- Pendiente: smoke test de auth con Docker; bloque 🟢 (preparación CI/CD + Kubernetes: gateway, migraciones, secreto JWT, creación de `Infraestructure/kubernetes/`); bloque 🔵 (consolidar `Notas.md`/`cap-1.png`, rename `Infraestructure/`, actualizar/retirar `docs/frontend-tech-debt.md`, README real); resto de bloque 🟡 (scripts package.json `typecheck`/`format`, `engines`, consolidar `SessionService`).
+- No hay tests en backend ni frontend (paso de tests en CI comentado con TODO hasta que existan).
+
+## Contexto operativo
+
+- Windows, SDK .NET 10 (`global.json` fija 10.0.301, rollForward latestFeature). Central Package Management en `Directory.Build.props` / `Directory.Packages.props` — nunca fijar versiones en `.csproj` individuales.
+- Stack docker: `Infraestructure/docker/` (ojo: con E mayúscula, rename pendiente). Requiere copiar `.env.example` → `.env` antes de `docker compose up`.
+- El `.env` real nunca se versiona; solo `.env.example`.

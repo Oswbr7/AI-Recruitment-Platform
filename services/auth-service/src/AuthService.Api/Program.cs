@@ -9,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPlatformInfrastructure("AuthService");
 
-builder.Services.AddControllers();
-
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -20,8 +18,6 @@ if (app.Environment.IsDevelopment())
     await app.MigrateDatabaseAsync<AppDbContext>();
 
 app.UsePlatformInfrastructure();
-
-app.MapControllers();
 
 app.MapEndpoints();
 
