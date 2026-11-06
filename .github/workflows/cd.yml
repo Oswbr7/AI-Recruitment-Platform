@@ -1,0 +1,96 @@
+name: Continuous Delivery
+
+# Fase 1 del plan CI/CD: publicar imagenes listas para desplegar.
+# - Dispara: push a main.
+# - Destino: GHCR (ghcr.io/<owner>/ai-recruitment/<servicio>).
+# - Tags: SHA del commit (despliegue reproducible / rollback) + latest.
+# - NO despliega todavia: la Fase 2 (manifiestos K8s) y la Fase 3
+#   (deploy a staging/prod con kubeconfig) vienen despues.
+#
+# Las URLs del frontend se inyectan como build-args desde configuration
+# variables del repo (Settings > Secrets and variables > Actions >
+# Variables): VITE_API_URL, VITE_JOBS_API_URL, ... Si no existen, se
+# usan los defaults de desarrollo del Dockerfile (localhost:500x).
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+
+  publish-images:
+    name: Publish ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: auth-service
+            dockerfile: services/auth-service/Dockerfile
+            context: .
+          - image: job-service
+            dockerfile: services/job-service/Dockerfile
+            context: .
+          - image: candidate-service
+            dockerfile: services/candidate-service/Dockerfile
+            context: .
+          - image: company-service
+            dockerfile: services/company-service/Dockerfile
+            context: .
+          - image: interview-service
+            dockerfile: services/interview-service/Dockerfile
+            context: .
+          - image: frontend
+            dockerfile: frontend/web-app/Dockerfile
+            context: frontend/web-app
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # GHCR exige nombres de imagen en minusculas.
+      - name: Resolve Image Prefix
+        run: echo "IMAGE_PREFIX=${REGISTRY}/${OWNER,,}/ai-recruitment" >> "$GITHUB_ENV"
+        env:
+          OWNER: ${{ github.repository_owner }}
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build-args del frontend: lee las variables del repo y, si no
+      # estan definidas, deja los defaults del Dockerfile.
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          cache-from: type=gha,scope=ci-${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=ci-${{ matrix.image }}
+          tags: |
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.image }}:latest
+          build-args: |
+            VITE_API_URL=${{ vars.VITE_API_URL || 'http://localhost:5000/api' }}
+            VITE_JOBS_API_URL=${{ vars.VITE_JOBS_API_URL || 'http://localhost:5001/api' }}
+            VITE_CANDIDATES_API_URL=${{ vars.VITE_CANDIDATES_API_URL || 'http://localhost:5002/api' }}
+            VITE_COMPANIES_API_URL=${{ vars.VITE_COMPANIES_API_URL || 'http://localhost:5003/api' }}
+            VITE_INTERVIEWS_API_URL=${{ vars.VITE_INTERVIEWS_API_URL || 'http://localhost:5004/api' }}

@@ -15,14 +15,49 @@ permissions:
 
 jobs:
 
-  backend-validation:
-
-    name: Backend Validation
-
+  # ------------------------------------------------------------------
+  # Detecta que parte del repo cambio para NO compilar lo que no toco
+  # (ver Notas.md: "se debe compilar dependiendo el objetivo del
+  # pipeline, no todo el proyecto").
+  # ------------------------------------------------------------------
+  changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
-
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      docker: ${{ steps.filter.outputs.docker }}
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      - name: Path Filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'services/**'
+              - 'building-blocks/**'
+              - 'Directory.Build.props'
+              - 'Directory.Packages.props'
+              - 'AIRecruitmentPlatform.slnx'
+              - 'global.json'
+            frontend:
+              - 'frontend/**'
+            docker:
+              - '**/Dockerfile'
+              - '.dockerignore'
+              - 'frontend/web-app/nginx.conf'
+              - 'Infraestructure/docker/**'
+
+  # ------------------------------------------------------------------
+  backend-validation:
+    name: Backend Validation
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.docker == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -41,6 +76,86 @@ jobs:
       # TODO: re-add a test step here once test projects exist in the repo.
       # Today there are none (backend or frontend), so `dotnet test` would
       # be a misleading no-op.
+
+  # ------------------------------------------------------------------
+  frontend-validation:
+    name: Frontend Validation
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/web-app
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/web-app/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  # ------------------------------------------------------------------
+  # Valida que los Dockerfiles siguen construyendo tras cada cambio de
+  # codigo (los src se copian dentro de las imagenes). Sin push: es
+  # validacion pura. El cache GHA hace que las rebuilds sean baratas.
+  # ------------------------------------------------------------------
+  docker-validation:
+    name: Docker Build (${{ matrix.image }})
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.frontend == 'true' || needs.changes.outputs.docker == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: auth-service
+            dockerfile: services/auth-service/Dockerfile
+            context: .
+          - image: job-service
+            dockerfile: services/job-service/Dockerfile
+            context: .
+          - image: candidate-service
+            dockerfile: services/candidate-service/Dockerfile
+            context: .
+          - image: company-service
+            dockerfile: services/company-service/Dockerfile
+            context: .
+          - image: interview-service
+            dockerfile: services/interview-service/Dockerfile
+            context: .
+          - image: frontend
+            dockerfile: frontend/web-app/Dockerfile
+            context: frontend/web-app
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yaml syntax
+        run: docker compose --env-file Infraestructure/docker/.env.example -f Infraestructure/docker/docker-compose.yaml config -q
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: false
+          cache-from: type=gha,scope=ci-${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=ci-${{ matrix.image }}
 
 concurrency:
   group: ci-${{ github.ref }}
