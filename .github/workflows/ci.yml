@@ -73,9 +73,8 @@ jobs:
       - name: Build Solution
         run: dotnet build AIRecruitmentPlatform.slnx --no-restore --configuration Release
 
-      # TODO: re-add a test step here once test projects exist in the repo.
-      # Today there are none (backend or frontend), so `dotnet test` would
-      # be a misleading no-op.
+      - name: Run Unit Tests
+        run: dotnet test AIRecruitmentPlatform.slnx --no-build --configuration Release
 
   # ------------------------------------------------------------------
   frontend-validation:
@@ -102,6 +101,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Test
+        run: npm run test
 
       - name: Build
         run: npm run build

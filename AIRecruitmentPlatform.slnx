@@ -12,6 +12,9 @@
     <Project Path="services/auth-service/src/AuthService.Domain/AuthService.Domain.csproj" />
     <Project Path="services/auth-service/src/AuthService.Infrastructure/AuthService.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/auth-service/tests/">
+    <Project Path="services/auth-service/tests/AuthService.Tests/AuthService.Tests.csproj" />
+  </Folder>
   <Folder Name="/services/job-service/" />
   <Folder Name="/services/job-service/src/">
     <Project Path="services/job-service/src/JobService.Api/JobService.Api.csproj" />
