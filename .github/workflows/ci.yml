@@ -49,7 +49,7 @@ jobs:
               - '**/Dockerfile'
               - '.dockerignore'
               - 'frontend/web-app/nginx.conf'
-              - 'Infraestructure/docker/**'
+              - 'infrastructure/docker/**'
 
   # ------------------------------------------------------------------
   backend-validation:
@@ -143,7 +143,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate docker-compose.yaml syntax
-        run: docker compose --env-file Infraestructure/docker/.env.example -f Infraestructure/docker/docker-compose.yaml config -q
+        run: docker compose --env-file infrastructure/docker/.env.example -f infrastructure/docker/docker-compose.yaml config -q
 
       - name: Setup Buildx
         uses: docker/setup-buildx-action@v3

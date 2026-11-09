@@ -68,10 +68,10 @@ for img in auth-service job-service candidate-service company-service interview-
 done
 
 # 6. Cambiar el placeholder del owner en el overlay
-sed -i 's|CHANGE_ME|<tu-github-user>|' Infraestructure/kubernetes/overlays/staging/kustomization.yaml
+sed -i 's|CHANGE_ME|<tu-github-user>|' infrastructure/kubernetes/overlays/staging/kustomization.yaml
 
 # 7. Aplicar
-kubectl apply -k Infraestructure/kubernetes/overlays/staging
+kubectl apply -k infrastructure/kubernetes/overlays/staging
 ```
 
 ## Orden de arranque y migraciones
@@ -101,7 +101,7 @@ si el Job ya existe con distinta especificación):
 
 ```bash
 kubectl -n recruitment-staging delete job auth-service-db-migrate --ignore-not-found
-kubectl apply -k Infraestructure/kubernetes/overlays/staging
+kubectl apply -k infrastructure/kubernetes/overlays/staging
 ```
 
 ## El gateway (ingress)

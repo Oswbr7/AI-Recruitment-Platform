@@ -2,7 +2,7 @@
 
 > Documento generado para servir de contexto completo y preciso del estado real del repositorio, de cara a planificar CI/CD y despliegue en Kubernetes. Refleja el código tal como existe hoy, no las especificaciones originales de los epics (que en varios casos asumían cosas distintas a lo realmente construido).
 >
-> **Última actualización: 2026-11-06** (sesión CI/CD Fase 2 — ver `docs/sessions/2026-11-06-cicd-fase-2-kubernetes.md`): creado `Infraestructure/kubernetes/` completo (Kustomize base + overlays staging/production, Postgres StatefulSet, Job de migraciones por servicio vía EF migrations bundle incluido en las imágenes, nginx Ingress como gateway único en `recruitment.local`, Secret documentado sin versionar). Historial: Fases 0-1 (`docs/sessions/2026-11-06-cicd-fases-0-1.md`), 2026-11-02 consistencia y organización.
+> **Última actualización: 2026-11-06** (sesión CI/CD Fase 2 — ver `docs/sessions/2026-11-06-cicd-fase-2-kubernetes.md`): creado `infrastructure/kubernetes/` completo (Kustomize base + overlays staging/production, Postgres StatefulSet, Job de migraciones por servicio vía EF migrations bundle incluido en las imágenes, nginx Ingress como gateway único en `recruitment.local`, Secret documentado sin versionar). Historial: Fases 0-1 (`docs/sessions/2026-11-06-cicd-fases-0-1.md`), 2026-11-02 consistencia y organización.
 
 ## 1. Qué es esto
 
@@ -24,7 +24,7 @@ ai-recruitment-platform/
 │   └── interview-service/
 ├── frontend/
 │   └── web-app/                        (React + Vite + TypeScript)
-├── Infraestructure/
+├── infrastructure/
 │   ├── docker/                         (docker-compose.yaml, init-db/, .env.example — el .env real no se versiona)
 │   └── kubernetes/                     (NO existe todavía — se creará en el epic de K8s)
 ├── docs/                               (specs de cada Epic + este documento + sessions/ + learn/)
@@ -156,8 +156,8 @@ app.Run();
 
 ## 9. Base de datos y migraciones
 
-- Un contenedor Postgres 17 único, con **una base de datos por servicio** (creadas por `Infraestructure/docker/init-db/*.sql` al arrancar el contenedor).
-- Migraciones EF Core: se aplican automáticamente **solo si `ASPNETCORE_ENVIRONMENT=Development`**, vía `app.MigrateDatabaseAsync<TContext>()` (genérico, en `BuildingBlocks.Infrastructure`). En cualquier otro ambiente, las migraciones corren con el **migrations bundle** (`/app/migrate`, incluido en cada imagen desde 2026-11-06) ejecutado por un **Job de Kubernetes por servicio** (`Infraestructure/kubernetes/base/*-service.yaml`), que corre antes de que los pods reciban tráfico — los readiness probes (`/health/ready`, incluye Npgsql) hacen que los Deployments esperen al esquema. Ver `Infraestructure/kubernetes/README.md`.
+- Un contenedor Postgres 17 único, con **una base de datos por servicio** (creadas por `infrastructure/docker/init-db/*.sql` al arrancar el contenedor).
+- Migraciones EF Core: se aplican automáticamente **solo si `ASPNETCORE_ENVIRONMENT=Development`**, vía `app.MigrateDatabaseAsync<TContext>()` (genérico, en `BuildingBlocks.Infrastructure`). En cualquier otro ambiente, las migraciones corren con el **migrations bundle** (`/app/migrate`, incluido en cada imagen desde 2026-11-06) ejecutado por un **Job de Kubernetes por servicio** (`infrastructure/kubernetes/base/*-service.yaml`), que corre antes de que los pods reciban tráfico — los readiness probes (`/health/ready`, incluye Npgsql) hacen que los Deployments esperen al esquema. Ver `infrastructure/kubernetes/README.md`.
 - Connection strings: `ConnectionStrings:DefaultConnection`, con fallback a `ConnectionStrings:Postgres` en el código de cada servicio (compatibilidad con nombres de variable heredados).
 
 ## 10. Docker
@@ -183,7 +183,7 @@ Corren como usuario no-root (`$APP_UID`, el que ya trae la imagen `aspnet:10.0` 
 ### Frontend Dockerfile (nuevo, Epic-006)
 Multi-stage `node:24-slim` (build: `npm ci && npm run build`) → `nginx:alpine` sirviendo `dist/` con fallback SPA (`nginx.conf` con `try_files $uri $uri/ /index.html`). Se usa `node:24-slim` (Debian/glibc) en vez de una imagen `-alpine` (musl) porque el motor nativo de Tailwind v4 (`@tailwindcss/oxide`) tiene fricción conocida con musl en el fallback WASM — confirmado durante la verificación end-to-end de este epic.
 
-### `docker-compose.yaml` (`Infraestructure/docker/`)
+### `docker-compose.yaml` (`infrastructure/docker/`)
 - Redes: `backend-network` (postgres + pgadmin + los 5 servicios) y `frontend-network` (frontend + los 5 servicios) — no hay red default.
 - Volúmenes: `postgres_data` + un volumen de logs por servicio (`{servicio}_logs:/app/logs`).
 - **El frontend NO usa reverse-proxy hacia los servicios** — el navegador llama directo a los puertos publicados del host (`http://localhost:5000/api`, `5001`, etc, vía `.env` de Vite: `VITE_API_URL`, `VITE_JOBS_API_URL`, etc, uno por feature). Esto significa que unir el frontend a `frontend-network` con los servicios **no tiene efecto funcional todavía** — es preparación estructural, no una ruta de red activa. Si Kubernetes necesita que el frontend hable con los servicios vía DNS interno del clúster (en vez de vía Ingress público), hay que introducir un proxy real primero (nginx `location /api/jobs { proxy_pass ... }` o un API Gateway).
@@ -203,8 +203,8 @@ Multi-stage `node:24-slim` (build: `npm ci && npm run build`) → `nginx:alpine`
 
 - **Sí hay solución**: `AIRecruitmentPlatform.slnx` (18 proyectos, incluye los 3 `building-blocks`). El workflow `.github/workflows/ci.yml` la usa (corregido el 2026-11-02: antes apuntaba a un `.sln` inexistente e incluía un paso de tests sin ningún test en el repo). Desde 2026-11-06 el CI tiene path filtering por job (`changes` → `backend-validation` / `frontend-validation` / `docker-validation` con build de imágenes sin push y cache GHA) y `.github/workflows/cd.yml` publica las 6 imágenes a GHCR (`ghcr.io/<owner>/ai-recruitment/<servicio>`) con tags SHA + latest en cada push a main — sin despliegue todavía (Fase 3, bloqueada por manifiestos K8s e infraestructura). Los Dockerfiles siguen apuntando a los `.csproj` individuales, lo cual es independiente de la slnx.
 - **`BuildingBlocks.Domain` está vacío** (stub); `BuildingBlocks.Contracts` no existe — no construir sobre la asunción de que tienen contenido real.
-- **`Infraestructure/kubernetes/` existe desde 2026-11-06** (Fase 2): Kustomize `base/` + overlays `staging` (namespace `recruitment-staging`, tag `latest`) y `production` (namespace `recruitment`, el CD fija tag SHA). Incluye Postgres en StatefulSet (decisión de aprendizaje — prod real: base gestionada), Secret `recruitment-secrets` creado manualmente (ver `secrets/README.md`), gateway nginx Ingress (`recruitment.local` → `/api/*` por servicio, catch-all → frontend) y Jobs de migración. Walkthrough completo en `Infraestructure/kubernetes/README.md`.
-- **`.env` no se versiona** (está en `.gitignore`); existe `Infraestructure/docker/.env.example` y `frontend/web-app/.env.example` como plantilla documentada para un clone fresco. El Dockerfile del frontend acepta las mismas variables como build-args (`ARG VITE_*`, defaults de desarrollo) para que el CD pueda parametrizarlas por entorno — la imagen de frontend quemaba URLs vacías antes de este cambio.
+- **`infrastructure/kubernetes/` existe desde 2026-11-06** (Fase 2): Kustomize `base/` + overlays `staging` (namespace `recruitment-staging`, tag `latest`) y `production` (namespace `recruitment`, el CD fija tag SHA). Incluye Postgres en StatefulSet (decisión de aprendizaje — prod real: base gestionada), Secret `recruitment-secrets` creado manualmente (ver `secrets/README.md`), gateway nginx Ingress (`recruitment.local` → `/api/*` por servicio, catch-all → frontend) y Jobs de migración. Walkthrough completo en `infrastructure/kubernetes/README.md`.
+- **`.env` no se versiona** (está en `.gitignore`); existe `infrastructure/docker/.env.example` y `frontend/web-app/.env.example` como plantilla documentada para un clone fresco. El Dockerfile del frontend acepta las mismas variables como build-args (`ARG VITE_*`, defaults de desarrollo) para que el CD pueda parametrizarlas por entorno — la imagen de frontend quemaba URLs vacías antes de este cambio.
 - **El frontend ahora tiene un punto de entrada único** (Fase 2): con el nginx Ingress, todas las `VITE_*_API_URL` pueden apuntar a `http://recruitment.local/api` (mismo origen → CORS innecesario). La imagen se construye con build-args por entorno (ver Fase 1).
 - **Los 5 servicios validan JWT localmente con el mismo secreto simétrico compartido** (`Jwt:Key` idéntico) — para Kubernetes esto probablemente se convierte en un `Secret` compartido entre los 5 Deployments; no hay hoy ningún Identity Provider centralizado ni rotación de llaves.
 - **Migraciones automáticas solo corren en Development** — hace falta decidir la estrategia real para Kubernetes (Job/initContainer, migración manual pre-deploy, etc.) antes de escribir los manifiestos.

@@ -1,4 +1,4 @@
-# Replica de Infraestructure/docker/init-db/01-create-databases.sql.
+# Replica de infrastructure/docker/init-db/01-create-databases.sql.
 # Postgres ejecuta los scripts de /docker-entrypoint-initdb.d solo la
 # primera vez que arranca con un volumen vacio.
 apiVersion: v1

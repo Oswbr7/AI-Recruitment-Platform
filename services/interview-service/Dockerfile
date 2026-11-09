@@ -16,7 +16,7 @@ RUN dotnet publish services/interview-service/src/InterviewService.Api/Interview
 # ---------- Migrations ----------
 # EF Core migrations bundle: ejecutable autocontenido con las migraciones
 # del servicio. Lo corre el Job de migracion de Kubernetes
-# (Infraestructure/kubernetes) para aplicar el esquema ANTES de la API —
+# (infrastructure/kubernetes) para aplicar el esquema ANTES de la API —
 # en Production las migraciones automaticas estan desactivadas por diseno
 # (docs/architecture.md §9).
 FROM build AS migrations

@@ -1,36 +1,47 @@
-# Frontend — deuda técnica pendiente (`shared/components`)
+# Frontend — deuda técnica vigente (revisión 2026-11-06)
 
-Lista de hallazgos de la revisión de `frontend/web-app/src/shared/components` (2026-07-23). No son errores de compilación — el build está limpio — son duplicados/código huérfano para limpiar en un sprint dedicado.
+> Reescrito tras los Bloques 1 y 2 (2026-11-02). El documento original (2026-07-23)
+> listaba archivos vacíos y duplicados que ya fueron eliminados o conectados —
+> ver "Resuelto" abajo. Esto es lo que **sigue pendiente**, verificado contra el
+> código actual.
 
-## Bug funcional ya corregido
-- ~~`UserSection.tsx` mostraba "Oswaldo" / "Software Engineer" hardcodeado en vez del usuario real~~ → ahora lee `useAuthStore`.
+## Resuelto (no acción requerida)
 
-## Archivos duplicados (versión "plana" vs. versión en subcarpeta — solo una está conectada a la app)
-
-| Huérfano (sin usar) | Real (conectado a la app) |
+| Hallazgo original (2026-07-23) | Estado |
 |---|---|
-| `shared/components/Logo.tsx` (vacío) | `shared/components/common/AppLogo.tsx` (usado por `AuthHeader`) |
-| `shared/components/Navbar.tsx` (vacío) | `shared/components/navigation/Navbar.tsx` (usado por `DashboardLayout`) |
-| `shared/components/Sidebar.tsx` (100% código comentado) | `shared/components/navigation/Sidebar.tsx` (usado por `DashboardLayout`) |
-| `shared/components/dashboard/DashboardPage.tsx` | `features/dashboard/pages/DashboardPage.tsx` (la que está en `AppRouter`) |
-| `shared/components/dashboard/StatCard.tsx` (vacío) | `features/dashboard/components/StatsCard.tsx` (nombre casi idéntico, confunde) |
+| Archivos vacíos/huérfanos en `shared/components` (Logo, Navbar, Sidebar, dashboard/*, common/*) | ✅ Eliminados en Bloque 1 (18 archivos + carpeta `@/` del CLI de shadcn) |
+| `EmptyState` duplicado (vacío vs `empty-state/`) | ✅ El vacío eliminado; el real conectado al `DataTable` (prop `emptyTitle`/`emptyDescription`) en Bloque 2 |
+| `Loading` vs `LoadingSpinner` sin uso | ✅ El vacío eliminado; `LoadingSpinner` conectado al `DataTable` (prop `isLoading`) en Bloque 2 |
+| `data-table/` con archivos "vacíos" | ✅ Aclaración: nunca estuvieron vacíos (2.6–7.3 KB); la feature está construida y conectada |
+| 5 clientes Axios copiados | ✅ Unificados en `createApiClient` (`shared/api/httpClient.ts`) con interceptores JWT + 401-logout |
+| `UiShowcasePage` en rutas de producción | ✅ Ruta dev-only (`import.meta.env.DEV`) + lazy, fuera del bundle de prod |
 
-**Acción sugerida:** borrar la columna izquierda.
+## Pendiente (verificado 2026-11-06)
 
-## Mismo concepto implementado dos veces, ninguna conectada todavía
+### Media prioridad
 
-- `EmptyState`: existe vacío en `common/EmptyState.tsx` y con código real en `empty-state/EmptyState.tsx`. Ninguno se importa desde ningún lado hoy.
-- Loading: `common/Loading.tsx` (vacío) vs `loading/LoadingSpinner.tsx` (con código). Tampoco se usa ninguno.
+1. **Barrels incompletos** — `shared/components/form/index.ts` solo reexporta
+   `FormSection` y `FormActions`; `TextField`, `PasswordField`, `SubmitButton` y
+   `SearchInput` existen pero no se reexportan (se importan por ruta larga).
+   Decisión pendiente: completar el barrel o eliminarlo (import explícito).
+2. **`shared/components/entity/` sin uso** — `EntitySheet`, `EntitySheetHeader`,
+   `EntitySheetFooter` con barrel completo pero ningún consumidor. Era para un
+   futuro drawer de detalle de Job/Candidate: o se usa en esa feature, o se borra.
+3. **`shadcn` como dependencia runtime** en `package.json` — es una CLI de
+   desarrollo; debería ser devDependency (o invocarse vía `npx`).
 
-**Acción sugerida:** elegir una ubicación única por concepto, borrar la otra, y conectar donde corresponda (ej. `DataTable` durante `isLoading`, páginas con fetch).
+### Baja prioridad
 
-## Barrels incompletos / sin usar
-
-- `shared/components/form/index.ts` solo reexporta `FormSection` y `FormActions`. No incluye `TextField`, `PasswordField`, `SubmitButton`, `SearchInput`. Y tres archivos que debería cubrir están vacíos: `CheckboxField.tsx`, `SelectField.tsx`, `TextAreaField.tsx`.
-- `shared/components/entity/index.ts` reexporta bien sus 3 componentes (`EntitySheet`, `EntitySheetHeader`, `EntitySheetFooter`), pero nada en la app los importa todavía — probablemente para un futuro drawer de detalle de Job/Candidate.
-- `shared/components/data-table/`: `DataTableColumnHeader.tsx`, `DataTablePagination.tsx`, `DataTableToolbar.tsx`, `Types.ts` están vacíos — sorting/paginación/toolbar del `DataTable` aún no se construyeron.
-
-**Acción sugerida:** o se completan estos archivos, o se borran si ya no están en el plan.
-
-## Notas
-- El build de TypeScript (`tsc -b --force`) está limpio a la fecha de este documento — nada de lo listado aquí rompe la compilación, es puramente limpieza de arquitectura/duplicados.
+4. **Lint/formato**: oxlint con solo 2 reglas activas (`rules-of-hooks`,
+   `only-export-components`) y sin reglas type-aware; no hay Prettier ni script
+   `format`. Scripts `typecheck`/`format` y `engines.node` en `package.json`
+   tampoco existen.
+5. **`shared/services/SessionService.currentUserId()`** decodifica el JWT a mano —
+   sigue siendo válido, pero desde el Bloque 2 el backend ya devuelve el usuario
+   en el login; candidato a simplificar (usar `currentUser()` del store).
+6. **Tests**: cero cobertura automatizada (ver sesión de tests 2026-11-06 en
+   `docs/sessions/` — piloto en curso).
+7. **Bundle de 1.3 MB** (warning de Vite): code-splitting por ruta
+   (`React.lazy` en `AppRouter`) cuando haga falta optimizar.
+8. **`src/shared/components/PlaceholderSection.tsx`** usa `EmptyState` correctamente
+   pero conviene verificar si sigue referenciado por alguna página; si no, borrarlo.
