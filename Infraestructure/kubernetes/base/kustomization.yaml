@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base de la plataforma en Kubernetes. Los overlays (overlays/staging,
+# overlays/production) fijan namespace, tags de imagen y diferencias por
+# ambiente. Nada aqui lleva valores secretos: todos llegan del Secret
+# "recruitment-secrets" (ver secrets/README.md).
+
+resources:
+  - postgres/init-db-configmap.yaml
+  - postgres/statefulset.yaml
+  - postgres/service.yaml
+  - auth-service.yaml
+  - job-service.yaml
+  - candidate-service.yaml
+  - company-service.yaml
+  - interview-service.yaml
+  - frontend.yaml
+  - ingress.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: ai-recruitment-platform
+    # Equivale al antiguo commonLabels: tambien aplica a los selectors.
+    includeSelectors: true

@@ -1,0 +1,67 @@
+# Gateway unico de la plataforma (decision documentada en
+# docs/sessions/2026-11-06-cicd-fases-0-1.md): el navegador solo conoce
+# http://recruitment.local y el ingress enruta por path a cada servicio.
+# Los endpoints de los servicios YA incluyen el prefijo /api/*, asi que no
+# hace falta rewrite.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: recruitment-ingress
+  labels:
+    app: recruitment-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: recruitment.local
+      http:
+        paths:
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
+          - path: /api/jobs
+            pathType: Prefix
+            backend:
+              service:
+                name: job-service
+                port:
+                  number: 80
+          - path: /api/candidates
+            pathType: Prefix
+            backend:
+              service:
+                name: candidate-service
+                port:
+                  number: 80
+          - path: /api/companies
+            pathType: Prefix
+            backend:
+              service:
+                name: company-service
+                port:
+                  number: 80
+          - path: /api/interviews
+            pathType: Prefix
+            backend:
+              service:
+                name: interview-service
+                port:
+                  number: 80
+          # El frontend es el catch-all: todo lo que no sea /api/*.
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

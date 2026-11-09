@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Production. REGLA DE ORO: nunca desplegar :latest en produccion. El CD
+# (Fase 3, workflow deploy.yml) fijara el tag inmutable antes de aplicar:
+#
+#   kustomize edit set image ghcr.io/<owner>/ai-recruitment/auth-service=ghcr.io/<owner>/ai-recruitment/auth-service:<sha>
+#
+# Por eso este overlay no fija newTag: el que aplique debe hacerlo con un
+# tag SHA existente en GHCR (ver cd.yml, tags sha+latest).
+
+resources:
+  - ../../base
+
+namespace: recruitment
+
+labels:
+  - pairs:
+      environment: production
+
+images:
+  - name: ghcr.io/example/ai-recruitment/auth-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/auth-service
+  - name: ghcr.io/example/ai-recruitment/job-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/job-service
+  - name: ghcr.io/example/ai-recruitment/candidate-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/candidate-service
+  - name: ghcr.io/example/ai-recruitment/company-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/company-service
+  - name: ghcr.io/example/ai-recruitment/interview-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/interview-service
+  - name: ghcr.io/example/ai-recruitment/frontend
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/frontend

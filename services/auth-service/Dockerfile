@@ -13,12 +13,27 @@ RUN dotnet publish services/auth-service/src/AuthService.Api/AuthService.Api.csp
     /p:UseAppHost=false
 
 
+# ---------- Migrations ----------
+# EF Core migrations bundle: ejecutable autocontenido con las migraciones
+# del servicio. Lo corre el Job de migracion de Kubernetes
+# (Infraestructure/kubernetes) para aplicar el esquema ANTES de la API —
+# en Production las migraciones automaticas estan desactivadas por diseno
+# (docs/architecture.md §9).
+FROM build AS migrations
+RUN dotnet tool restore && \
+    dotnet ef migrations bundle \
+        --project services/auth-service/src/AuthService.Infrastructure/AuthService.Infrastructure.csproj \
+        --startup-project services/auth-service/src/AuthService.Api/AuthService.Api.csproj \
+        -r linux-x64 --self-contained -o /app/migrate
+
+
 # ---------- Runtime ----------
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
 WORKDIR /app
 
 COPY --from=build /app/publish .
+COPY --from=migrations /app/migrate .
 
 RUN mkdir -p /app/logs && chown -R $APP_UID:$APP_UID /app
 

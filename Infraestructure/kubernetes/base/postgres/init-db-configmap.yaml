@@ -1,0 +1,13 @@
+# Replica de Infraestructure/docker/init-db/01-create-databases.sql.
+# Postgres ejecuta los scripts de /docker-entrypoint-initdb.d solo la
+# primera vez que arranca con un volumen vacio.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-db
+data:
+  01-create-databases.sql: |
+    CREATE DATABASE jobservicedb;
+    CREATE DATABASE candidatedb;
+    CREATE DATABASE companydb;
+    CREATE DATABASE interviewdb;

@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Staging: mismo clúster, namespace aislado. El tag :latest es aceptable
+# aqui porque staging sigue la punta de main; el CD de la Fase 3 lo
+# sustituira por tags SHA para despliegues reproducibles.
+
+resources:
+  - ../../base
+
+namespace: recruitment-staging
+
+labels:
+  - pairs:
+      environment: staging
+
+images:
+  - name: ghcr.io/example/ai-recruitment/auth-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/auth-service
+    newTag: latest
+  - name: ghcr.io/example/ai-recruitment/job-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/job-service
+    newTag: latest
+  - name: ghcr.io/example/ai-recruitment/candidate-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/candidate-service
+    newTag: latest
+  - name: ghcr.io/example/ai-recruitment/company-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/company-service
+    newTag: latest
+  - name: ghcr.io/example/ai-recruitment/interview-service
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/interview-service
+    newTag: latest
+  - name: ghcr.io/example/ai-recruitment/frontend
+    newName: ghcr.io/CHANGE_ME/ai-recruitment/frontend
+    newTag: latest

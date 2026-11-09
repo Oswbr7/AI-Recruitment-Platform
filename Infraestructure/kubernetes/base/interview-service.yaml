@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interview-service
+  labels:
+    app: interview-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: interview-service
+  template:
+    metadata:
+      labels:
+        app: interview-service
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: interview-service
+          # Placeholder "example" -> el overlay (o el CD via kustomize edit
+          # set image) lo sustituye por el owner real de GHCR.
+          image: ghcr.io/example/ai-recruitment/interview-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            # Production: las migraciones automaticas estan DESACTIVADAS a
+            # proposito; el esquema lo aplica el Job de abajo.
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: recruitment-secrets
+                  key: INTERVIEWS_CONNECTION_STRING
+            - name: Jwt__Key
+              valueFrom:
+                secretKeyRef:
+                  name: recruitment-secrets
+                  key: JWT_KEY
+            - name: Jwt__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: recruitment-secrets
+                  key: JWT_ISSUER
+            - name: Jwt__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: recruitment-secrets
+                  key: JWT_AUDIENCE
+            - name: Cors__AllowedOrigins__0
+              value: "http://recruitment.local"
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: interview-service
+  labels:
+    app: interview-service
+spec:
+  type: ClusterIP
+  selector:
+    app: interview-service
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+# Aplica el esquema EF Core con el migrations bundle incluido en la imagen
+# (/app/migrate, docs/architecture.md §9). Corre ANTES de que la API reciba
+# trafico; si el Deployment arranca antes, sus readiness probes fallan hasta
+# que el esquema existe y los pods se recuperan solos (restart).
+#
+# IMPORTANTE: los Jobs son inmutables. Para volver a aplicar este manifiesto
+# hay que borrar el Job antes (ver kubernetes/README.md).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: interview-service-db-migrate
+  labels:
+    app: interview-service
+    role: db-migrate
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: migrate
+          image: ghcr.io/example/ai-recruitment/interview-service:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - /app/migrate --connection "$DB_CONNECTION"
+          env:
+            - name: DB_CONNECTION
+              valueFrom:
+                secretKeyRef:
+                  name: recruitment-secrets
+                  key: INTERVIEWS_CONNECTION_STRING
