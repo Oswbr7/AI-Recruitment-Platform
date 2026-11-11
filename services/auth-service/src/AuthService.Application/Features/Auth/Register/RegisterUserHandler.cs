@@ -35,6 +35,11 @@ public class RegisterUserHandler
         if (exists != null)
             return Result<Guid>.Failure(UserErrors.EmailAlreadyExists);
 
+        // Regla de arranque self-hosted: el PRIMER usuario registrado en la
+        // base de datos se convierte en Admin (puede crear recruiters desde
+        // PATCH /api/users/{id}/role); el resto nace Candidate.
+        var isFirstUser = (await _users.GetAllAsync()).Count == 0;
+
         var user = new User
         {
             Id = Guid.NewGuid(),
@@ -42,7 +47,7 @@ public class RegisterUserHandler
             PasswordHash = _hasher.Hash(request.Password),
             FirstName = request.FirstName,
             LastName = request.LastName,
-            Role = UserRole.Candidate,
+            Role = isFirstUser ? UserRole.Admin : UserRole.Candidate,
             CreatedAt = DateTime.UtcNow
         };
 

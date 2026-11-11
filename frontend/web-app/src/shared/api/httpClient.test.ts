@@ -39,7 +39,7 @@ describe("createApiClient - request interceptor", () => {
     it("adjunta el JWT Bearer cuando hay sesion", () => {
         useAuthStore
             .getState()
-            .login("token-123", { id: "1", fullName: "Ana", email: "a@b.c" });
+            .login("token-123", { id: "1", fullName: "Ana", email: "a@b.c", role: "Candidate" });
 
         const config = reqHandler(fakeConfig());
 
@@ -57,7 +57,7 @@ describe("createApiClient - response interceptor", () => {
     it("401 cierra la sesion local", async () => {
         useAuthStore
             .getState()
-            .login("token-123", { id: "1", fullName: "Ana", email: "a@b.c" });
+            .login("token-123", { id: "1", fullName: "Ana", email: "a@b.c", role: "Candidate" });
 
         const error = { response: { status: 401 } };
 
@@ -69,7 +69,7 @@ describe("createApiClient - response interceptor", () => {
     it("otros errores se propagan sin tocar la sesion", async () => {
         useAuthStore
             .getState()
-            .login("token-123", { id: "1", fullName: "Ana", email: "a@b.c" });
+            .login("token-123", { id: "1", fullName: "Ana", email: "a@b.c", role: "Candidate" });
 
         const error = { response: { status: 500 } };
 

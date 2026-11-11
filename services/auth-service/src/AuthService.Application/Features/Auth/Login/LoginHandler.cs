@@ -45,7 +45,8 @@ public class LoginHandler
             new UserSummary(
                 user.Id,
                 $"{user.FirstName} {user.LastName}".Trim(),
-                user.Email));
+                user.Email,
+                user.Role.ToString()));
 
         return Result<LoginResponse>.Success(response);
     }

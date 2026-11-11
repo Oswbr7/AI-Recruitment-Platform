@@ -4,6 +4,7 @@ using AuthService.Application.Common.Errors;
 using AuthService.Application.Features.Auth.Commands;
 using AuthService.Application.Features.Auth.Register;
 using AuthService.Domain.Entities;
+using AuthService.Domain.Enums;
 using Moq;
 
 namespace AuthService.Tests.Features.Auth.Register;
@@ -37,10 +38,12 @@ public class RegisterUserHandlerTests
     }
 
     [Fact]
-    public async Task Handle_NewUser_HashesPasswordPersistsAndReturnsId()
+    public async Task Handle_FirstUser_BecomesAdmin()
     {
         _users.Setup(x => x.GetByEmailAsync("nuevo@example.com"))
             .ReturnsAsync((User?)null);
+        _users.Setup(x => x.GetAllAsync())
+            .ReturnsAsync(new List<User>()); // base vacía: es el primer usuario
         _hasher.Setup(x => x.Hash("Password123!")).Returns("hash-generado");
 
         User? captured = null;
@@ -55,13 +58,31 @@ public class RegisterUserHandlerTests
         Assert.Equal("hash-generado", captured.PasswordHash);
         Assert.Equal("Ana", captured.FirstName);
         Assert.Equal("García", captured.LastName);
-        Assert.Equal(UserRoleValue(), captured.Role.ToString());
+        Assert.Equal(UserRole.Admin, captured.Role);
 
         // UnitOfWork confirma una sola vez (ver arquitectura §3).
         _unitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    // El rol por defecto es Candidate (gap conocido documentado en
-    // architecture.md §5: no hay forma de crear Recruiter/Admin via API).
-    private static string UserRoleValue() => "Candidate";
+    [Fact]
+    public async Task Handle_SubsequentUser_BecomesCandidate()
+    {
+        _users.Setup(x => x.GetByEmailAsync("nuevo@example.com"))
+            .ReturnsAsync((User?)null);
+        _users.Setup(x => x.GetAllAsync())
+            .ReturnsAsync(new List<User> { new() { Email = "otro@example.com" } });
+        _hasher.Setup(x => x.Hash("Password123!")).Returns("hash-generado");
+
+        User? captured = null;
+        _users.Setup(x => x.AddAsync(It.IsAny<User>()))
+            .Callback<User>(u => captured = u);
+
+        var result = await CreateHandler().Handle(Command(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(captured);
+        Assert.Equal(UserRole.Candidate, captured!.Role);
+
+        _unitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
 }

@@ -5,6 +5,7 @@ using AuthService.Application.Common.Errors;
 using AuthService.Application.Features.Auth.Commands;
 using AuthService.Application.Features.Auth.Login;
 using AuthService.Domain.Entities;
+using AuthService.Domain.Enums;
 using Moq;
 
 namespace AuthService.Tests.Features.Auth.Login;
@@ -26,6 +27,7 @@ public class LoginHandlerTests
             PasswordHash = "hash",
             FirstName = "Juan",
             LastName = "Pérez",
+            Role = UserRole.Recruiter,
         };
 
     [Fact]
@@ -77,12 +79,13 @@ public class LoginHandlerTests
         Assert.True(result.IsSuccess);
 
         // Contrato que el frontend consume (LoginResponse.ts):
-        // accessToken, expiresAt y user {id, fullName, email}.
+        // accessToken, expiresAt y user {id, fullName, email, role}.
         Assert.Equal("token-jwt", result.Value.AccessToken);
         Assert.Equal(expiresAt, result.Value.ExpiresAt);
         Assert.Equal(user.Id, result.Value.User.Id);
         Assert.Equal("Juan Pérez", result.Value.User.FullName);
         Assert.Equal(user.Email, result.Value.User.Email);
+        Assert.Equal("Recruiter", result.Value.User.Role);
 
         _jwt.Verify(x => x.Generate(user), Times.Once);
     }

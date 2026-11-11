@@ -13,4 +13,5 @@ public sealed record LoginResponse(
 public sealed record UserSummary(
     Guid Id,
     string FullName,
-    string Email);
+    string Email,
+    string Role);

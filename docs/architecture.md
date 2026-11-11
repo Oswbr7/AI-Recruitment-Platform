@@ -2,7 +2,7 @@
 
 > Documento generado para servir de contexto completo y preciso del estado real del repositorio, de cara a planificar CI/CD y despliegue en Kubernetes. Refleja el código tal como existe hoy, no las especificaciones originales de los epics (que en varios casos asumían cosas distintas a lo realmente construido).
 >
-> **Última actualización: 2026-11-06** (sesión tests + Fase 3 — ver `docs/sessions/2026-11-06-tests-fase3-deploy.md`): tests unitarios en los 5 servicios (29 tests, xUnit+Moq; patrón: creación/invariantes, estado con InvalidOperationException, GetById) y `deploy.yml` (push a main → environment staging, tag v* → production con approval; render `kubectl kustomize | sed` con tags SHA). Historial: Fase 2 kubernetes, Fases 0-1 CI/CD, 2026-11-02 consistencia y organización.
+> **Última actualización: 2026-11-06** (sesión funcional: roles + AI Matching — ver `docs/sessions/2026-11-06-roles-matching.md`): primer usuario registrado = Admin (regla self-hosted), endpoint Admin-only `PATCH /api/users/{id}/role`, `role` en el `UserSummary` del login; UI de registro (`/register`), guard de roles en rutas (`ProtectedRoute roles`), página de matching determinístico con scoring explicable y desglose. Historial: tests + Fase 3, Fase 2 kubernetes, Fases 0-1 CI/CD.
 
 ## 1. Qué es esto
 
@@ -77,7 +77,7 @@ Todos los servicios (excepto `auth-service` para login/register) requieren JWT B
 - Firma simétrica HS256. En Development: `Jwt:Key=SuperSecretKeyForDevelopment123456`, `Jwt:Issuer=RecruitmentPlatform`, `Jwt:Audience=RecruitmentPlatform` — **idénticos en los 5 servicios** (se validan localmente en cada uno, no hay introspección remota).
 - Claims: `sub` (user id), `email`, `role`.
 - **Resuelto (2026-11-02)**: el login devuelve ahora `{accessToken, expiresAt, user: {id, fullName, email}}` — coincide exactamente con el tipo `LoginResponse` del frontend (`frontend/web-app/src/features/auth/types/LoginResponse.ts`). La expiración sale de `IJwtProvider`, que devuelve un `GeneratedToken(AccessToken, ExpiresAt)` (vida del token: 8h, definida en `JwtProvider`).
-- **Gap conocido**: `RegisterUserCommand` fija `Role = UserRole.Candidate` para todo registro — no hay forma de crear un Recruiter/Admin vía API pública hoy; se hace con `UPDATE` directo en Postgres para pruebas.
+- **Resuelto (2026-11-06)**: el registro ya no fuerza `Candidate` para siempre — la regla es **primer usuario registrado = Admin** (base vacía, self-hosted); los siguientes nacen `Candidate` y solo un Admin puede promoverlos con `PATCH /api/users/{id}/role` (`RequireRole("Admin")`). El `UserSummary` del login incluye ahora `Role` (el frontend lo usa para sus guards de ruta). Queda documentado: en un deploy con seed, el primer Admin debería venir del seed.
 
 ## 6. `BuildingBlocks.Application` y `BuildingBlocks.Infrastructure`
 

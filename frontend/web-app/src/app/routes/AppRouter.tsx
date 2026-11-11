@@ -7,6 +7,7 @@ import {
 import { lazy, Suspense } from 'react';
 
 import { LoginPage } from '@/features/auth/pages/LoginPage';
+import { RegisterPage } from '@/features/auth/pages/RegisterPage';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { CandidatesPage } from '@/features/candidates/pages/CandidatesPage';
 import { CandidateDetailPage } from '@/features/candidates/pages/CandidateDetailPage';
@@ -20,6 +21,7 @@ import { InterviewDetailPage } from '@/features/interviews/pages/InterviewDetail
 import { InterviewCalendarPage } from '@/features/interviews/pages/InterviewCalendarPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
+import { MatchingPage } from '@/features/matching/pages/MatchingPage';
 
 // Showcase interno de componentes: SOLO disponible en desarrollo.
 // Lazy-loaded para que no entre en el bundle de producción, y la ruta se
@@ -37,6 +39,11 @@ export function AppRouter() {
         <Route
           path="/login"
           element={<LoginPage />}
+        />
+
+        <Route
+          path="/register"
+          element={<RegisterPage />}
         />
         
         <Route
@@ -113,10 +120,14 @@ export function AppRouter() {
               />
           )}
 
-          {/* <Route
+          <Route
               path="matching"
-              element={<MatchingPage />}
-          /> */}
+              element={
+                  <ProtectedRoute roles={["Admin", "Recruiter"]}>
+                      <MatchingPage />
+                  </ProtectedRoute>
+              }
+          />
 
           {/* <Route
               path="settings"
