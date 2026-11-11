@@ -22,12 +22,18 @@
     <Project Path="services/job-service/src/JobService.Domain/JobService.Domain.csproj" />
     <Project Path="services/job-service/src/JobService.Infrastructure/JobService.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/job-service/tests/">
+    <Project Path="services/job-service/tests/JobService.Tests/JobService.Tests.csproj" />
+  </Folder>
   <Folder Name="/services/candidate-service/" />
   <Folder Name="/services/candidate-service/src/">
     <Project Path="services/candidate-service/src/CandidateService.Api/CandidateService.Api.csproj" />
     <Project Path="services/candidate-service/src/CandidateService.Application/CandidateService.Application.csproj" />
     <Project Path="services/candidate-service/src/CandidateService.Domain/CandidateService.Domain.csproj" />
     <Project Path="services/candidate-service/src/CandidateService.Infrastructure/CandidateService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/services/candidate-service/tests/">
+    <Project Path="services/candidate-service/tests/CandidateService.Tests/CandidateService.Tests.csproj" />
   </Folder>
   <Folder Name="/services/company-service/" />
   <Folder Name="/services/company-service/src/">
@@ -36,11 +42,17 @@
     <Project Path="services/company-service/src/CompanyService.Domain/CompanyService.Domain.csproj" />
     <Project Path="services/company-service/src/CompanyService.Infrastructure/CompanyService.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/company-service/tests/">
+    <Project Path="services/company-service/tests/CompanyService.Tests/CompanyService.Tests.csproj" />
+  </Folder>
   <Folder Name="/services/interview-service/" />
   <Folder Name="/services/interview-service/src/">
     <Project Path="services/interview-service/src/InterviewService.Api/InterviewService.Api.csproj" />
     <Project Path="services/interview-service/src/InterviewService.Application/InterviewService.Application.csproj" />
     <Project Path="services/interview-service/src/InterviewService.Domain/InterviewService.Domain.csproj" />
     <Project Path="services/interview-service/src/InterviewService.Infrastructure/InterviewService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/services/interview-service/tests/">
+    <Project Path="services/interview-service/tests/InterviewService.Tests/InterviewService.Tests.csproj" />
   </Folder>
 </Solution>
