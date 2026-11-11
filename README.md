@@ -57,7 +57,13 @@ cp frontend/web-app/.env.example frontend/web-app/.env
 # 2. Levantar toda la plataforma (Postgres, pgadmin, 5 servicios, frontend)
 docker compose -f infrastructure/docker/docker-compose.yaml up -d --build
 
-# 3. Verificar
+# 3. (Opcional) Poblar la plataforma con datos de demostracion
+dotnet run --project tools/SeedDemo
+#    Crea usuarios (admin@demo.local / Demo123! y un recruiter), 3 empresas,
+#    4 vacantes publicadas, 6 candidatos y 4 entrevistas (una completada con
+#    feedback). Idempotente: re-ejecutarlo solo crea lo que falta.
+
+# 4. Verificar
 curl http://localhost:5000/health/ready          # auth-service (los demás: 5001-5004)
 open http://localhost:5173                        # frontend
 open http://localhost:5000/swagger                # Swagger (uno por servicio, solo en Development)
