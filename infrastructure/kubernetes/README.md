@@ -121,6 +121,36 @@ Como frontend y APIs comparten origen, **CORS deja de ser necesario** en
 este esquema (el valor `Cors__AllowedOrigins__0` se mantiene por si se
 sirve el frontend desde otro origen).
 
+## CD — despliegue automatizado (workflow `deploy.yml`)
+
+Pipeline de despliegue (Fase 3): push a `main` → **staging** (automático),
+tag `v*` → **production** (approval manual), o manual vía `workflow_dispatch`.
+
+**Setup previo (una sola vez):**
+
+1. **Secrets del repo** (Settings → Secrets and variables → Actions):
+   - `KUBECONFIG_STAGING` — kubeconfig del cluster de staging completo (la
+     salida de `kubectl config view --minify --flatten` con el contexto
+     correcto, codificada como texto plano en el secret).
+   - `KUBECONFIG_PRODUCTION` — idem para producción.
+2. **Environments** (Settings → Environments):
+   - `staging` — sin protection rules (deploy automático).
+   - `production` — "Required reviewers" con las personas que aprueban.
+3. **Pull de imágenes privadas** (si el paquete GHCR del repo es privado):
+   ```bash
+   kubectl create secret docker-registry ghcr-pull \
+     -n <namespace> \
+     --docker-server=ghcr.io \
+     --docker-username=<github-user> \
+     --docker-password=<PAT con read:packages>
+   # y añadir imagePullSecrets: [{name: ghcr-pull}] a los Deployments
+   ```
+
+Qué hace cada corrida: renderiza el overlay con `kubectl kustomize`,
+sustituye las imágenes al **SHA exacto del commit** (deploy reproducible;
+rollback = redeploy del SHA anterior), borra los Jobs de migración
+(inmutables), aplica y espera los `rollout status` de los 6 deployments.
+
 ## Decisiones y límites conscientes (para aprendizaje)
 
 - **Postgres en StatefulSet dentro del clúster**: simple y didáctico. En

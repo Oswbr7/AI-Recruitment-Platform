@@ -1,0 +1,150 @@
+name: Continuous Deployment
+
+# Fase 3 del plan CI/CD: despliegue a Kubernetes con Kustomize.
+#
+# Disparos:
+#   - push a main            -> environment "staging" (automatico)
+#   - tag v* (release)       -> environment "production" (approval manual
+#                               via protection rules del Environment)
+#   - workflow_dispatch      -> despliegue manual al ambiente elegido
+#
+# Setup previo (una sola vez, guia completa en
+# infrastructure/kubernetes/README.md, seccion "CD"):
+#   1. Secrets del repo: KUBECONFIG_STAGING y KUBECONFIG_PRODUCTION
+#      (kubeconfig del cluster, con el contexto por defecto correcto).
+#   2. Environments de GitHub: "staging" (sin reviewers) y "production"
+#      (Settings > Environments > Add required reviewers).
+#   3. Si las imagenes de GHCR son privadas: imagePullSecret ghcr-pull
+#      en cada namespace (documentado en el README de kubernetes/).
+#
+# Notas de diseno:
+#   - Los tags de imagen se sustituyen en el YAML renderizado (sed sobre
+#     kubectl kustomize): cada deploy apunta al SHA exacto del commit que
+#     lo disparo (despliegue reproducible; rollback = redeploy del SHA).
+#   - Los Jobs de migracion son inmutables: se borran antes del apply.
+#   - kubectl ya viene instalado en los runners de GitHub (ubuntu-latest).
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Ambiente destino"
+        type: environment
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  SERVICES: auth-service job-service candidate-service company-service interview-service
+
+jobs:
+
+  deploy-staging:
+    name: Deploy to Staging
+    if: >-
+      ${{ (github.event_name == 'push' && github.ref_type == 'branch') ||
+          (github.event_name == 'workflow_dispatch' && inputs.environment == 'staging') }}
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      NAMESPACE: recruitment-staging
+      OVERLAY: infrastructure/kubernetes/overlays/staging
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Preflight - kubeconfig
+        run: |
+          if [ -z "${{ secrets.KUBECONFIG_STAGING }}" ]; then
+            echo "::error::Secret KUBECONFIG_STAGING no definido. Setup: infrastructure/kubernetes/README.md (seccion CD)."
+            exit 1
+          fi
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          printf '%s' "${{ secrets.KUBECONFIG_STAGING }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+          kubectl config current-context
+
+      - name: Render overlay con tags del commit
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          kubectl kustomize "$OVERLAY" \
+            | sed -E "s|ghcr\.io/CHANGE_ME/ai-recruitment/([a-z-]+):latest|ghcr.io/$OWNER/ai-recruitment/\1:${{ github.sha }}|g" \
+            > rendered.yaml
+          echo "Imagenes a desplegar:"
+          grep "image:" rendered.yaml
+
+      - name: Reset Jobs de migracion (inmutables)
+        run: |
+          for svc in ${{ env.SERVICES }}; do
+            kubectl delete job "$svc-db-migrate" -n "$NAMESPACE" --ignore-not-found
+          done
+
+      - name: Apply
+        run: kubectl apply -f rendered.yaml
+
+      - name: Esperar rollouts
+        run: |
+          for dep in ${{ env.SERVICES }} frontend; do
+            kubectl rollout status "deployment/$dep" -n "$NAMESPACE" --timeout=300s
+          done
+
+  deploy-production:
+    name: Deploy to Production
+    if: >-
+      ${{ (github.event_name == 'push' && github.ref_type == 'tag') ||
+          (github.event_name == 'workflow_dispatch' && inputs.environment == 'production') }}
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      NAMESPACE: recruitment
+      OVERLAY: infrastructure/kubernetes/overlays/production
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Preflight - kubeconfig
+        run: |
+          if [ -z "${{ secrets.KUBECONFIG_PRODUCTION }}" ]; then
+            echo "::error::Secret KUBECONFIG_PRODUCTION no definido. Setup: infrastructure/kubernetes/README.md (seccion CD)."
+            exit 1
+          fi
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          printf '%s' "${{ secrets.KUBECONFIG_PRODUCTION }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+          kubectl config current-context
+
+      - name: Render overlay con tags del commit
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          kubectl kustomize "$OVERLAY" \
+            | sed -E "s|ghcr\.io/CHANGE_ME/ai-recruitment/([a-z-]+):latest|ghcr.io/$OWNER/ai-recruitment/\1:${{ github.sha }}|g" \
+            > rendered.yaml
+          echo "Imagenes a desplegar:"
+          grep "image:" rendered.yaml
+
+      - name: Reset Jobs de migracion (inmutables)
+        run: |
+          for svc in ${{ env.SERVICES }}; do
+            kubectl delete job "$svc-db-migrate" -n "$NAMESPACE" --ignore-not-found
+          done
+
+      - name: Apply
+        run: kubectl apply -f rendered.yaml
+
+      - name: Esperar rollouts
+        run: |
+          for dep in ${{ env.SERVICES }} frontend; do
+            kubectl rollout status "deployment/$dep" -n "$NAMESPACE" --timeout=300s
+          done
