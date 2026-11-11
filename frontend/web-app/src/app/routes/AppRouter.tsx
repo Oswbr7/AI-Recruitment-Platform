@@ -22,6 +22,7 @@ import { InterviewCalendarPage } from '@/features/interviews/pages/InterviewCale
 import { ProtectedRoute } from './ProtectedRoute';
 import { DashboardLayout } from '@/shared/layouts/DashboardLayout';
 import { MatchingPage } from '@/features/matching/pages/MatchingPage';
+import { UsersAdminPage } from '@/features/users/pages/UsersAdminPage';
 
 // Showcase interno de componentes: SOLO disponible en desarrollo.
 // Lazy-loaded para que no entre en el bundle de producción, y la ruta se
@@ -125,6 +126,15 @@ export function AppRouter() {
               element={
                   <ProtectedRoute roles={["Admin", "Recruiter"]}>
                       <MatchingPage />
+                  </ProtectedRoute>
+              }
+          />
+
+          <Route
+              path="admin/users"
+              element={
+                  <ProtectedRoute roles={["Admin"]}>
+                      <UsersAdminPage />
                   </ProtectedRoute>
               }
           />

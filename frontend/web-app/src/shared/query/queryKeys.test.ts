@@ -22,4 +22,8 @@ describe("queryKeys", () => {
         expect(queryKeys.companies.contacts("3")).toEqual(["companies", "detail", "3", "contacts"]);
         expect(queryKeys.interviews.feedback("5")).toEqual(["interviews", "detail", "5", "feedback"]);
     });
+
+    it("users tiene su propio dominio para invalidar la lista de admin", () => {
+        expect(queryKeys.users.all).toEqual(["users"]);
+    });
 });

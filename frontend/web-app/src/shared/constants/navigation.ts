@@ -5,10 +5,19 @@ import {
   CalendarDays,
   LayoutDashboard,
   Settings,
+  UserCog,
   Users,
 } from "lucide-react";
 
-export const navigation = [
+export type NavItem = {
+  title: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+  /** Si se indica, solo visible para estos roles (claim "role" del usuario). */
+  roles?: string[];
+};
+
+export const navigation: NavItem[] = [
   {
     title: "Dashboard",
     href: "/",
@@ -38,6 +47,12 @@ export const navigation = [
     title: "Interviews",
     href: "/interviews",
     icon: CalendarDays,
+  },
+  {
+    title: "Users",
+    href: "/admin/users",
+    icon: UserCog,
+    roles: ["Admin"],
   },
   {
     title: "Settings",
