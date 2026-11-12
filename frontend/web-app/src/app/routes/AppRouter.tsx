@@ -19,6 +19,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { DashboardLayout } from "@/shared/layouts/DashboardLayout";
 import { MatchingPage } from "@/features/matching/pages/MatchingPage";
 import { UsersAdminPage } from "@/features/users/pages/UsersAdminPage";
+import { SettingsPage } from "@/features/settings/pages/SettingsPage";
 
 // Showcase interno de componentes: SOLO disponible en desarrollo.
 // Lazy-loaded para que no entre en el bundle de producción, y la ruta se
@@ -96,10 +97,7 @@ export function AppRouter() {
                         }
                     />
 
-                    {/* <Route
-              path="settings"
-              element={<SettingsPage />}
-          /> */}
+                    <Route path="settings" element={<SettingsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

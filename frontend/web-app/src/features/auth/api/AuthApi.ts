@@ -15,4 +15,13 @@ export class AuthApi {
     static async register(request: RegisterRequest): Promise<void> {
         await api.post("/auth/register", request);
     }
+
+    // POST /api/auth/change-password — requiere sesion (el backend toma el
+    // user id del claim "sub" del JWT, no del body).
+    static async changePassword(request: {
+        currentPassword: string;
+        newPassword: string;
+    }): Promise<void> {
+        await api.post("/auth/change-password", request);
+    }
 }

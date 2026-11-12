@@ -16,6 +16,12 @@ public static class UserErrors
             "Invalid email or password.",
             ErrorType.Unauthorized);
 
+    public static readonly Error InvalidCurrentPassword =
+        new(
+            "User.InvalidCurrentPassword",
+            "The current password is incorrect.",
+            ErrorType.Unauthorized);
+
     public static readonly Error UserNotFound =
         new(
             "User.NotFound",
