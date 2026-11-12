@@ -1,5 +1,5 @@
 import { jobsApi } from "@/shared/api/jobsApiClient";
-import type { ApiResponse } from "@/shared/api/types";
+import type { ApiResponse, PagedResult } from "@/shared/api/types";
 
 import { toJob } from "../api/mappers/jobMapper";
 import type { JobResponse } from "../api/dto/JobResponse";
@@ -16,10 +16,15 @@ export const jobApi = {
         return response.data.data;
     },
 
-    async getJobs(params?: GetJobsParams): Promise<Job[]> {
-        const response = await jobsApi.get<ApiResponse<JobResponse[]>>("/jobs", { params });
+    async getJobs(params?: GetJobsParams): Promise<PagedResult<Job>> {
+        const response = await jobsApi.get<ApiResponse<PagedResult<JobResponse>>>("/jobs", {
+            params,
+        });
 
-        return response.data.data.map(toJob);
+        return {
+            ...response.data.data,
+            items: response.data.data.items.map(toJob),
+        };
     },
 
     async getById(id: string): Promise<Job> {

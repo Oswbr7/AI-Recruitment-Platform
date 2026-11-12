@@ -129,4 +129,38 @@ public class InterviewRepository : IInterviewRepository
         return await _context.Interviews
             .AnyAsync(x => x.Id == id, cancellationToken);
     }
+
+    public async Task<bool> ExistsActiveForCandidateAndJobAsync(
+        Guid candidateId,
+        Guid jobId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Interviews
+            .AsNoTracking()
+            .AnyAsync(x =>
+                    x.CandidateId == candidateId &&
+                    x.JobId == jobId &&
+                    x.Status == InterviewStatus.Scheduled,
+                cancellationToken);
+    }
+
+    public async Task<bool> HasOverlapForRecruiterAsync(
+        Guid recruiterId,
+        DateTime scheduledAt,
+        int durationMinutes,
+        CancellationToken cancellationToken)
+    {
+        var end = scheduledAt.AddMinutes(durationMinutes);
+
+        return await _context.Interviews
+            .AsNoTracking()
+            .AnyAsync(x =>
+                    x.RecruiterId == recruiterId &&
+                    x.Status == InterviewStatus.Scheduled &&
+                    // Solapamiento de intervalos: inicia antes de que la
+                    // otra termine Y termina despues de que la otra inicie.
+                    x.ScheduledAt < end &&
+                    x.ScheduledAt.AddMinutes(x.DurationMinutes) > scheduledAt,
+                cancellationToken);
+    }
 }

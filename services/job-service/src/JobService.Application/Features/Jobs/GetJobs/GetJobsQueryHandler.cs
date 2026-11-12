@@ -1,11 +1,12 @@
 using JobService.Application.Features.Jobs.Common;
 using JobService.Domain.Repositories;
+using BuildingBlocks.Application.Common.Http;
 using MediatR;
 
 namespace JobService.Application.Features.Jobs.GetJobs;
 
 public sealed class GetJobsQueryHandler
-    : IRequestHandler<GetJobsQuery, List<JobResponse>>
+    : IRequestHandler<GetJobsQuery, PagedResponse<JobResponse>>
 {
     private readonly IJobRepository _repository;
 
@@ -14,15 +15,26 @@ public sealed class GetJobsQueryHandler
         _repository = repository;
     }
 
-    public async Task<List<JobResponse>> Handle(
+    public async Task<PagedResponse<JobResponse>> Handle(
         GetJobsQuery request,
         CancellationToken cancellationToken)
     {
-        var jobs = await _repository.GetAllAsync(cancellationToken);
+        var (items, totalCount) = await _repository.GetPagedAsync(
+            request.Page,
+            request.PageSize,
+            request.Search,
+            request.Status,
+            request.CompanyId,
+            request.SortBy,
+            request.SortDirection,
+            cancellationToken);
 
-        if (request.CompanyId.HasValue)
-            jobs = jobs.Where(job => job.CompanyId == request.CompanyId.Value).ToList();
-
-        return jobs.Select(job => job.ToResponse()).ToList();
+        return new PagedResponse<JobResponse>
+        {
+            Items = items.Select(job => job.ToResponse()).ToList(),
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount
+        };
     }
 }

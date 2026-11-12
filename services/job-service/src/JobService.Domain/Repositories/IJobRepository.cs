@@ -1,4 +1,5 @@
 using JobService.Domain.Entities;
+using JobService.Domain.Enums;
 
 namespace JobService.Domain.Repositories;
 
@@ -8,7 +9,15 @@ public interface IJobRepository
 
     Task<Job?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-    Task<List<Job>> GetAllAsync(CancellationToken cancellationToken);
+    Task<(List<Job> Items, int TotalCount)> GetPagedAsync(
+        int page,
+        int pageSize,
+        string? search,
+        JobStatus? status,
+        Guid? companyId,
+        string? sortBy,
+        string? sortDirection,
+        CancellationToken cancellationToken);
 
     Task UpdateAsync(Job job, CancellationToken cancellationToken);
 

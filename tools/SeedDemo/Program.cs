@@ -295,11 +295,12 @@ async Task<Guid> EnsureJob(string title, string department, string location, str
     string experienceLevel, string remoteType, decimal salaryMin, decimal salaryMax,
     Guid companyId, string token)
 {
-    var list = Authorized(HttpMethod.Get, $"{config.JobsApi}/jobs", token);
+    var list = Authorized(HttpMethod.Get, $"{config.JobsApi}/jobs?pageSize=100", token);
     var response = await Send(list, "listado de vacantes");
     using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
-    foreach (var item in doc.RootElement.GetProperty("data").EnumerateArray())
+    // GET /api/jobs es paginado: data.items (antes era un array plano).
+    foreach (var item in doc.RootElement.GetProperty("data").GetProperty("items").EnumerateArray())
     {
         if (string.Equals(item.GetProperty("title").GetString(), title, StringComparison.OrdinalIgnoreCase))
         {

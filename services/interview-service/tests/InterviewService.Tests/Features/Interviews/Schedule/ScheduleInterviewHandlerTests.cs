@@ -47,4 +47,47 @@ public class ScheduleInterviewHandlerTests
             x => x.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once);
     }
+
+    [Fact]
+    public async Task Handle_ActiveInterviewForSameCandidateAndJob_ThrowsAndDoesNotPersist()
+    {
+        var command = Command();
+
+        _interviews.Setup(x => x.ExistsActiveForCandidateAndJobAsync(
+                command.CandidateId, command.JobId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            CreateHandler().Handle(command, CancellationToken.None));
+
+        _interviews.Verify(x => x.AddAsync(
+            It.IsAny<Interview>(), It.IsAny<CancellationToken>()), Times.Never);
+        _unitOfWork.Verify(
+            x => x.SaveChangesAsync(It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task Handle_RecruiterAgendaOverlap_ThrowsAndDoesNotPersist()
+    {
+        var command = Command();
+
+        _interviews.Setup(x => x.ExistsActiveForCandidateAndJobAsync(
+                It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        _interviews.Setup(x => x.HasOverlapForRecruiterAsync(
+                command.RecruiterId, command.ScheduledAt, command.DurationMinutes,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            CreateHandler().Handle(command, CancellationToken.None));
+
+        _interviews.Verify(x => x.AddAsync(
+            It.IsAny<Interview>(), It.IsAny<CancellationToken>()), Times.Never);
+        _unitOfWork.Verify(
+            x => x.SaveChangesAsync(It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
 }

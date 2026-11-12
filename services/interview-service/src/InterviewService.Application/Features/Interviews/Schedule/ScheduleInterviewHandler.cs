@@ -22,6 +22,27 @@ public sealed class ScheduleInterviewHandler
         ScheduleInterviewCommand request,
         CancellationToken cancellationToken)
     {
+        // Reglas de negocio del scheduling (el GlobalExceptionHandler las
+        // mapea a HTTP 409 InvalidOperationException -> ver architecture §3):
+        var alreadyExists = await _interviews.ExistsActiveForCandidateAndJobAsync(
+            request.CandidateId,
+            request.JobId,
+            cancellationToken);
+
+        if (alreadyExists)
+            throw new InvalidOperationException(
+                "An active interview already exists for this candidate and job.");
+
+        var overlaps = await _interviews.HasOverlapForRecruiterAsync(
+            request.RecruiterId,
+            request.ScheduledAt,
+            request.DurationMinutes,
+            cancellationToken);
+
+        if (overlaps)
+            throw new InvalidOperationException(
+                $"The recruiter already has an overlapping interview scheduled around {request.ScheduledAt:yyyy-MM-dd HH:mm}.");
+
         var interview = Interview.Schedule(
             request.CandidateId,
             request.JobId,
