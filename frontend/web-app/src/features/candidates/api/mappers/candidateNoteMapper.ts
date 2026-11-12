@@ -2,9 +2,7 @@ import type { CandidateNote } from "../../models/CandidateNote";
 import type { CandidateNoteResponse } from "../dto/CandidateNoteResponse";
 
 export function toCandidateNote(response: CandidateNoteResponse): CandidateNote {
-
     return {
-
         id: response.id,
 
         candidateId: response.candidateId,
@@ -14,7 +12,5 @@ export function toCandidateNote(response: CandidateNoteResponse): CandidateNote 
         createdAt: new Date(response.createdAt),
 
         updatedAt: new Date(response.updatedAt),
-
     };
-
 }

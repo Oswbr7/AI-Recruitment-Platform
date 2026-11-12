@@ -27,8 +27,16 @@ beforeEach(() => {
     // de los interceptores registrados, para invocarlos directamente.
     mockedAxios.create.mockReturnValue({
         interceptors: {
-            request: { use: vi.fn((fn: ReqHandler) => { reqHandler = fn; }) },
-            response: { use: vi.fn((_ok: unknown, err: ResErrHandler) => { resErrHandler = err; }) },
+            request: {
+                use: vi.fn((fn: ReqHandler) => {
+                    reqHandler = fn;
+                }),
+            },
+            response: {
+                use: vi.fn((_ok: unknown, err: ResErrHandler) => {
+                    resErrHandler = err;
+                }),
+            },
         },
     } as unknown as ReturnType<typeof axios.create>);
 

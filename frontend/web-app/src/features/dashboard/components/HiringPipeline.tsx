@@ -9,12 +9,7 @@ import {
     LabelList,
 } from "recharts";
 
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
     data: {
@@ -27,21 +22,13 @@ type Props = {
 export function HiringPipeline({ data }: Props) {
     return (
         <Card>
-
             <CardHeader>
-
-                <CardTitle>
-                    Hiring Funnel
-                </CardTitle>
-
+                <CardTitle>Hiring Funnel</CardTitle>
             </CardHeader>
 
             <CardContent className="h-80">
-
                 <ResponsiveContainer width="100%" height="100%">
-
                     <BarChart data={data}>
-
                         <CartesianGrid strokeDasharray="3 3" />
 
                         <XAxis dataKey="stage" />
@@ -51,7 +38,6 @@ export function HiringPipeline({ data }: Props) {
                         <Tooltip />
 
                         <Bar dataKey="value" radius={6}>
-
                             <LabelList
                                 dataKey="percentage"
                                 position="top"
@@ -59,15 +45,10 @@ export function HiringPipeline({ data }: Props) {
                                     value == null ? "" : `${value}%`
                                 }
                             />
-
                         </Bar>
-
                     </BarChart>
-
                 </ResponsiveContainer>
-
             </CardContent>
-
         </Card>
     );
 }

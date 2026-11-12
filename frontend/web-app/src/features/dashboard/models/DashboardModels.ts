@@ -1,7 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
 export interface ActivityEvent {
-
     id: string;
 
     type: string;
@@ -15,13 +14,10 @@ export interface ActivityEvent {
     icon: LucideIcon;
 
     color: string;
-
 }
 
 export interface RankedItem {
-
     label: string;
 
     value: number;
-
 }

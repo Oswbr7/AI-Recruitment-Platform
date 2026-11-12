@@ -1,5 +1,4 @@
 export const Shadows = {
-
     sm: "shadow-sm",
 
     md: "shadow",
@@ -7,5 +6,4 @@ export const Shadows = {
     lg: "shadow-lg",
 
     xl: "shadow-xl",
-
 };

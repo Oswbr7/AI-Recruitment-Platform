@@ -30,11 +30,9 @@ function RoleSelect({ user, currentUserId }: { user: UserListItem; currentUserId
         changeRole.mutate(
             { id: user.id, role },
             {
-                onSuccess: () =>
-                    toast.success(`${user.fullName} is now ${role}.`),
-                onError: () =>
-                    toast.error("Could not change the role. Are you an Admin?"),
-            }
+                onSuccess: () => toast.success(`${user.fullName} is now ${role}.`),
+                onError: () => toast.error("Could not change the role. Are you an Admin?"),
+            },
         );
     }
 
@@ -61,7 +59,6 @@ export function UsersAdminPage() {
 
     return (
         <PageContainer>
-
             <PageHeader
                 title="Users"
                 description="Administer platform roles: promote recruiters or grant admin access. Role changes apply immediately."
@@ -70,10 +67,7 @@ export function UsersAdminPage() {
             {isLoading ? (
                 <LoadingSpinner />
             ) : !data || data.length === 0 ? (
-                <EmptyState
-                    title="No users yet"
-                    description="Registered users will appear here."
-                />
+                <EmptyState title="No users yet" description="Registered users will appear here." />
             ) : (
                 <div className="rounded-lg border">
                     <Table>
@@ -102,10 +96,7 @@ export function UsersAdminPage() {
                                     </TableCell>
 
                                     <TableCell>
-                                        <RoleSelect
-                                            user={user}
-                                            currentUserId={currentUserId}
-                                        />
+                                        <RoleSelect user={user} currentUserId={currentUserId} />
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -113,7 +104,6 @@ export function UsersAdminPage() {
                     </Table>
                 </div>
             )}
-
         </PageContainer>
     );
 }

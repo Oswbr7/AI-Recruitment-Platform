@@ -1,17 +1,9 @@
 import { z } from "zod";
 
-
 export const registerSchema = z.object({
+    firstName: z.string().trim().min(1, "First name is required."),
 
-    firstName: z
-        .string()
-        .trim()
-        .min(1, "First name is required."),
-
-    lastName: z
-        .string()
-        .trim()
-        .min(1, "Last name is required."),
+    lastName: z.string().trim().min(1, "Last name is required."),
 
     email: z
         .string()
@@ -21,11 +13,7 @@ export const registerSchema = z.object({
 
     // Paridad con RegisterUserCommandValidator del backend (min 8, igual
     // que el login).
-    password: z
-        .string()
-        .min(8, "Password must contain at least 8 characters.")
-
+    password: z.string().min(8, "Password must contain at least 8 characters."),
 });
 
-export type RegisterFormValues =
-    z.infer<typeof registerSchema>;
+export type RegisterFormValues = z.infer<typeof registerSchema>;

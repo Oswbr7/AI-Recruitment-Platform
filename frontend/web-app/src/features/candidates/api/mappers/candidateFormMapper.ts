@@ -4,9 +4,7 @@ import type { UpdateCandidateRequest } from "../../types/UpdateCandidateRequest"
 import type { Candidate } from "../../models/Candidate";
 
 export function toCreateCandidateRequest(values: CandidateFormValues): CreateCandidateRequest {
-
     return {
-
         firstName: values.firstName,
 
         lastName: values.lastName,
@@ -36,21 +34,15 @@ export function toCreateCandidateRequest(values: CandidateFormValues): CreateCan
         expectedSalary: values.expectedSalary,
 
         currency: values.currency || undefined,
-
     };
-
 }
 
 export function toUpdateCandidateRequest(values: CandidateFormValues): UpdateCandidateRequest {
-
     return toCreateCandidateRequest(values);
-
 }
 
 export function toCandidateFormValues(candidate: Candidate): CandidateFormValues {
-
     return {
-
         firstName: candidate.firstName,
 
         lastName: candidate.lastName,
@@ -80,7 +72,5 @@ export function toCandidateFormValues(candidate: Candidate): CandidateFormValues
         expectedSalary: candidate.expectedSalary,
 
         currency: candidate.currency ?? "",
-
     };
-
 }

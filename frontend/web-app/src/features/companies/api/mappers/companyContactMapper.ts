@@ -2,9 +2,7 @@ import type { CompanyContact } from "../../models/CompanyContact";
 import type { CompanyContactResponse } from "../dto/CompanyContactResponse";
 
 export function toCompanyContact(response: CompanyContactResponse): CompanyContact {
-
     return {
-
         id: response.id,
 
         companyId: response.companyId,
@@ -24,7 +22,5 @@ export function toCompanyContact(response: CompanyContactResponse): CompanyConta
         createdAt: new Date(response.createdAt),
 
         updatedAt: new Date(response.updatedAt),
-
     };
-
 }

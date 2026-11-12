@@ -12,23 +12,16 @@ import { useDeleteJob } from "../../hooks/useDeleteJob";
 import { jobColumns } from "./JobColumns";
 import { DeleteJobDialog } from "../DeleteJobDialog";
 
-const statusOptions = Object.values(JobStatus).map(value => ({
+const statusOptions = Object.values(JobStatus).map((value) => ({
     label: value,
     value,
 }));
 
 interface Props {
-
     jobs: Job[];
-
 }
 
-export function JobTable({
-
-    jobs
-
-}: Props) {
-
+export function JobTable({ jobs }: Props) {
     const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
 
     const [pendingIds, setPendingIds] = useState<string[]>([]);
@@ -40,54 +33,36 @@ export function JobTable({
     const deleteJob = useDeleteJob();
 
     if (!jobs.length)
-
         return (
-
             <EmptyState
-
                 title="No jobs"
 
                 description="Create your first job posting."
-
             />
-
         );
 
-    const handleBulkArchive = async (
-        selected: Job[],
-        clearSelection: () => void
-    ) => {
-
-        await Promise.allSettled(
-            selected.map(job => archiveJob.mutateAsync(job.id))
-        );
+    const handleBulkArchive = async (selected: Job[], clearSelection: () => void) => {
+        await Promise.allSettled(selected.map((job) => archiveJob.mutateAsync(job.id)));
 
         clearSelection();
-
     };
 
     const handleBulkDeleteConfirm = async () => {
-
-        await Promise.allSettled(
-            pendingIds.map(id => deleteJob.mutateAsync(id))
-        );
+        await Promise.allSettled(pendingIds.map((id) => deleteJob.mutateAsync(id)));
 
         setBulkDeleteOpen(false);
 
         clearSelectionFn?.();
-
     };
 
     return (
-
         <>
-
             <DataTable
                 columns={jobColumns}
                 data={jobs}
                 searchPlaceholder="Search jobs..."
                 exportFilename="jobs.csv"
-                renderFilters={table => (
+                renderFilters={(table) => (
                     <DataTableFacetedFilter
                         column={table.getColumn("status")}
                         title="Status"
@@ -95,9 +70,7 @@ export function JobTable({
                     />
                 )}
                 renderBulkActions={(selectedRows, clearSelection) => (
-
                     <div className="flex items-center gap-2">
-
                         <span className="text-sm text-muted-foreground">
                             {selectedRows.length} selected
                         </span>
@@ -115,7 +88,7 @@ export function JobTable({
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                                setPendingIds(selectedRows.map(job => job.id));
+                                setPendingIds(selectedRows.map((job) => job.id));
                                 setClearSelectionFn(() => clearSelection);
                                 setBulkDeleteOpen(true);
                             }}
@@ -123,9 +96,7 @@ export function JobTable({
                             <Trash2 className="mr-1.5 h-4 w-4" />
                             Delete
                         </Button>
-
                     </div>
-
                 )}
             />
 
@@ -136,9 +107,6 @@ export function JobTable({
                 isLoading={deleteJob.isPending}
                 onConfirm={handleBulkDeleteConfirm}
             />
-
         </>
-
     );
-
 }

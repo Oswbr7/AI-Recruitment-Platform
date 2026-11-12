@@ -1,5 +1,4 @@
 export interface GetInterviewsParams {
-
     page?: number;
 
     pageSize?: number;
@@ -23,5 +22,4 @@ export interface GetInterviewsParams {
     sortBy?: string;
 
     sortDirection?: string;
-
 }

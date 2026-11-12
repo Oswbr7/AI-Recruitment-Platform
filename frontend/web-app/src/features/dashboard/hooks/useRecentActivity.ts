@@ -19,15 +19,12 @@ import { useDashboardSourceData } from "./internal/useDashboardSourceData";
 import type { ActivityEvent } from "../models/DashboardModels";
 
 export function useRecentActivity(limit = 15) {
-
     const { jobs, candidates, companies, interviews, isLoading } = useDashboardSourceData();
 
     const events = useMemo(() => {
-
         const items: ActivityEvent[] = [];
 
         for (const job of jobs) {
-
             items.push({
                 id: `job-created-${job.id}`,
                 type: "JobCreated",
@@ -38,7 +35,6 @@ export function useRecentActivity(limit = 15) {
             });
 
             if (job.publishedAt) {
-
                 items.push({
                     id: `job-published-${job.id}`,
                     type: "JobPublished",
@@ -47,11 +43,9 @@ export function useRecentActivity(limit = 15) {
                     icon: Rocket,
                     color: "text-green-500",
                 });
-
             }
 
             if (job.status === JobStatus.Archived) {
-
                 items.push({
                     id: `job-archived-${job.id}`,
                     type: "JobArchived",
@@ -60,13 +54,10 @@ export function useRecentActivity(limit = 15) {
                     icon: Archive,
                     color: "text-gray-500",
                 });
-
             }
-
         }
 
         for (const candidate of candidates) {
-
             const name = `${candidate.firstName} ${candidate.lastName}`;
 
             items.push({
@@ -82,7 +73,6 @@ export function useRecentActivity(limit = 15) {
                 candidate.stage !== CandidateStage.Applied &&
                 candidate.updatedAt.getTime() !== candidate.createdAt.getTime()
             ) {
-
                 items.push({
                     id: `candidate-stage-${candidate.id}`,
                     type: "CandidateStageChanged",
@@ -91,13 +81,10 @@ export function useRecentActivity(limit = 15) {
                     icon: ArrowRightCircle,
                     color: "text-purple-500",
                 });
-
             }
-
         }
 
         for (const company of companies) {
-
             items.push({
                 id: `company-created-${company.id}`,
                 type: "CompanyCreated",
@@ -106,11 +93,9 @@ export function useRecentActivity(limit = 15) {
                 icon: Building2,
                 color: "text-blue-500",
             });
-
         }
 
         for (const interview of interviews) {
-
             items.push({
                 id: `interview-scheduled-${interview.id}`,
                 type: "InterviewScheduled",
@@ -121,7 +106,6 @@ export function useRecentActivity(limit = 15) {
             });
 
             if (interview.status === InterviewStatus.Completed) {
-
                 items.push({
                     id: `interview-completed-${interview.id}`,
                     type: "InterviewCompleted",
@@ -130,11 +114,9 @@ export function useRecentActivity(limit = 15) {
                     icon: CheckCircle2,
                     color: "text-green-500",
                 });
-
             }
 
             if (interview.status === InterviewStatus.Cancelled) {
-
                 items.push({
                     id: `interview-cancelled-${interview.id}`,
                     type: "InterviewCancelled",
@@ -143,17 +125,11 @@ export function useRecentActivity(limit = 15) {
                     icon: XCircle,
                     color: "text-red-500",
                 });
-
             }
-
         }
 
-        return items
-            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-            .slice(0, limit);
-
+        return items.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, limit);
     }, [jobs, candidates, companies, interviews, limit]);
 
     return { events, isLoading };
-
 }

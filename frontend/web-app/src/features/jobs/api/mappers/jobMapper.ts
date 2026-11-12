@@ -2,9 +2,7 @@ import type { Job } from "../../models/Job";
 import type { JobResponse } from "../dto/JobResponse";
 
 export function toJob(response: JobResponse): Job {
-
     return {
-
         id: response.id,
 
         title: response.title,
@@ -38,7 +36,5 @@ export function toJob(response: JobResponse): Job {
         createdAt: new Date(response.createdAt),
 
         updatedAt: new Date(response.updatedAt),
-
     };
-
 }

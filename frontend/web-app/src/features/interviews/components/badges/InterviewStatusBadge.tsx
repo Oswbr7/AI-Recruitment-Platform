@@ -10,23 +10,9 @@ const variantByStatus: Record<Interview["status"], "success" | "warning" | "info
 };
 
 interface Props {
-
     status: Interview["status"];
-
 }
 
-export function InterviewStatusBadge({
-    status,
-}: Props) {
-
-    return (
-
-        <StatusBadge variant={variantByStatus[status]}>
-
-            {status}
-
-        </StatusBadge>
-
-    );
-
+export function InterviewStatusBadge({ status }: Props) {
+    return <StatusBadge variant={variantByStatus[status]}>{status}</StatusBadge>;
 }

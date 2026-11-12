@@ -10,25 +10,17 @@ type Props = {
 };
 
 export function DashboardChartCard({ title, children, height = 300 }: Props) {
-
     return (
-
         <Card>
-
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
             </CardHeader>
 
             <CardContent style={{ height }}>
-
                 <ResponsiveContainer width="100%" height="100%">
                     {children}
                 </ResponsiveContainer>
-
             </CardContent>
-
         </Card>
-
     );
-
 }

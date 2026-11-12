@@ -10,104 +10,63 @@ import type { UpdateJobRequest } from "../types/UpdateJobRequest";
 import type { GetJobsParams } from "../types/GetJobsParams";
 
 export const jobApi = {
-
     async create(request: CreateJobRequest): Promise<CreateJobResponse> {
-
-        const response = await jobsApi.post<ApiResponse<CreateJobResponse>>(
-            "/jobs",
-            request
-        );
+        const response = await jobsApi.post<ApiResponse<CreateJobResponse>>("/jobs", request);
 
         return response.data.data;
-
     },
 
     async getJobs(params?: GetJobsParams): Promise<Job[]> {
-
-        const response = await jobsApi.get<ApiResponse<JobResponse[]>>(
-            "/jobs",
-            { params }
-        );
+        const response = await jobsApi.get<ApiResponse<JobResponse[]>>("/jobs", { params });
 
         return response.data.data.map(toJob);
-
     },
 
     async getById(id: string): Promise<Job> {
-
-        const response = await jobsApi.get<ApiResponse<JobResponse>>(
-            `/jobs/${id}`
-        );
+        const response = await jobsApi.get<ApiResponse<JobResponse>>(`/jobs/${id}`);
 
         return toJob(response.data.data);
-
     },
 
     async update(id: string, request: UpdateJobRequest): Promise<Job> {
-
-        const response = await jobsApi.put<ApiResponse<JobResponse>>(
-            `/jobs/${id}`,
-            request
-        );
+        const response = await jobsApi.put<ApiResponse<JobResponse>>(`/jobs/${id}`, request);
 
         return toJob(response.data.data);
-
     },
 
     async remove(id: string): Promise<void> {
-
         await jobsApi.delete(`/jobs/${id}`);
-
     },
 
     async publish(id: string): Promise<Job> {
-
-        const response = await jobsApi.post<ApiResponse<JobResponse>>(
-            `/jobs/${id}/publish`
-        );
+        const response = await jobsApi.post<ApiResponse<JobResponse>>(`/jobs/${id}/publish`);
 
         return toJob(response.data.data);
-
     },
 
     async close(id: string): Promise<Job> {
-
-        const response = await jobsApi.post<ApiResponse<JobResponse>>(
-            `/jobs/${id}/close`
-        );
+        const response = await jobsApi.post<ApiResponse<JobResponse>>(`/jobs/${id}/close`);
 
         return toJob(response.data.data);
-
     },
 
     async archive(id: string): Promise<Job> {
-
-        const response = await jobsApi.post<ApiResponse<JobResponse>>(
-            `/jobs/${id}/archive`
-        );
+        const response = await jobsApi.post<ApiResponse<JobResponse>>(`/jobs/${id}/archive`);
 
         return toJob(response.data.data);
-
     },
 
     async reopen(id: string): Promise<Job> {
-
-        const response = await jobsApi.post<ApiResponse<JobResponse>>(
-            `/jobs/${id}/reopen`
-        );
+        const response = await jobsApi.post<ApiResponse<JobResponse>>(`/jobs/${id}/reopen`);
 
         return toJob(response.data.data);
-
     },
 
     async duplicate(id: string): Promise<CreateJobResponse> {
-
         const response = await jobsApi.post<ApiResponse<CreateJobResponse>>(
-            `/jobs/${id}/duplicate`
+            `/jobs/${id}/duplicate`,
         );
 
         return response.data.data;
-
     },
-
 };

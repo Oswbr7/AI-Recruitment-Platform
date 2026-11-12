@@ -8,17 +8,16 @@ export const CandidateStage = {
     Rejected: "Rejected",
 } as const;
 
-export type CandidateStage = typeof CandidateStage[keyof typeof CandidateStage];
+export type CandidateStage = (typeof CandidateStage)[keyof typeof CandidateStage];
 
 export const CandidateStatus = {
     Active: "Active",
     Archived: "Archived",
 } as const;
 
-export type CandidateStatus = typeof CandidateStatus[keyof typeof CandidateStatus];
+export type CandidateStatus = (typeof CandidateStatus)[keyof typeof CandidateStatus];
 
 export interface Candidate {
-
     id: string;
 
     firstName: string;

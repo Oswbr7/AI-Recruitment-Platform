@@ -5,7 +5,7 @@ export const InterviewStatus = {
     NoShow: "NoShow",
 } as const;
 
-export type InterviewStatus = typeof InterviewStatus[keyof typeof InterviewStatus];
+export type InterviewStatus = (typeof InterviewStatus)[keyof typeof InterviewStatus];
 
 export const InterviewType = {
     Phone: "Phone",
@@ -16,7 +16,7 @@ export const InterviewType = {
     Panel: "Panel",
 } as const;
 
-export type InterviewType = typeof InterviewType[keyof typeof InterviewType];
+export type InterviewType = (typeof InterviewType)[keyof typeof InterviewType];
 
 export const InterviewStage = {
     Screening: "Screening",
@@ -25,10 +25,9 @@ export const InterviewStage = {
     Final: "Final",
 } as const;
 
-export type InterviewStage = typeof InterviewStage[keyof typeof InterviewStage];
+export type InterviewStage = (typeof InterviewStage)[keyof typeof InterviewStage];
 
 export interface Interview {
-
     id: string;
 
     candidateId: string;

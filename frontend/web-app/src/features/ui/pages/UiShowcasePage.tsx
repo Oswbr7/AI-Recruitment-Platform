@@ -5,31 +5,21 @@ import { CardsSection } from "../sections/CardsSection";
 import { BadgesSection } from "../sections/BadgesSection";
 
 export function UiShowcasePage() {
-
     return (
-
         <PageContainer>
-
             <PageHeader
-
                 title="UI Showcase"
 
                 description="Internal component library"
-
             />
 
             <div className="space-y-12">
+                <ButtonsSection />
 
-                <ButtonsSection/>
+                <CardsSection />
 
-                <CardsSection/>
-
-                <BadgesSection/>
-
+                <BadgesSection />
             </div>
-
         </PageContainer>
-
     );
-
 }

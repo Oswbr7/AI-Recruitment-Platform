@@ -14,15 +14,11 @@ import { TextField } from "@/shared/components/form/TextField";
 import { PasswordField } from "@/shared/components/form/PasswordField";
 import { SubmitButton } from "@/shared/components/form/SubmitButton";
 
-import {
-    loginSchema,
-    type LoginFormValues,
-} from "../schemas/LoginSchema";
+import { loginSchema, type LoginFormValues } from "../schemas/LoginSchema";
 
 import { useLogin } from "../hooks/useLogin";
 
 export function LoginForm() {
-
     const navigate = useNavigate();
 
     const loginMutation = useLogin();
@@ -36,42 +32,22 @@ export function LoginForm() {
     });
 
     function onSubmit(values: LoginFormValues) {
-
         loginMutation.mutate(values, {
-
             onSuccess() {
-
                 toast.success("Welcome back!");
 
                 navigate("/");
-
             },
 
             onError(error: any) {
-
-                toast.error(
-
-                    error?.response?.data?.message ??
-
-                    "Invalid email or password."
-
-                );
-
+                toast.error(error?.response?.data?.message ?? "Invalid email or password.");
             },
-
         });
-
     }
 
     return (
-
         <Form {...form}>
-
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-            >
-
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <TextField
                     control={form.control}
                     name="email"
@@ -88,39 +64,20 @@ export function LoginForm() {
                 />
 
                 <div className="flex items-center justify-between text-sm">
-
-                    <Link
-                        to="/forgot-password"
-                        className="text-primary hover:underline"
-                    >
+                    <Link to="/forgot-password" className="text-primary hover:underline">
                         Forgot password?
                     </Link>
-
                 </div>
 
-                <SubmitButton
-                    loading={loginMutation.isPending}
-                >
-                    Sign In
-                </SubmitButton>
+                <SubmitButton loading={loginMutation.isPending}>Sign In</SubmitButton>
 
                 <p className="text-center text-sm text-muted-foreground">
-
                     Don't have an account?{" "}
-
-                    <Link
-                        to="/register"
-                        className="font-medium text-primary hover:underline"
-                    >
+                    <Link to="/register" className="font-medium text-primary hover:underline">
                         Register
                     </Link>
-
                 </p>
-
             </form>
-
         </Form>
-
     );
-
 }

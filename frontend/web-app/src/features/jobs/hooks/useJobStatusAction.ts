@@ -9,29 +9,21 @@ export function useJobStatusAction(
     successMessage: string,
     errorMessage: string,
 ) {
-
     const queryClient = useQueryClient();
 
     return useMutation({
-
         mutationFn: (id: string) => action(id),
 
         onSuccess: () => {
-
             toast.success(successMessage);
 
             queryClient.invalidateQueries({
                 queryKey: queryKeys.jobs.all,
             });
-
         },
 
         onError: () => {
-
             toast.error(errorMessage);
-
-        }
-
+        },
     });
-
 }

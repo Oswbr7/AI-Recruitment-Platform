@@ -2,9 +2,7 @@ import type { Recruiter } from "../../models/Recruiter";
 import type { RecruiterResponse } from "../dto/RecruiterResponse";
 
 export function toRecruiter(response: RecruiterResponse): Recruiter {
-
     return {
-
         id: response.id,
 
         firstName: response.firstName,
@@ -14,7 +12,5 @@ export function toRecruiter(response: RecruiterResponse): Recruiter {
         email: response.email,
 
         role: response.role,
-
     };
-
 }

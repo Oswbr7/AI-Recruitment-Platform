@@ -18,7 +18,8 @@ import { useJobMatches } from "../hooks/useJobMatches";
 import type { CandidateMatch } from "../scoring";
 
 function scoreBadgeClass(score: number): string {
-    if (score >= 75) return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200";
+    if (score >= 75)
+        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200";
     if (score >= 50) return "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200";
     return "bg-muted text-muted-foreground";
 }
@@ -34,9 +35,7 @@ function MatchRow({ rank, match }: { rank: number; match: CandidateMatch }) {
                 <div className="font-medium">
                     {candidate.firstName} {candidate.lastName}
                 </div>
-                <div className="text-sm text-muted-foreground">
-                    {candidate.email}
-                </div>
+                <div className="text-sm text-muted-foreground">{candidate.email}</div>
             </TableCell>
 
             <TableCell className="max-w-56 truncate text-muted-foreground">
@@ -44,7 +43,9 @@ function MatchRow({ rank, match }: { rank: number; match: CandidateMatch }) {
             </TableCell>
 
             <TableCell>
-                <span className={`rounded-full px-3 py-1 text-sm font-semibold ${scoreBadgeClass(score)}`}>
+                <span
+                    className={`rounded-full px-3 py-1 text-sm font-semibold ${scoreBadgeClass(score)}`}
+                >
                     {score}
                 </span>
             </TableCell>
@@ -58,9 +59,7 @@ function MatchRow({ rank, match }: { rank: number; match: CandidateMatch }) {
             </TableCell>
 
             <TableCell className="text-sm">
-                {candidate.yearsOfExperience != null
-                    ? `${candidate.yearsOfExperience} yrs`
-                    : "—"}
+                {candidate.yearsOfExperience != null ? `${candidate.yearsOfExperience} yrs` : "—"}
             </TableCell>
 
             <TableCell className="text-sm">
@@ -74,14 +73,12 @@ function MatchRow({ rank, match }: { rank: number; match: CandidateMatch }) {
 
 export function MatchingPage() {
     const [selectedJobId, setSelectedJobId] = useState<string | undefined>();
-    const { jobsQuery, jobQuery, candidatesQuery, jobId, matches } =
-        useJobMatches(selectedJobId);
+    const { jobsQuery, jobQuery, candidatesQuery, jobId, matches } = useJobMatches(selectedJobId);
 
     const isLoading = jobsQuery.isLoading || jobQuery.isLoading || candidatesQuery.isLoading;
 
     return (
         <PageContainer>
-
             <PageHeader
                 title="AI Matching"
                 description="Deterministic candidate-vs-job scoring: location, experience, salary, pipeline stage and keyword overlap."
@@ -136,17 +133,12 @@ export function MatchingPage() {
 
                         <TableBody>
                             {matches.map((match, index) => (
-                                <MatchRow
-                                    key={match.candidate.id}
-                                    rank={index + 1}
-                                    match={match}
-                                />
+                                <MatchRow key={match.candidate.id} rank={index + 1} match={match} />
                             ))}
                         </TableBody>
                     </Table>
                 </div>
             )}
-
         </PageContainer>
     );
 }

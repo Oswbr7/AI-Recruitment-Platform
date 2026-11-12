@@ -29,13 +29,9 @@ export function JobsOverviewSection({
     topLocations,
     mostActiveCompanies,
 }: Props) {
-
     return (
-
         <div className="space-y-6">
-
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-
                 <StatsCard title="Published" value={published} icon={Rocket} />
 
                 <StatsCard title="Draft" value={draft} icon={FileText} />
@@ -43,23 +39,17 @@ export function JobsOverviewSection({
                 <StatsCard title="Closed" value={closed} icon={Ban} />
 
                 <StatsCard title="Archived" value={archived} icon={Archive} />
-
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
-
                 <DashboardBarChart title="Jobs By Status" data={statusData} categoryKey="status" />
 
                 <RankedList title="Top Departments" items={topDepartments} />
 
                 <RankedList title="Top Locations" items={topLocations} />
-
             </div>
 
             <TopCompaniesList companies={mostActiveCompanies} />
-
         </div>
-
     );
-
 }

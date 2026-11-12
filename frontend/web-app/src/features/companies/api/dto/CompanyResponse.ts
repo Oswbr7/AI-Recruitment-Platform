@@ -1,5 +1,4 @@
 export interface CompanyResponse {
-
     id: string;
 
     name: string;
@@ -39,5 +38,4 @@ export interface CompanyResponse {
     createdAt: string;
 
     updatedAt: string;
-
 }

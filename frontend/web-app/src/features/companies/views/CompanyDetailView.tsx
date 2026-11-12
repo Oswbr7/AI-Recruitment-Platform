@@ -20,13 +20,10 @@ import { CompanyTimeline } from "../components/timeline/CompanyTimeline";
 import { CompanyContactsSection } from "../components/contacts/CompanyContactsSection";
 
 interface Props {
-
     id: string;
-
 }
 
 export function CompanyDetailView({ id }: Props) {
-
     const navigate = useNavigate();
 
     const [editOpen, setEditOpen] = useState(false);
@@ -38,69 +35,49 @@ export function CompanyDetailView({ id }: Props) {
     const { data: jobs } = useJobs({ companyId: id });
 
     if (isLoading) {
-
         return (
-
             <div className="space-y-6">
                 <Skeleton className="h-8 w-40" />
                 <Skeleton className="h-64 w-full" />
             </div>
-
         );
-
     }
 
     if (isError || !company) {
-
         return (
-
             <div className="space-y-4">
-
                 <Button variant="ghost" onClick={() => navigate("/companies")}>
                     <ArrowLeft className="mr-1.5 h-4 w-4" />
                     Back to Companies
                 </Button>
 
                 <p className="text-sm text-muted-foreground">Company not found.</p>
-
             </div>
-
         );
-
     }
 
     return (
-
         <div className="space-y-6">
-
             <div className="flex items-center justify-between">
-
                 <Button variant="ghost" onClick={() => navigate("/companies")}>
                     <ArrowLeft className="mr-1.5 h-4 w-4" />
                     Back to Companies
                 </Button>
 
                 <div className="flex items-center gap-2">
-
                     <Button onClick={() => setEditOpen(true)}>
                         <Pencil className="mr-1.5 h-4 w-4" />
                         Edit
                     </Button>
 
                     <CompanyActionsMenu company={company} />
-
                 </div>
-
             </div>
 
             <Card>
-
                 <CardHeader>
-
                     <div className="flex items-center justify-between">
-
                         <div className="flex items-center gap-3">
-
                             <Avatar size="lg">
                                 <AvatarImage src={company.logoUrl} alt={company.name} />
                                 <AvatarFallback>
@@ -109,19 +86,14 @@ export function CompanyDetailView({ id }: Props) {
                             </Avatar>
 
                             <CardTitle className="text-2xl">{company.name}</CardTitle>
-
                         </div>
 
                         <CompanyStatusBadge status={company.status} />
-
                     </div>
-
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-
                     <div className="grid gap-4 sm:grid-cols-2">
-
                         <DetailField label="Legal Name" value={company.legalName} />
 
                         <DetailField label="Tax ID" value={company.taxId} />
@@ -150,27 +122,19 @@ export function CompanyDetailView({ id }: Props) {
                         <DetailField label="Address" value={company.address} />
 
                         <DetailField label="Postal Code" value={company.postalCode} />
-
                     </div>
 
                     <div>
-
-                        <p className="text-sm font-medium text-muted-foreground">
-                            Description
-                        </p>
+                        <p className="text-sm font-medium text-muted-foreground">Description</p>
 
                         <p className="mt-1 whitespace-pre-wrap text-sm">
                             {company.description || "—"}
                         </p>
-
                     </div>
-
                 </CardContent>
-
             </Card>
 
             <Card>
-
                 <CardHeader>
                     <CardTitle>Open Jobs</CardTitle>
                 </CardHeader>
@@ -178,49 +142,25 @@ export function CompanyDetailView({ id }: Props) {
                 <CardContent>
                     <JobTable jobs={jobs ?? []} />
                 </CardContent>
-
             </Card>
 
             <PlaceholderSection title="Recruiters" />
 
             <CompanyContactsSection companyId={company.id} />
 
-            <CompanyTimeline
-                company={company}
-                contacts={contacts ?? []}
-                jobs={jobs ?? []}
-            />
+            <CompanyTimeline company={company} contacts={contacts ?? []} jobs={jobs ?? []} />
 
-            <CompanySheet
-                company={company}
-                open={editOpen}
-                onOpenChange={setEditOpen}
-            />
-
+            <CompanySheet company={company} open={editOpen} onOpenChange={setEditOpen} />
         </div>
-
     );
-
 }
 
-function DetailField({
-    label,
-    value,
-}: {
-    label: string;
-    value?: string;
-}) {
-
+function DetailField({ label, value }: { label: string; value?: string }) {
     return (
-
         <div>
-
             <p className="text-sm font-medium text-muted-foreground">{label}</p>
 
             <p className="mt-1 text-sm">{value || "—"}</p>
-
         </div>
-
     );
-
 }

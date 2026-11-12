@@ -2,9 +2,7 @@ import type { Company } from "../../models/Company";
 import type { CompanyResponse } from "../dto/CompanyResponse";
 
 export function toCompany(response: CompanyResponse): Company {
-
     return {
-
         id: response.id,
 
         name: response.name,
@@ -25,7 +23,7 @@ export function toCompany(response: CompanyResponse): Company {
 
         logoUrl: response.logoUrl ?? undefined,
 
-        companySize: response.companySize as Company["companySize"] ?? undefined,
+        companySize: (response.companySize as Company["companySize"]) ?? undefined,
 
         foundedYear: response.foundedYear ?? undefined,
 
@@ -44,7 +42,5 @@ export function toCompany(response: CompanyResponse): Company {
         createdAt: new Date(response.createdAt),
 
         updatedAt: new Date(response.updatedAt),
-
     };
-
 }

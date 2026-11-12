@@ -4,9 +4,7 @@ import type { UpdateJobRequest } from "../../types/UpdateJobRequest";
 import type { Job } from "../../models/Job";
 
 export function toCreateJobRequest(values: JobFormValues): CreateJobRequest {
-
     return {
-
         title: values.title,
 
         description: values.description,
@@ -28,21 +26,15 @@ export function toCreateJobRequest(values: JobFormValues): CreateJobRequest {
         currency: values.currency,
 
         companyId: values.companyId || undefined,
-
     };
-
 }
 
 export function toUpdateJobRequest(values: JobFormValues): UpdateJobRequest {
-
     return toCreateJobRequest(values);
-
 }
 
 export function toJobFormValues(job: Job): JobFormValues {
-
     return {
-
         title: job.title,
 
         description: job.description,
@@ -64,7 +56,5 @@ export function toJobFormValues(job: Job): JobFormValues {
         currency: job.currency,
 
         companyId: job.companyId ?? "",
-
     };
-
 }

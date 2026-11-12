@@ -6,15 +6,11 @@ import { LoginForm } from "../components/LoginForm";
 export function LoginPage() {
     return (
         <AuthLayout>
-
             <AuthCard>
-
                 <AuthHeader />
 
                 <LoginForm />
-
             </AuthCard>
-
         </AuthLayout>
     );
 }

@@ -1,5 +1,4 @@
 export interface CreateCandidateRequest {
-
     firstName: string;
 
     lastName: string;
@@ -29,5 +28,4 @@ export interface CreateCandidateRequest {
     expectedSalary?: number;
 
     currency?: string;
-
 }

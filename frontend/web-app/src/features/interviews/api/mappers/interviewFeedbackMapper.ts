@@ -2,9 +2,7 @@ import type { InterviewFeedback } from "../../models/InterviewFeedback";
 import type { InterviewFeedbackResponse } from "../dto/InterviewFeedbackResponse";
 
 export function toInterviewFeedback(response: InterviewFeedbackResponse): InterviewFeedback {
-
     return {
-
         id: response.id,
 
         interviewId: response.interviewId,
@@ -24,7 +22,5 @@ export function toInterviewFeedback(response: InterviewFeedbackResponse): Interv
         recommendation: response.recommendation as InterviewFeedback["recommendation"],
 
         createdAt: new Date(response.createdAt),
-
     };
-
 }

@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface Props {
-
     open: boolean;
 
     onOpenChange: (open: boolean) => void;
@@ -28,7 +27,6 @@ interface Props {
     isLoading?: boolean;
 
     variant?: "default" | "destructive";
-
 }
 
 export function ConfirmDialog({
@@ -42,41 +40,23 @@ export function ConfirmDialog({
     isLoading = false,
     variant = "default",
 }: Props) {
-
     return (
-
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-
             <AlertDialogContent>
-
                 <AlertDialogHeader>
-
                     <AlertDialogTitle>{title}</AlertDialogTitle>
 
                     <AlertDialogDescription>{description}</AlertDialogDescription>
-
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
+                    <AlertDialogCancel disabled={isLoading}>{cancelLabel}</AlertDialogCancel>
 
-                    <AlertDialogCancel disabled={isLoading}>
-                        {cancelLabel}
-                    </AlertDialogCancel>
-
-                    <AlertDialogAction
-                        variant={variant}
-                        disabled={isLoading}
-                        onClick={onConfirm}
-                    >
+                    <AlertDialogAction variant={variant} disabled={isLoading} onClick={onConfirm}>
                         {confirmLabel}
                     </AlertDialogAction>
-
                 </AlertDialogFooter>
-
             </AlertDialogContent>
-
         </AlertDialog>
-
     );
-
 }

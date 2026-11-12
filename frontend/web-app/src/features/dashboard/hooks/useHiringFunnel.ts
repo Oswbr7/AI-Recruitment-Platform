@@ -15,31 +15,23 @@ const FUNNEL_STAGES: { stage: CandidateStage; label: string }[] = [
 ];
 
 export function useHiringFunnel() {
-
     const { candidates, isLoading } = useDashboardSourceData();
 
     const stages = useMemo(() => {
-
         const total = candidates.length;
 
         return FUNNEL_STAGES.map(({ stage, label }) => {
-
-            const count = candidates.filter(candidate => candidate.stage === stage).length;
+            const count = candidates.filter((candidate) => candidate.stage === stage).length;
 
             return {
-
                 stage: label,
 
                 count,
 
                 percentage: total ? Math.round((count / total) * 1000) / 10 : 0,
-
             };
-
         });
-
     }, [candidates]);
 
     return { stages, isLoading };
-
 }

@@ -1,12 +1,6 @@
 import type { Control } from "react-hook-form";
 
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
 
@@ -19,38 +13,26 @@ interface Props {
 }
 
 export function LinksAndCompensationSection({ control }: Props) {
-
     return (
-
         <FormSection
             title="Links & Compensation"
             description="Online profiles and salary expectations."
         >
-
             <div className="grid gap-5">
-
                 <div className="grid md:grid-cols-3 gap-5">
-
                     <FormField
                         control={control}
                         name="linkedInUrl"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>LinkedIn</FormLabel>
 
                                 <FormControl>
-                                    <Input
-                                        placeholder="https://linkedin.com/in/..."
-                                        {...field}
-                                    />
+                                    <Input placeholder="https://linkedin.com/in/..." {...field} />
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
 
@@ -58,22 +40,15 @@ export function LinksAndCompensationSection({ control }: Props) {
                         control={control}
                         name="githubUrl"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>GitHub</FormLabel>
 
                                 <FormControl>
-                                    <Input
-                                        placeholder="https://github.com/..."
-                                        {...field}
-                                    />
+                                    <Input placeholder="https://github.com/..." {...field} />
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
 
@@ -81,36 +56,25 @@ export function LinksAndCompensationSection({ control }: Props) {
                         control={control}
                         name="portfolioUrl"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>Portfolio</FormLabel>
 
                                 <FormControl>
-                                    <Input
-                                        placeholder="https://..."
-                                        {...field}
-                                    />
+                                    <Input placeholder="https://..." {...field} />
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
-
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-5">
-
                     <FormField
                         control={control}
                         name="expectedSalary"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>Expected Salary</FormLabel>
 
                                 <FormControl>
@@ -124,9 +88,7 @@ export function LinksAndCompensationSection({ control }: Props) {
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
 
@@ -134,32 +96,19 @@ export function LinksAndCompensationSection({ control }: Props) {
                         control={control}
                         name="currency"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>Currency</FormLabel>
 
                                 <FormControl>
-                                    <Input
-                                        placeholder="USD"
-                                        maxLength={3}
-                                        {...field}
-                                    />
+                                    <Input placeholder="USD" maxLength={3} {...field} />
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
-
                 </div>
-
             </div>
-
         </FormSection>
-
     );
-
 }

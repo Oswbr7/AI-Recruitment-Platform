@@ -9,19 +9,16 @@ import { CandidateStatusBadge } from "../badges/CandidateStatusBadge";
 import { CandidateActionsMenu } from "../actions/CandidateActionsMenu";
 
 export const candidateColumns: ColumnDef<Candidate>[] = [
-
     {
-
         id: "select",
 
         header: ({ table }) => (
             <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 indeterminate={
-                    table.getIsSomePageRowsSelected() &&
-                    !table.getIsAllPageRowsSelected()
+                    table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
                 }
-                onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
@@ -29,7 +26,7 @@ export const candidateColumns: ColumnDef<Candidate>[] = [
         cell: ({ row }) => (
             <Checkbox
                 checked={row.getIsSelected()}
-                onCheckedChange={value => row.toggleSelected(!!value)}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
                 aria-label="Select row"
             />
         ),
@@ -37,70 +34,46 @@ export const candidateColumns: ColumnDef<Candidate>[] = [
         enableSorting: false,
 
         enableHiding: false,
-
     },
 
     {
-
         accessorKey: "firstName",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="First Name" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="First Name" />,
     },
 
     {
-
         accessorKey: "lastName",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Last Name" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Last Name" />,
     },
 
     {
-
         accessorKey: "email",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Email" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
     },
 
     {
-
         accessorKey: "currentPosition",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Position" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Position" />,
 
         enableSorting: false,
-
     },
 
     {
-
         accessorKey: "currentCompany",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Current Company" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Current Company" />,
 
         enableSorting: false,
-
     },
 
     {
-
         accessorKey: "yearsOfExperience",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Experience" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Experience" />,
 
         cell: ({ row }) => (
             <span className="text-sm">
@@ -111,65 +84,43 @@ export const candidateColumns: ColumnDef<Candidate>[] = [
         ),
 
         enableSorting: false,
-
     },
 
     {
-
         accessorKey: "stage",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Stage" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Stage" />,
 
-        cell: ({ row }) => (
-            <CandidateStageBadge stage={row.original.stage} />
-        ),
-
+        cell: ({ row }) => <CandidateStageBadge stage={row.original.stage} />,
     },
 
     {
-
         accessorKey: "status",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Status" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
 
-        cell: ({ row }) => (
-            <CandidateStatusBadge status={row.original.status} />
-        ),
-
+        cell: ({ row }) => <CandidateStatusBadge status={row.original.status} />,
     },
 
     {
-
         accessorKey: "updatedAt",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Updated" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Updated" />,
 
         cell: ({ row }) => (
             <span className="text-sm text-muted-foreground">
                 {row.original.updatedAt.toLocaleDateString()}
             </span>
         ),
-
     },
 
     {
-
         id: "actions",
 
-        cell: ({ row }) => (
-            <CandidateActionsMenu candidate={row.original} />
-        ),
+        cell: ({ row }) => <CandidateActionsMenu candidate={row.original} />,
 
         enableSorting: false,
 
         enableHiding: false,
-
     },
-
 ];

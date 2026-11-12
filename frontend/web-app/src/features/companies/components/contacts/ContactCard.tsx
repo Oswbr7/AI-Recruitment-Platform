@@ -12,18 +12,12 @@ import { useDeleteCompanyContact } from "../../hooks/useDeleteCompanyContact";
 import { DeleteContactDialog } from "./DeleteContactDialog";
 
 interface Props {
-
     companyId: string;
 
     contact: CompanyContact;
-
 }
 
-export function ContactCard({
-    companyId,
-    contact,
-}: Props) {
-
+export function ContactCard({ companyId, contact }: Props) {
     const [editing, setEditing] = useState(false);
 
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -40,7 +34,6 @@ export function ContactCard({
     const deleteContact = useDeleteCompanyContact(companyId);
 
     const handleCancel = () => {
-
         setFirstName(contact.firstName);
         setLastName(contact.lastName);
         setEmail(contact.email);
@@ -49,11 +42,9 @@ export function ContactCard({
         setIsPrimaryContact(contact.isPrimaryContact);
 
         setEditing(false);
-
     };
 
     const handleSave = () => {
-
         updateContact.mutate(
             {
                 contactId: contact.id,
@@ -66,38 +57,53 @@ export function ContactCard({
                     isPrimaryContact,
                 },
             },
-            { onSuccess: () => setEditing(false) }
+            { onSuccess: () => setEditing(false) },
         );
-
     };
 
     return (
-
         <Card size="sm">
-
             <CardContent className="space-y-2">
-
                 {editing ? (
-
                     <>
-
                         <div className="grid gap-3 sm:grid-cols-2">
-
-                            <Input placeholder="First name" value={firstName} onChange={e => setFirstName(e.target.value)} />
-                            <Input placeholder="Last name" value={lastName} onChange={e => setLastName(e.target.value)} />
-                            <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
-                            <Input placeholder="Phone" value={phone} onChange={e => setPhone(e.target.value)} />
-                            <Input placeholder="Position" value={position} onChange={e => setPosition(e.target.value)} />
+                            <Input
+                                placeholder="First name"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                            />
+                            <Input
+                                placeholder="Last name"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                            />
+                            <Input
+                                placeholder="Email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <Input
+                                placeholder="Phone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                            />
+                            <Input
+                                placeholder="Position"
+                                value={position}
+                                onChange={(e) => setPosition(e.target.value)}
+                            />
 
                             <label className="flex items-center gap-2 text-sm">
-                                <Checkbox checked={isPrimaryContact} onCheckedChange={value => setIsPrimaryContact(!!value)} />
+                                <Checkbox
+                                    checked={isPrimaryContact}
+                                    onCheckedChange={(value) => setIsPrimaryContact(!!value)}
+                                />
                                 Primary contact
                             </label>
-
                         </div>
 
                         <div className="flex justify-end gap-2">
-
                             <Button variant="outline" size="sm" onClick={handleCancel}>
                                 <X className="mr-1 h-3.5 w-3.5" />
                                 Cancel
@@ -105,23 +111,22 @@ export function ContactCard({
 
                             <Button
                                 size="sm"
-                                disabled={!firstName.trim() || !lastName.trim() || !email.trim() || updateContact.isPending}
+                                disabled={
+                                    !firstName.trim() ||
+                                    !lastName.trim() ||
+                                    !email.trim() ||
+                                    updateContact.isPending
+                                }
                                 onClick={handleSave}
                             >
                                 <Check className="mr-1 h-3.5 w-3.5" />
                                 Save
                             </Button>
-
                         </div>
-
                     </>
-
                 ) : (
-
                     <div className="flex items-center justify-between">
-
                         <div>
-
                             <p className="flex items-center gap-1.5 text-sm font-medium">
                                 {contact.firstName} {contact.lastName}
                                 {contact.isPrimaryContact && (
@@ -133,25 +138,23 @@ export function ContactCard({
                                 {contact.position || "—"} · {contact.email}
                                 {contact.phone ? ` · ${contact.phone}` : ""}
                             </p>
-
                         </div>
 
                         <div className="flex gap-1">
-
                             <Button variant="ghost" size="icon-sm" onClick={() => setEditing(true)}>
                                 <Pencil className="h-3.5 w-3.5" />
                             </Button>
 
-                            <Button variant="ghost" size="icon-sm" onClick={() => setDeleteOpen(true)}>
+                            <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={() => setDeleteOpen(true)}
+                            >
                                 <Trash2 className="h-3.5 w-3.5" />
                             </Button>
-
                         </div>
-
                     </div>
-
                 )}
-
             </CardContent>
 
             <DeleteContactDialog
@@ -162,9 +165,6 @@ export function ContactCard({
                     deleteContact.mutate(contact.id, { onSuccess: () => setDeleteOpen(false) })
                 }
             />
-
         </Card>
-
     );
-
 }

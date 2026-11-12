@@ -1,5 +1,4 @@
 export const Colors = {
-
     primary: "text-primary",
 
     secondary: "text-secondary",
@@ -13,11 +12,9 @@ export const Colors = {
     info: "text-blue-600",
 
     muted: "text-muted-foreground",
-
 } as const;
 
 export const Backgrounds = {
-
     success: "bg-green-100",
 
     warning: "bg-yellow-100",
@@ -25,5 +22,4 @@ export const Backgrounds = {
     danger: "bg-red-100",
 
     info: "bg-blue-100",
-
 };

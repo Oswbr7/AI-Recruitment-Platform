@@ -101,7 +101,7 @@ function scoreSalary(job: Job, candidate: Candidate): number {
 
     if (withinMin && withinMax) return 20;
     if (!withinMin) return 10; // pide menos de lo ofrecido: negociable
-    return 5;                  // pide más del techo: riesgo de fuga
+    return 5; // pide más del techo: riesgo de fuga
 }
 
 function scorePipeline(candidate: Candidate): number {

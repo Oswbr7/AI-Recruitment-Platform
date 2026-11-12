@@ -3,15 +3,9 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface Props {
-
-    variant:
-        | "success"
-        | "warning"
-        | "danger"
-        | "info";
+    variant: "success" | "warning" | "danger" | "info";
 
     children: ReactNode;
-
 }
 
 const variantClassNames: Record<Props["variant"], string> = {
@@ -21,24 +15,15 @@ const variantClassNames: Record<Props["variant"], string> = {
     info: "bg-blue-100 text-blue-700",
 };
 
-export function StatusBadge({
-    variant,
-    children,
-}: Props) {
-
+export function StatusBadge({ variant, children }: Props) {
     return (
-
         <span
             className={cn(
                 "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                variantClassNames[variant]
+                variantClassNames[variant],
             )}
         >
-
             {children}
-
         </span>
-
     );
-
 }

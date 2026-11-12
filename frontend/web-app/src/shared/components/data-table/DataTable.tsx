@@ -36,17 +36,14 @@ import type { RenderBulkActions, RenderFilters } from "./Types";
 function useTableState<T>(
     controlled: T | undefined,
     onChange: OnChangeFn<T> | undefined,
-    initial: T
+    initial: T,
 ): [T, OnChangeFn<T>] {
-
     const [internal, setInternal] = useState<T>(initial);
 
     return [controlled ?? internal, onChange ?? setInternal];
-
 }
 
 type Props<TData> = {
-
     columns: ColumnDef<TData>[];
 
     data: TData[];
@@ -92,7 +89,6 @@ type Props<TData> = {
     columnFilters?: ColumnFiltersState;
 
     onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
-
 };
 
 export function DataTable<TData>({
@@ -118,28 +114,30 @@ export function DataTable<TData>({
     columnFilters: columnFiltersProp,
     onColumnFiltersChange,
 }: Props<TData>) {
-
     const [pagination, setPagination] = useTableState<PaginationState>(
-        paginationProp, onPaginationChange, { pageIndex: 0, pageSize: 10 }
+        paginationProp,
+        onPaginationChange,
+        { pageIndex: 0, pageSize: 10 },
     );
 
-    const [sorting, setSorting] = useTableState<SortingState>(
-        sortingProp, onSortingChange, []
-    );
+    const [sorting, setSorting] = useTableState<SortingState>(sortingProp, onSortingChange, []);
 
     const [columnFilters, setColumnFilters] = useTableState<ColumnFiltersState>(
-        columnFiltersProp, onColumnFiltersChange, []
+        columnFiltersProp,
+        onColumnFiltersChange,
+        [],
     );
 
     const [globalFilter, setGlobalFilter] = useTableState<string>(
-        globalFilterProp, onGlobalFilterChange, ""
+        globalFilterProp,
+        onGlobalFilterChange,
+        "",
     );
 
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     const table = useReactTable({
-
         data,
 
         columns,
@@ -154,7 +152,7 @@ export function DataTable<TData>({
         },
 
         manualPagination,
-        pageCount: manualPagination ? pageCount ?? -1 : undefined,
+        pageCount: manualPagination ? (pageCount ?? -1) : undefined,
         manualSorting,
         manualFiltering,
 
@@ -169,12 +167,9 @@ export function DataTable<TData>({
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-
     });
 
-    const selectedRows = table
-        .getFilteredSelectedRowModel()
-        .rows.map(row => row.original);
+    const selectedRows = table.getFilteredSelectedRowModel().rows.map((row) => row.original);
 
     const clearSelection = () => setRowSelection({});
 
@@ -184,9 +179,7 @@ export function DataTable<TData>({
         bulkActionsBar = renderBulkActions(selectedRows, clearSelection);
 
     return (
-
         <div className="space-y-4">
-
             <DataTableToolbar
                 table={table}
                 searchPlaceholder={searchPlaceholder}
@@ -196,103 +189,62 @@ export function DataTable<TData>({
             />
 
             <div className="rounded-lg border">
-
                 <Table>
-
                     <TableHeader>
-
-                        {table.getHeaderGroups().map(headerGroup => (
-
+                        {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-
-                                {headerGroup.headers.map(header => (
-
+                                {headerGroup.headers.map((header) => (
                                     <TableHead key={header.id}>
-
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
                                                   header.column.columnDef.header,
-                                                  header.getContext()
+                                                  header.getContext(),
                                               )}
-
                                     </TableHead>
-
                                 ))}
-
                             </TableRow>
-
                         ))}
-
                     </TableHeader>
 
                     <TableBody>
-
                         {isLoading ? (
-
                             <TableRow>
-
                                 <TableCell colSpan={columns.length}>
-
                                     <LoadingSpinner />
-
                                 </TableCell>
-
                             </TableRow>
-
                         ) : table.getRowModel().rows.length ? (
-
-                            table.getRowModel().rows.map(row => (
-
+                            table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() ? "selected" : undefined}
                                 >
-
-                                    {row.getVisibleCells().map(cell => (
-
+                                    {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-
                                             {flexRender(
                                                 cell.column.columnDef.cell,
-                                                cell.getContext()
+                                                cell.getContext(),
                                             )}
-
                                         </TableCell>
-
                                     ))}
-
                                 </TableRow>
-
                             ))
-
                         ) : (
-
                             <TableRow>
-
                                 <TableCell colSpan={columns.length}>
-
                                     <EmptyState
                                         title={emptyTitle ?? "No results"}
                                         description={emptyDescription ?? "No records found."}
                                     />
-
                                 </TableCell>
-
                             </TableRow>
-
                         )}
-
                     </TableBody>
-
                 </Table>
-
             </div>
 
             <DataTablePagination table={table} />
-
         </div>
-
     );
-
 }

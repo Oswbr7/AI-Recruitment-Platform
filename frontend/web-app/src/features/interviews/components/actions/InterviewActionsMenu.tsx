@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarClock, CheckCircle2, Eye, MoreHorizontal, Pencil, Trash2, XCircle } from "lucide-react";
+import {
+    CalendarClock,
+    CheckCircle2,
+    Eye,
+    MoreHorizontal,
+    Pencil,
+    Trash2,
+    XCircle,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,15 +28,10 @@ import { RescheduleSheet } from "../reschedule/RescheduleSheet";
 import { DeleteInterviewDialog } from "../DeleteInterviewDialog";
 
 interface Props {
-
     interview: Interview;
-
 }
 
-export function InterviewActionsMenu({
-    interview,
-}: Props) {
-
+export function InterviewActionsMenu({ interview }: Props) {
     const navigate = useNavigate();
 
     const [editOpen, setEditOpen] = useState(false);
@@ -44,25 +47,19 @@ export function InterviewActionsMenu({
     const isScheduled = interview.status === InterviewStatus.Scheduled;
 
     const handleDelete = () => {
-
         deleteInterview.mutate(interview.id, {
             onSuccess: () => setDeleteOpen(false),
         });
-
     };
 
     return (
-
         <>
-
             <DropdownMenu>
-
                 <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
                     <MoreHorizontal className="h-4 w-4" />
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-
                     <DropdownMenuItem onClick={() => navigate(`/interviews/${interview.id}`)}>
                         <Eye className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                         View
@@ -74,9 +71,7 @@ export function InterviewActionsMenu({
                     </DropdownMenuItem>
 
                     {isScheduled && (
-
                         <>
-
                             <DropdownMenuSeparator />
 
                             <DropdownMenuItem onClick={() => setRescheduleOpen(true)}>
@@ -84,7 +79,9 @@ export function InterviewActionsMenu({
                                 Reschedule
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={() => completeInterview.mutate(interview.id)}>
+                            <DropdownMenuItem
+                                onClick={() => completeInterview.mutate(interview.id)}
+                            >
                                 <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                                 Complete
                             </DropdownMenuItem>
@@ -93,39 +90,26 @@ export function InterviewActionsMenu({
                                 <XCircle className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                                 Cancel
                             </DropdownMenuItem>
-
                         </>
-
                     )}
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => setDeleteOpen(true)}
-                    >
+                    <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
                         <Trash2 className="mr-1.5 h-3.5 w-3.5" />
                         Delete
                     </DropdownMenuItem>
-
                 </DropdownMenuContent>
-
             </DropdownMenu>
 
-            <InterviewSheet
-                interview={interview}
-                open={editOpen}
-                onOpenChange={setEditOpen}
-            />
+            <InterviewSheet interview={interview} open={editOpen} onOpenChange={setEditOpen} />
 
             {isScheduled && (
-
                 <RescheduleSheet
                     interview={interview}
                     open={rescheduleOpen}
                     onOpenChange={setRescheduleOpen}
                 />
-
             )}
 
             <DeleteInterviewDialog
@@ -135,9 +119,6 @@ export function InterviewActionsMenu({
                 isLoading={deleteInterview.isPending}
                 onConfirm={handleDelete}
             />
-
         </>
-
     );
-
 }

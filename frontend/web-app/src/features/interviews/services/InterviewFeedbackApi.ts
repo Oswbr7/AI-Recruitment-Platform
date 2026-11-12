@@ -7,26 +7,23 @@ import type { InterviewFeedback } from "../models/InterviewFeedback";
 import type { SubmitInterviewFeedbackRequest } from "../types/SubmitInterviewFeedbackRequest";
 
 export const interviewFeedbackApi = {
-
     async getByInterviewId(interviewId: string): Promise<InterviewFeedback[]> {
-
         const response = await interviewsApi.get<ApiResponse<InterviewFeedbackResponse[]>>(
-            `/interviews/${interviewId}/feedback`
+            `/interviews/${interviewId}/feedback`,
         );
 
         return response.data.data.map(toInterviewFeedback);
-
     },
 
-    async submit(interviewId: string, request: SubmitInterviewFeedbackRequest): Promise<InterviewFeedback> {
-
+    async submit(
+        interviewId: string,
+        request: SubmitInterviewFeedbackRequest,
+    ): Promise<InterviewFeedback> {
         const response = await interviewsApi.post<ApiResponse<InterviewFeedbackResponse>>(
             `/interviews/${interviewId}/feedback`,
-            request
+            request,
         );
 
         return toInterviewFeedback(response.data.data);
-
     },
-
 };

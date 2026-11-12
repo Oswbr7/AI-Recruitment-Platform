@@ -2,46 +2,34 @@ import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 
-interface Props{
+interface Props {
+    value: string;
 
-value:string;
+    onChange: (value: string) => void;
 
-onChange:(value:string)=>void;
-
-placeholder?:string;
-
+    placeholder?: string;
 }
 
 export function SearchInput({
+    value,
 
-value,
+    onChange,
 
-onChange,
+    placeholder,
+}: Props) {
+    return (
+        <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4" />
 
-placeholder
+            <Input
+                className="pl-9"
 
-}:Props){
+                placeholder={placeholder}
 
-return(
+                value={value}
 
-<div className="relative">
-
-<Search className="absolute left-3 top-3 h-4 w-4"/>
-
-<Input
-
-className="pl-9"
-
-placeholder={placeholder}
-
-value={value}
-
-onChange={e=>onChange(e.target.value)}
-
-/>
-
-</div>
-
-)
-
+                onChange={(e) => onChange(e.target.value)}
+            />
+        </div>
+    );
 }

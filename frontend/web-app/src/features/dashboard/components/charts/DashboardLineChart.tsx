@@ -12,13 +12,9 @@ type Props = {
 };
 
 export function DashboardLineChart({ title, data, categoryKey, valueKey = "value" }: Props) {
-
     return (
-
         <DashboardChartCard title={title}>
-
             <LineChart data={data}>
-
                 <CartesianGrid strokeDasharray="3 3" />
 
                 <XAxis dataKey={categoryKey} />
@@ -28,11 +24,7 @@ export function DashboardLineChart({ title, data, categoryKey, valueKey = "value
                 <Tooltip />
 
                 <Line type="monotone" dataKey={valueKey} strokeWidth={2} dot />
-
             </LineChart>
-
         </DashboardChartCard>
-
     );
-
 }

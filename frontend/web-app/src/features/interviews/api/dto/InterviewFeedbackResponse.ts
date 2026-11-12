@@ -1,5 +1,4 @@
 export interface InterviewFeedbackResponse {
-
     id: string;
 
     interviewId: string;
@@ -19,5 +18,4 @@ export interface InterviewFeedbackResponse {
     recommendation: string;
 
     createdAt: string;
-
 }

@@ -3,7 +3,7 @@ export const CompanyStatus = {
     Archived: "Archived",
 } as const;
 
-export type CompanyStatus = typeof CompanyStatus[keyof typeof CompanyStatus];
+export type CompanyStatus = (typeof CompanyStatus)[keyof typeof CompanyStatus];
 
 export const CompanySize = {
     Startup: "Startup",
@@ -13,7 +13,7 @@ export const CompanySize = {
     Enterprise: "Enterprise",
 } as const;
 
-export type CompanySize = typeof CompanySize[keyof typeof CompanySize];
+export type CompanySize = (typeof CompanySize)[keyof typeof CompanySize];
 
 export const Industry = {
     Technology: "Technology",
@@ -26,10 +26,9 @@ export const Industry = {
     Other: "Other",
 } as const;
 
-export type Industry = typeof Industry[keyof typeof Industry];
+export type Industry = (typeof Industry)[keyof typeof Industry];
 
 export interface Company {
-
     id: string;
 
     name: string;

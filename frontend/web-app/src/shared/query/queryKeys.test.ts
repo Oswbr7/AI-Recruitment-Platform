@@ -20,7 +20,12 @@ describe("queryKeys", () => {
         // invalida tambien sus notas (TanStack Query por prefijo).
         expect(queryKeys.candidates.notes("9")).toEqual(["candidates", "detail", "9", "notes"]);
         expect(queryKeys.companies.contacts("3")).toEqual(["companies", "detail", "3", "contacts"]);
-        expect(queryKeys.interviews.feedback("5")).toEqual(["interviews", "detail", "5", "feedback"]);
+        expect(queryKeys.interviews.feedback("5")).toEqual([
+            "interviews",
+            "detail",
+            "5",
+            "feedback",
+        ]);
     });
 
     it("users tiene su propio dominio para invalidar la lista de admin", () => {

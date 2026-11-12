@@ -18,16 +18,12 @@ const sortByColumnId: Record<string, string> = {
 };
 
 export function CandidatesView() {
-
     const [open, setOpen] = useState(false);
 
     const location = useLocation();
 
     useEffect(() => {
-
-        if ((location.state as { openCreate?: boolean } | null)?.openCreate)
-            setOpen(true);
-
+        if ((location.state as { openCreate?: boolean } | null)?.openCreate) setOpen(true);
     }, [location.state]);
 
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -41,27 +37,26 @@ export function CandidatesView() {
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
     useEffect(() => {
-
         const timer = setTimeout(() => setDebouncedSearch(globalFilter), 300);
 
         return () => clearTimeout(timer);
-
     }, [globalFilter]);
 
     useEffect(() => {
-
-        setPagination(prev => ({ ...prev, pageIndex: 0 }));
-
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     }, [debouncedSearch, columnFilters]);
 
     const sortColumn = sorting[0];
 
-    const stageFilter = (columnFilters.find(filter => filter.id === "stage")?.value as string[] | undefined)?.[0];
+    const stageFilter = (
+        columnFilters.find((filter) => filter.id === "stage")?.value as string[] | undefined
+    )?.[0];
 
-    const statusFilter = (columnFilters.find(filter => filter.id === "status")?.value as string[] | undefined)?.[0];
+    const statusFilter = (
+        columnFilters.find((filter) => filter.id === "status")?.value as string[] | undefined
+    )?.[0];
 
     const { data, isLoading, isError } = useCandidates({
-
         page: pagination.pageIndex + 1,
 
         pageSize: pagination.pageSize,
@@ -75,42 +70,28 @@ export function CandidatesView() {
         sortBy: sortColumn ? sortByColumnId[sortColumn.id] : undefined,
 
         sortDirection: sortColumn ? (sortColumn.desc ? "desc" : "asc") : undefined,
-
     });
 
     const hasNoFilters = !debouncedSearch && !stageFilter && !statusFilter;
 
     return (
-
         <div className="space-y-8">
-
-            <CandidateToolbar
-                onCreateCandidate={() => setOpen(true)}
-            />
+            <CandidateToolbar onCreateCandidate={() => setOpen(true)} />
 
             {isLoading ? (
-
                 <DataTableSkeleton columns={7} />
-
             ) : isError ? (
-
                 <div className="flex flex-col items-center py-20 text-center">
-
                     <h3 className="text-xl font-semibold">Unable to load candidates</h3>
 
                     <p className="text-muted-foreground">Something went wrong. Please try again.</p>
-
                 </div>
-
             ) : hasNoFilters && (data?.totalCount ?? 0) === 0 ? (
-
                 <EmptyState
                     title="No candidates"
                     description="Add your first candidate to get started."
                 />
-
             ) : (
-
                 <CandidateTable
                     candidates={data?.items ?? []}
                     pageCount={data?.totalPages ?? 0}
@@ -123,16 +104,9 @@ export function CandidatesView() {
                     columnFilters={columnFilters}
                     onColumnFiltersChange={setColumnFilters}
                 />
-
             )}
 
-            <CandidateSheet
-                open={open}
-                onOpenChange={setOpen}
-            />
-
+            <CandidateSheet open={open} onOpenChange={setOpen} />
         </div>
-
     );
-
 }

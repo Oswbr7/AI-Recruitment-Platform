@@ -14,15 +14,11 @@ import { TextField } from "@/shared/components/form/TextField";
 import { PasswordField } from "@/shared/components/form/PasswordField";
 import { SubmitButton } from "@/shared/components/form/SubmitButton";
 
-import {
-    registerSchema,
-    type RegisterFormValues,
-} from "../schemas/RegisterSchema";
+import { registerSchema, type RegisterFormValues } from "../schemas/RegisterSchema";
 
 import { useRegister } from "../hooks/useRegister";
 
 export function RegisterForm() {
-
     const navigate = useNavigate();
 
     const registerMutation = useRegister();
@@ -38,46 +34,23 @@ export function RegisterForm() {
     });
 
     function onSubmit(values: RegisterFormValues) {
-
         registerMutation.mutate(values, {
-
             onSuccess() {
-
-                toast.success(
-                    "Account created! Sign in with your new credentials."
-                );
+                toast.success("Account created! Sign in with your new credentials.");
 
                 navigate("/login");
-
             },
 
             onError(error: any) {
-
-                toast.error(
-
-                    error?.response?.data?.message ??
-
-                    "Could not create the account."
-
-                );
-
+                toast.error(error?.response?.data?.message ?? "Could not create the account.");
             },
-
         });
-
     }
 
     return (
-
         <Form {...form}>
-
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-            >
-
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
-
                     <TextField
                         control={form.control}
                         name="firstName"
@@ -93,7 +66,6 @@ export function RegisterForm() {
                         placeholder="Doe"
                         icon={User}
                     />
-
                 </div>
 
                 <TextField
@@ -111,29 +83,15 @@ export function RegisterForm() {
                     placeholder="••••••••"
                 />
 
-                <SubmitButton
-                    loading={registerMutation.isPending}
-                >
-                    Create account
-                </SubmitButton>
+                <SubmitButton loading={registerMutation.isPending}>Create account</SubmitButton>
 
                 <p className="text-center text-sm text-muted-foreground">
-
                     Already have an account?{" "}
-
-                    <Link
-                        to="/login"
-                        className="font-medium text-primary hover:underline"
-                    >
+                    <Link to="/login" className="font-medium text-primary hover:underline">
                         Sign in
                     </Link>
-
                 </p>
-
             </form>
-
         </Form>
-
     );
-
 }

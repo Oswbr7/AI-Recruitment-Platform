@@ -1,0 +1,10 @@
+# Dependencias y builds
+node_modules
+dist
+package-lock.json
+
+# Componentes generados por el CLI de shadcn: codigo "vendor", no se reformatea
+src/components/ui
+
+# Configs/estaticos que prettier no toca bien
+public

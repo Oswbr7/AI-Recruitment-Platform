@@ -3,7 +3,10 @@ import { StatusBadge } from "@/shared/StatusBadge";
 
 import { Recommendation, type InterviewFeedback } from "../../models/InterviewFeedback";
 
-const variantByRecommendation: Record<InterviewFeedback["recommendation"], "success" | "warning" | "info" | "danger"> = {
+const variantByRecommendation: Record<
+    InterviewFeedback["recommendation"],
+    "success" | "warning" | "info" | "danger"
+> = {
     [Recommendation.StrongHire]: "success",
     [Recommendation.Hire]: "success",
     [Recommendation.Neutral]: "info",
@@ -12,36 +15,32 @@ const variantByRecommendation: Record<InterviewFeedback["recommendation"], "succ
 };
 
 interface Props {
-
     feedback: InterviewFeedback;
-
 }
 
-export function FeedbackCard({
-    feedback,
-}: Props) {
-
+export function FeedbackCard({ feedback }: Props) {
     return (
-
         <Card size="sm">
-
             <CardContent className="space-y-2">
-
                 <div className="flex items-center justify-between">
-
                     <div className="flex gap-4 text-sm">
-
-                        <span>Technical: <strong>{feedback.technicalScore}</strong></span>
-                        <span>Communication: <strong>{feedback.communicationScore}</strong></span>
-                        <span>Problem Solving: <strong>{feedback.problemSolvingScore}</strong></span>
-                        <span>Culture Fit: <strong>{feedback.cultureFitScore}</strong></span>
-
+                        <span>
+                            Technical: <strong>{feedback.technicalScore}</strong>
+                        </span>
+                        <span>
+                            Communication: <strong>{feedback.communicationScore}</strong>
+                        </span>
+                        <span>
+                            Problem Solving: <strong>{feedback.problemSolvingScore}</strong>
+                        </span>
+                        <span>
+                            Culture Fit: <strong>{feedback.cultureFitScore}</strong>
+                        </span>
                     </div>
 
                     <StatusBadge variant={variantByRecommendation[feedback.recommendation]}>
                         {feedback.recommendation}
                     </StatusBadge>
-
                 </div>
 
                 {feedback.comments && (
@@ -51,11 +50,7 @@ export function FeedbackCard({
                 <p className="text-xs text-muted-foreground">
                     {feedback.createdAt.toLocaleString()}
                 </p>
-
             </CardContent>
-
         </Card>
-
     );
-
 }

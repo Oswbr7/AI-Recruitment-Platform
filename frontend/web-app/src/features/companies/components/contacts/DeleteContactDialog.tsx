@@ -1,7 +1,6 @@
 import { ConfirmDialog } from "@/shared/components/dialogs/ConfirmDialog";
 
 interface Props {
-
     open: boolean;
 
     onOpenChange: (open: boolean) => void;
@@ -9,18 +8,10 @@ interface Props {
     onConfirm: () => void;
 
     isLoading?: boolean;
-
 }
 
-export function DeleteContactDialog({
-    open,
-    onOpenChange,
-    onConfirm,
-    isLoading = false,
-}: Props) {
-
+export function DeleteContactDialog({ open, onOpenChange, onConfirm, isLoading = false }: Props) {
     return (
-
         <ConfirmDialog
             open={open}
             onOpenChange={onOpenChange}
@@ -31,7 +22,5 @@ export function DeleteContactDialog({
             isLoading={isLoading}
             onConfirm={onConfirm}
         />
-
     );
-
 }

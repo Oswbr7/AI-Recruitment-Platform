@@ -11,23 +11,19 @@ import { InterviewActionsMenu } from "../actions/InterviewActionsMenu";
 export function getInterviewColumns(
     candidateNameById: Record<string, string>,
     jobTitleById: Record<string, string>,
-    recruiterNameById: Record<string, string>
+    recruiterNameById: Record<string, string>,
 ): ColumnDef<Interview>[] {
-
     return [
-
         {
-
             id: "select",
 
             header: ({ table }) => (
                 <Checkbox
                     checked={table.getIsAllPageRowsSelected()}
                     indeterminate={
-                        table.getIsSomePageRowsSelected() &&
-                        !table.getIsAllPageRowsSelected()
+                        table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
                     }
-                    onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                     aria-label="Select all"
                 />
             ),
@@ -35,7 +31,7 @@ export function getInterviewColumns(
             cell: ({ row }) => (
                 <Checkbox
                     checked={row.getIsSelected()}
-                    onCheckedChange={value => row.toggleSelected(!!value)}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
                     aria-label="Select row"
                 />
             ),
@@ -43,11 +39,9 @@ export function getInterviewColumns(
             enableSorting: false,
 
             enableHiding: false,
-
         },
 
         {
-
             id: "candidate",
 
             header: "Candidate",
@@ -55,11 +49,9 @@ export function getInterviewColumns(
             cell: ({ row }) => candidateNameById[row.original.candidateId] ?? "—",
 
             enableSorting: false,
-
         },
 
         {
-
             id: "job",
 
             header: "Job",
@@ -67,11 +59,9 @@ export function getInterviewColumns(
             cell: ({ row }) => jobTitleById[row.original.jobId] ?? "—",
 
             enableSorting: false,
-
         },
 
         {
-
             id: "recruiter",
 
             header: "Recruiter",
@@ -79,11 +69,9 @@ export function getInterviewColumns(
             cell: ({ row }) => recruiterNameById[row.original.recruiterId] ?? "—",
 
             enableSorting: false,
-
         },
 
         {
-
             accessorKey: "interviewType",
 
             header: ({ column }) => (
@@ -91,25 +79,17 @@ export function getInterviewColumns(
             ),
 
             enableSorting: false,
-
         },
 
         {
-
             accessorKey: "interviewStage",
 
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Stage" />
-            ),
+            header: ({ column }) => <DataTableColumnHeader column={column} title="Stage" />,
 
-            cell: ({ row }) => (
-                <InterviewStageBadge stage={row.original.interviewStage} />
-            ),
-
+            cell: ({ row }) => <InterviewStageBadge stage={row.original.interviewStage} />,
         },
 
         {
-
             accessorKey: "scheduledAt",
 
             header: ({ column }) => (
@@ -117,41 +97,26 @@ export function getInterviewColumns(
             ),
 
             cell: ({ row }) => (
-                <span className="text-sm">
-                    {row.original.scheduledAt.toLocaleString()}
-                </span>
+                <span className="text-sm">{row.original.scheduledAt.toLocaleString()}</span>
             ),
-
         },
 
         {
-
             accessorKey: "status",
 
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Status" />
-            ),
+            header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
 
-            cell: ({ row }) => (
-                <InterviewStatusBadge status={row.original.status} />
-            ),
-
+            cell: ({ row }) => <InterviewStatusBadge status={row.original.status} />,
         },
 
         {
-
             id: "actions",
 
-            cell: ({ row }) => (
-                <InterviewActionsMenu interview={row.original} />
-            ),
+            cell: ({ row }) => <InterviewActionsMenu interview={row.original} />,
 
             enableSorting: false,
 
             enableHiding: false,
-
         },
-
     ];
-
 }

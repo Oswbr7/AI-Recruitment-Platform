@@ -1,25 +1,11 @@
 import { z } from "zod";
 
 export const candidateSchema = z.object({
+    firstName: z.string().trim().min(1, "First name is required").max(100),
 
-    firstName: z
-        .string()
-        .trim()
-        .min(1, "First name is required")
-        .max(100),
+    lastName: z.string().trim().min(1, "Last name is required").max(100),
 
-    lastName: z
-        .string()
-        .trim()
-        .min(1, "Last name is required")
-        .max(100),
-
-    email: z
-        .string()
-        .trim()
-        .min(1, "Email is required")
-        .email("Enter a valid email")
-        .max(200),
+    email: z.string().trim().min(1, "Email is required").email("Enter a valid email").max(200),
 
     phone: z.string().trim().max(30).optional(),
 
@@ -44,7 +30,6 @@ export const candidateSchema = z.object({
     expectedSalary: z.coerce.number().min(0).optional(),
 
     currency: z.string().trim().max(3).optional(),
-
 });
 
 export type CandidateFormValues = z.infer<typeof candidateSchema>;

@@ -4,9 +4,7 @@ import type { UpdateCompanyRequest } from "../../types/UpdateCompanyRequest";
 import type { Company } from "../../models/Company";
 
 export function toCreateCompanyRequest(values: CompanyFormValues): CreateCompanyRequest {
-
     return {
-
         name: values.name,
 
         industry: values.industry,
@@ -36,21 +34,15 @@ export function toCreateCompanyRequest(values: CompanyFormValues): CreateCompany
         address: values.address || undefined,
 
         postalCode: values.postalCode || undefined,
-
     };
-
 }
 
 export function toUpdateCompanyRequest(values: CompanyFormValues): UpdateCompanyRequest {
-
     return toCreateCompanyRequest(values);
-
 }
 
 export function toCompanyFormValues(company: Company): CompanyFormValues {
-
     return {
-
         name: company.name,
 
         industry: company.industry,
@@ -82,7 +74,5 @@ export function toCompanyFormValues(company: Company): CompanyFormValues {
         address: company.address ?? "",
 
         postalCode: company.postalCode ?? "",
-
     };
-
 }

@@ -1,5 +1,4 @@
 export interface Recruiter {
-
     id: string;
 
     firstName: string;

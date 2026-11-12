@@ -2,9 +2,7 @@ import type { Interview } from "../../models/Interview";
 import type { InterviewResponse } from "../dto/InterviewResponse";
 
 export function toInterview(response: InterviewResponse): Interview {
-
     return {
-
         id: response.id,
 
         candidateId: response.candidateId,
@@ -38,7 +36,5 @@ export function toInterview(response: InterviewResponse): Interview {
         createdAt: new Date(response.createdAt),
 
         updatedAt: new Date(response.updatedAt),
-
     };
-
 }

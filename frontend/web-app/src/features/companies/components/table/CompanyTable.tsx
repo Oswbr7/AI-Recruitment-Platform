@@ -18,18 +18,17 @@ import { useJobs } from "@/features/jobs/hooks/useJobs";
 import { getCompanyColumns } from "./CompanyColumns";
 import { DeleteCompanyDialog } from "../DeleteCompanyDialog";
 
-const industryOptions = Object.values(Industry).map(value => ({
+const industryOptions = Object.values(Industry).map((value) => ({
     label: value,
     value,
 }));
 
-const statusOptions = Object.values(CompanyStatus).map(value => ({
+const statusOptions = Object.values(CompanyStatus).map((value) => ({
     label: value,
     value,
 }));
 
 interface Props {
-
     companies: Company[];
 
     pageCount: number;
@@ -53,11 +52,9 @@ interface Props {
     countryFilter: string;
 
     onCountryFilterChange: (country: string) => void;
-
 }
 
 export function CompanyTable({
-
     companies,
     pageCount,
     pagination,
@@ -70,9 +67,7 @@ export function CompanyTable({
     onColumnFiltersChange,
     countryFilter,
     onCountryFilterChange,
-
 }: Props) {
-
     const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
 
     const [pendingIds, setPendingIds] = useState<string[]>([]);
@@ -84,43 +79,32 @@ export function CompanyTable({
     const { data: jobs } = useJobs();
 
     const openJobsCountByCompany = useMemo(() => {
-
         const counts: Record<string, number> = {};
 
         for (const job of jobs ?? []) {
-
-            if (!job.companyId)
-                continue;
+            if (!job.companyId) continue;
 
             counts[job.companyId] = (counts[job.companyId] ?? 0) + 1;
-
         }
 
         return counts;
-
     }, [jobs]);
 
     const columns = useMemo(
         () => getCompanyColumns(openJobsCountByCompany),
-        [openJobsCountByCompany]
+        [openJobsCountByCompany],
     );
 
     const handleBulkDeleteConfirm = async () => {
-
-        await Promise.allSettled(
-            pendingIds.map(id => deleteCompany.mutateAsync(id))
-        );
+        await Promise.allSettled(pendingIds.map((id) => deleteCompany.mutateAsync(id)));
 
         setBulkDeleteOpen(false);
 
         clearSelectionFn?.();
-
     };
 
     return (
-
         <>
-
             <DataTable
                 columns={columns}
                 data={companies}
@@ -138,10 +122,8 @@ export function CompanyTable({
                 onGlobalFilterChange={onGlobalFilterChange}
                 columnFilters={columnFilters}
                 onColumnFiltersChange={onColumnFiltersChange}
-                renderFilters={table => (
-
+                renderFilters={(table) => (
                     <>
-
                         <DataTableFacetedFilter
                             column={table.getColumn("industry")}
                             title="Industry"
@@ -157,17 +139,13 @@ export function CompanyTable({
                         <Input
                             placeholder="Country..."
                             value={countryFilter}
-                            onChange={event => onCountryFilterChange(event.target.value)}
+                            onChange={(event) => onCountryFilterChange(event.target.value)}
                             className="h-7 w-32"
                         />
-
                     </>
-
                 )}
                 renderBulkActions={(selectedRows, clearSelection) => (
-
                     <div className="flex items-center gap-2">
-
                         <span className="text-sm text-muted-foreground">
                             {selectedRows.length} selected
                         </span>
@@ -176,7 +154,7 @@ export function CompanyTable({
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                                setPendingIds(selectedRows.map(company => company.id));
+                                setPendingIds(selectedRows.map((company) => company.id));
                                 setClearSelectionFn(() => clearSelection);
                                 setBulkDeleteOpen(true);
                             }}
@@ -184,9 +162,7 @@ export function CompanyTable({
                             <Trash2 className="mr-1.5 h-4 w-4" />
                             Delete
                         </Button>
-
                     </div>
-
                 )}
             />
 
@@ -197,9 +173,6 @@ export function CompanyTable({
                 isLoading={deleteCompany.isPending}
                 onConfirm={handleBulkDeleteConfirm}
             />
-
         </>
-
     );
-
 }

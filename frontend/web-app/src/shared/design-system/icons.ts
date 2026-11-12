@@ -1,25 +1,15 @@
 import {
-
-BriefcaseBusiness,
-
-Users,
-
-Calendar,
-
-BrainCircuit,
-
-FileText,
-
-UserRound,
-
-Building2,
-
-Settings
-
+    BriefcaseBusiness,
+    Users,
+    Calendar,
+    BrainCircuit,
+    FileText,
+    UserRound,
+    Building2,
+    Settings,
 } from "lucide-react";
 
 export const Icons = {
-
     Jobs: BriefcaseBusiness,
 
     Candidates: Users,
@@ -35,5 +25,4 @@ export const Icons = {
     Company: Building2,
 
     Settings,
-
 };

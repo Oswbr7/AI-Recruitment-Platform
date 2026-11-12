@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
 
 type Props = {
-
     title: string;
 
     value: string | number;
@@ -11,11 +10,9 @@ type Props = {
     icon: LucideIcon;
 
     description?: string;
-
 };
 
 export function StatsCard({
-
     title,
 
     value,
@@ -23,43 +20,20 @@ export function StatsCard({
     icon: Icon,
 
     description,
-
 }: Props) {
-
     return (
-
         <Card>
-
             <CardContent className="flex items-center justify-between p-6">
-
                 <div>
+                    <p className="text-sm text-muted-foreground">{title}</p>
 
-                    <p className="text-sm text-muted-foreground">
+                    <h2 className="text-3xl font-bold">{value}</h2>
 
-                        {title}
-
-                    </p>
-
-                    <h2 className="text-3xl font-bold">
-
-                        {value}
-
-                    </h2>
-
-                    {description && (
-
-                        <p className="text-xs text-muted-foreground">{description}</p>
-
-                    )}
-
+                    {description && <p className="text-xs text-muted-foreground">{description}</p>}
                 </div>
 
                 <Icon className="h-10 w-10 text-primary" />
-
             </CardContent>
-
         </Card>
-
     );
-
 }

@@ -1,10 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import {
-    ChevronLeft,
-    ChevronRight,
-    ChevronsLeft,
-    ChevronsRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,71 +11,49 @@ import {
 } from "@/components/ui/select";
 
 interface Props<TData> {
-
     table: Table<TData>;
-
 }
 
-export function DataTablePagination<TData>({
-    table,
-}: Props<TData>) {
-
+export function DataTablePagination<TData>({ table }: Props<TData>) {
     const selectedCount = table.getFilteredSelectedRowModel().rows.length;
 
     const totalCount = table.getFilteredRowModel().rows.length;
 
     return (
-
         <div className="flex items-center justify-between px-1">
-
             <div className="text-sm text-muted-foreground">
-
                 {selectedCount > 0
                     ? `${selectedCount} of ${totalCount} row(s) selected.`
                     : `${totalCount} row(s) total.`}
-
             </div>
 
             <div className="flex items-center gap-6">
-
                 <div className="flex items-center gap-2">
-
                     <p className="text-sm font-medium">Rows per page</p>
 
                     <Select
                         value={`${table.getState().pagination.pageSize}`}
-                        onValueChange={value => table.setPageSize(Number(value))}
+                        onValueChange={(value) => table.setPageSize(Number(value))}
                     >
-
                         <SelectTrigger className="w-[70px]">
                             <SelectValue />
                         </SelectTrigger>
 
                         <SelectContent>
-
-                            {[10, 20, 30, 50].map(pageSize => (
-
+                            {[10, 20, 30, 50].map((pageSize) => (
                                 <SelectItem key={pageSize} value={`${pageSize}`}>
                                     {pageSize}
                                 </SelectItem>
-
                             ))}
-
                         </SelectContent>
-
                     </Select>
-
                 </div>
 
                 <div className="flex w-[110px] items-center justify-center text-sm font-medium">
-
-                    Page {table.getState().pagination.pageIndex + 1} of{" "}
-                    {table.getPageCount() || 1}
-
+                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
                 </div>
 
                 <div className="flex items-center gap-2">
-
                     <Button
                         variant="outline"
                         size="icon"
@@ -118,13 +91,8 @@ export function DataTablePagination<TData>({
                     >
                         <ChevronsRight className="h-4 w-4" />
                     </Button>
-
                 </div>
-
             </div>
-
         </div>
-
     );
-
 }

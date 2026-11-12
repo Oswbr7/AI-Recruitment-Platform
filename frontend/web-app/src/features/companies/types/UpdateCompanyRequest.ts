@@ -1,5 +1,4 @@
 export interface UpdateCompanyRequest {
-
     name: string;
 
     industry: string;
@@ -29,5 +28,4 @@ export interface UpdateCompanyRequest {
     address?: string;
 
     postalCode?: string;
-
 }

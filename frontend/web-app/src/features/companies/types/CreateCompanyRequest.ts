@@ -1,5 +1,4 @@
 export interface CreateCompanyRequest {
-
     name: string;
 
     industry: string;
@@ -29,5 +28,4 @@ export interface CreateCompanyRequest {
     address?: string;
 
     postalCode?: string;
-
 }

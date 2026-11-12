@@ -1,5 +1,4 @@
 export interface RecruiterResponse {
-
     id: string;
 
     firstName: string;
@@ -9,5 +8,4 @@ export interface RecruiterResponse {
     email: string;
 
     role: string;
-
 }

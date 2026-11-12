@@ -1,6 +1,15 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Archive, BriefcaseBusiness, Building2, Calendar, CalendarCheck, CalendarX, Star, Users } from "lucide-react";
+import {
+    Archive,
+    BriefcaseBusiness,
+    Building2,
+    Calendar,
+    CalendarCheck,
+    CalendarX,
+    Star,
+    Users,
+} from "lucide-react";
 
 import { queryKeys } from "@/shared/query/queryKeys";
 
@@ -32,7 +41,6 @@ import { useCompanyDashboardStats } from "../hooks/useCompanyDashboardStats";
 import { useInterviewDashboardStats } from "../hooks/useInterviewDashboardStats";
 
 export function DashboardPage() {
-
     const queryClient = useQueryClient();
 
     const [lastUpdated, setLastUpdated] = useState(() => new Date());
@@ -56,49 +64,31 @@ export function DashboardPage() {
     const interviewStats = useInterviewDashboardStats();
 
     const handleRefresh = () => {
-
         queryClient.invalidateQueries({ queryKey: queryKeys.jobs.all });
         queryClient.invalidateQueries({ queryKey: queryKeys.candidates.all });
         queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
         queryClient.invalidateQueries({ queryKey: queryKeys.interviews.all });
 
         setLastUpdated(new Date());
-
     };
 
-    if (summary.isLoading)
-        return <DashboardSkeleton />;
+    if (summary.isLoading) return <DashboardSkeleton />;
 
     return (
-
         <div className="space-y-8">
-
-            <DashboardHeader
-                lastUpdated={lastUpdated}
-                onRefresh={handleRefresh}
-            />
+            <DashboardHeader lastUpdated={lastUpdated} onRefresh={handleRefresh} />
 
             <DashboardSection title="Overview">
-
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-
                     <StatsCard
                         title="Open Jobs"
                         value={summary.openJobs}
                         icon={BriefcaseBusiness}
                     />
 
-                    <StatsCard
-                        title="Candidates"
-                        value={summary.candidates}
-                        icon={Users}
-                    />
+                    <StatsCard title="Candidates" value={summary.candidates} icon={Users} />
 
-                    <StatsCard
-                        title="Companies"
-                        value={summary.companies}
-                        icon={Building2}
-                    />
+                    <StatsCard title="Companies" value={summary.companies} icon={Building2} />
 
                     <StatsCard
                         title="Upcoming Interviews"
@@ -106,22 +96,12 @@ export function DashboardPage() {
                         icon={Calendar}
                     />
 
-                    <StatsCard
-                        title="Offers"
-                        value={summary.offers}
-                        icon={CalendarCheck}
-                    />
+                    <StatsCard title="Offers" value={summary.offers} icon={CalendarCheck} />
 
-                    <StatsCard
-                        title="Hires"
-                        value={summary.hires}
-                        icon={Star}
-                    />
-
+                    <StatsCard title="Hires" value={summary.hires} icon={Star} />
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-3">
-
                     <StatsCard
                         title="Hiring Success Rate"
                         value={`${metrics.hiringSuccessRate}%`}
@@ -141,35 +121,28 @@ export function DashboardPage() {
                         value={metrics.interviewsToday}
                         icon={CalendarX}
                     />
-
                 </div>
-
             </DashboardSection>
 
             <div className="grid gap-6 lg:grid-cols-2">
-
                 <HiringPipeline
-                    data={funnel.stages.map(s => ({ stage: s.stage, value: s.count, percentage: s.percentage }))}
+                    data={funnel.stages.map((s) => ({
+                        stage: s.stage,
+                        value: s.count,
+                        percentage: s.percentage,
+                    }))}
                 />
 
-                <UpcomingInterviews
-                    interviews={interviewStats.upcomingInterviews ?? []}
-                />
-
+                <UpcomingInterviews interviews={interviewStats.upcomingInterviews ?? []} />
             </div>
 
-            <RecentActivityFeed
-                events={activity.events}
-            />
+            <RecentActivityFeed events={activity.events} />
 
             <DashboardSection title="Quick Actions">
-
                 <DashboardQuickActions />
-
             </DashboardSection>
 
             <DashboardSection title="Jobs">
-
                 <JobsOverviewSection
                     published={jobsOverview.published}
                     draft={jobsOverview.draft}
@@ -180,11 +153,9 @@ export function DashboardPage() {
                     topLocations={jobsOverview.topLocations}
                     mostActiveCompanies={jobsOverview.mostActiveCompanies}
                 />
-
             </DashboardSection>
 
             <DashboardSection title="Candidates">
-
                 <CandidatesOverviewSection
                     activeCount={candidatesOverview.activeCount}
                     archivedCount={candidatesOverview.archivedCount}
@@ -198,13 +169,10 @@ export function DashboardPage() {
                     data={candidatesOverview.hiringTrend}
                     categoryKey="month"
                 />
-
             </DashboardSection>
 
             <DashboardSection title="Companies">
-
                 <div className="grid gap-6 md:grid-cols-2">
-
                     <StatsCard
                         title="Active Companies"
                         value={companyStats.activeCount}
@@ -216,31 +184,19 @@ export function DashboardPage() {
                         value={companyStats.archivedCount}
                         icon={Archive}
                     />
-
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-2">
+                    <CompaniesByIndustryChart data={companyStats.byIndustry ?? []} />
 
-                    <CompaniesByIndustryChart
-                        data={companyStats.byIndustry ?? []}
-                    />
-
-                    <CompaniesBySizeChart
-                        data={companyStats.bySize ?? []}
-                    />
-
+                    <CompaniesBySizeChart data={companyStats.bySize ?? []} />
                 </div>
 
-                <TopCompaniesList
-                    companies={companyStats.topCompanies ?? []}
-                />
-
+                <TopCompaniesList companies={companyStats.topCompanies ?? []} />
             </DashboardSection>
 
             <DashboardSection title="Interviews">
-
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-
                     <StatsCard
                         title="Interviews Today"
                         value={interviewStats.interviewsTodayCount ?? 0}
@@ -264,11 +220,9 @@ export function DashboardPage() {
                         value={interviewStats.averageScore ?? 0}
                         icon={Star}
                     />
-
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
-
                     <StatsCard
                         title="Interviews Tomorrow"
                         value={interviewsOverview.tomorrow}
@@ -280,27 +234,18 @@ export function DashboardPage() {
                         value={interviewsOverview.thisWeek}
                         icon={Calendar}
                     />
-
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-2">
-
-                    <InterviewFunnelChart
-                        data={interviewStats.byStage ?? []}
-                    />
+                    <InterviewFunnelChart data={interviewStats.byStage ?? []} />
 
                     <DashboardBarChart
                         title="Interviews Per Week"
                         data={interviewsOverview.perWeek}
                         categoryKey="week"
                     />
-
                 </div>
-
             </DashboardSection>
-
         </div>
-
     );
-
 }

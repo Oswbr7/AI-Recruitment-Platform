@@ -1,5 +1,4 @@
 export interface CandidateNote {
-
     id: string;
 
     candidateId: string;
@@ -9,5 +8,4 @@ export interface CandidateNote {
     createdAt: Date;
 
     updatedAt: Date;
-
 }

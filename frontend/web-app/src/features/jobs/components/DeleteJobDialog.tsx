@@ -1,7 +1,6 @@
 import { ConfirmDialog } from "@/shared/components/dialogs/ConfirmDialog";
 
 interface Props {
-
     open: boolean;
 
     onOpenChange: (open: boolean) => void;
@@ -13,7 +12,6 @@ interface Props {
     count?: number;
 
     title?: string;
-
 }
 
 export function DeleteJobDialog({
@@ -24,9 +22,7 @@ export function DeleteJobDialog({
     count = 1,
     title,
 }: Props) {
-
     return (
-
         <ConfirmDialog
             open={open}
             onOpenChange={onOpenChange}
@@ -41,7 +37,5 @@ export function DeleteJobDialog({
             isLoading={isLoading}
             onConfirm={onConfirm}
         />
-
     );
-
 }

@@ -1,5 +1,4 @@
 export interface JobResponse {
-
     id: string;
 
     title: string;
@@ -33,5 +32,4 @@ export interface JobResponse {
     createdAt: string;
 
     updatedAt: string;
-
 }

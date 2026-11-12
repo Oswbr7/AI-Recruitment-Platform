@@ -1,55 +1,25 @@
-import {
-
-Card,
-
-CardContent,
-
-CardHeader,
-
-CardTitle
-
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { ReactNode } from "react";
 
-interface Props{
+interface Props {
+    title: string;
 
-    title:string;
-
-    children:ReactNode;
-
+    children: ReactNode;
 }
 
 export function SectionCard({
+    title,
 
-title,
+    children,
+}: Props) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>{title}</CardTitle>
+            </CardHeader>
 
-children
-
-}:Props){
-
-return(
-
-<Card>
-
-<CardHeader>
-
-<CardTitle>
-
-{title}
-
-</CardTitle>
-
-</CardHeader>
-
-<CardContent>
-
-{children}
-
-</CardContent>
-
-</Card>
-
-)
-
+            <CardContent>{children}</CardContent>
+        </Card>
+    );
 }

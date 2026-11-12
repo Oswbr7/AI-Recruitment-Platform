@@ -39,7 +39,7 @@ export function createApiClient(baseURL: string): AxiosInstance {
             }
 
             return Promise.reject(error);
-        }
+        },
     );
 
     return client;

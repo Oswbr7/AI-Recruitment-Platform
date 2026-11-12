@@ -1,5 +1,4 @@
 export interface SubmitInterviewFeedbackRequest {
-
     reviewerId: string;
 
     technicalScore: number;
@@ -13,5 +12,4 @@ export interface SubmitInterviewFeedbackRequest {
     comments?: string;
 
     recommendation: string;
-
 }

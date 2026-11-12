@@ -18,16 +18,12 @@ const sortByColumnId: Record<string, string> = {
 };
 
 export function CompaniesView() {
-
     const [open, setOpen] = useState(false);
 
     const location = useLocation();
 
     useEffect(() => {
-
-        if ((location.state as { openCreate?: boolean } | null)?.openCreate)
-            setOpen(true);
-
+        if ((location.state as { openCreate?: boolean } | null)?.openCreate) setOpen(true);
     }, [location.state]);
 
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -45,35 +41,32 @@ export function CompaniesView() {
     const [debouncedCountry, setDebouncedCountry] = useState("");
 
     useEffect(() => {
-
         const timer = setTimeout(() => setDebouncedSearch(globalFilter), 300);
 
         return () => clearTimeout(timer);
-
     }, [globalFilter]);
 
     useEffect(() => {
-
         const timer = setTimeout(() => setDebouncedCountry(countryFilter), 300);
 
         return () => clearTimeout(timer);
-
     }, [countryFilter]);
 
     useEffect(() => {
-
-        setPagination(prev => ({ ...prev, pageIndex: 0 }));
-
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     }, [debouncedSearch, columnFilters, debouncedCountry]);
 
     const sortColumn = sorting[0];
 
-    const industryFilter = (columnFilters.find(filter => filter.id === "industry")?.value as string[] | undefined)?.[0];
+    const industryFilter = (
+        columnFilters.find((filter) => filter.id === "industry")?.value as string[] | undefined
+    )?.[0];
 
-    const statusFilter = (columnFilters.find(filter => filter.id === "status")?.value as string[] | undefined)?.[0];
+    const statusFilter = (
+        columnFilters.find((filter) => filter.id === "status")?.value as string[] | undefined
+    )?.[0];
 
     const { data, isLoading, isError } = useCompanies({
-
         page: pagination.pageIndex + 1,
 
         pageSize: pagination.pageSize,
@@ -89,42 +82,28 @@ export function CompaniesView() {
         sortBy: sortColumn ? sortByColumnId[sortColumn.id] : undefined,
 
         sortDirection: sortColumn ? (sortColumn.desc ? "desc" : "asc") : undefined,
-
     });
 
     const hasNoFilters = !debouncedSearch && !industryFilter && !statusFilter && !debouncedCountry;
 
     return (
-
         <div className="space-y-8">
-
-            <CompanyToolbar
-                onCreateCompany={() => setOpen(true)}
-            />
+            <CompanyToolbar onCreateCompany={() => setOpen(true)} />
 
             {isLoading ? (
-
                 <DataTableSkeleton columns={8} />
-
             ) : isError ? (
-
                 <div className="flex flex-col items-center py-20 text-center">
-
                     <h3 className="text-xl font-semibold">Unable to load companies</h3>
 
                     <p className="text-muted-foreground">Something went wrong. Please try again.</p>
-
                 </div>
-
             ) : hasNoFilters && (data?.totalCount ?? 0) === 0 ? (
-
                 <EmptyState
                     title="No companies"
                     description="Add your first company to get started."
                 />
-
             ) : (
-
                 <CompanyTable
                     companies={data?.items ?? []}
                     pageCount={data?.totalPages ?? 0}
@@ -139,16 +118,9 @@ export function CompaniesView() {
                     countryFilter={countryFilter}
                     onCountryFilterChange={setCountryFilter}
                 />
-
             )}
 
-            <CompanySheet
-                open={open}
-                onOpenChange={setOpen}
-            />
-
+            <CompanySheet open={open} onOpenChange={setOpen} />
         </div>
-
     );
-
 }

@@ -7,11 +7,9 @@ export function useChangeUserRole() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, role }: { id: string; role: string }) =>
-            usersApi.changeRole(id, role),
+        mutationFn: ({ id, role }: { id: string; role: string }) => usersApi.changeRole(id, role),
 
         // Invalida la lista para reflejar el nuevo rol sin refetch manual.
-        onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: queryKeys.users.all }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.users.all }),
     });
 }

@@ -1,5 +1,4 @@
 export interface User {
-
     id: string;
 
     fullName: string;
@@ -7,5 +6,4 @@ export interface User {
     email: string;
 
     role: string;
-
 }

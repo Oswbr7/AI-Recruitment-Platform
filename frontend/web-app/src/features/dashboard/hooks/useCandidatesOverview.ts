@@ -13,26 +13,31 @@ const EXPERIENCE_BUCKETS = [
 ];
 
 export function useCandidatesOverview() {
-
     const { candidates, isLoading } = useDashboardSourceData();
 
     const overview = useMemo(() => {
-
         const byStageMap = new Map<string, number>();
 
         for (const candidate of candidates)
             byStageMap.set(candidate.stage, (byStageMap.get(candidate.stage) ?? 0) + 1);
 
-        const byStage = Array.from(byStageMap.entries()).map(([stage, value]) => ({ stage, value }));
+        const byStage = Array.from(byStageMap.entries()).map(([stage, value]) => ({
+            stage,
+            value,
+        }));
 
-        const activeCount = candidates.filter(c => c.status === CandidateStatus.Active).length;
+        const activeCount = candidates.filter((c) => c.status === CandidateStatus.Active).length;
 
-        const archivedCount = candidates.filter(c => c.status === CandidateStatus.Archived).length;
+        const archivedCount = candidates.filter(
+            (c) => c.status === CandidateStatus.Archived,
+        ).length;
 
-        const byExperience = EXPERIENCE_BUCKETS.map(bucket => ({
+        const byExperience = EXPERIENCE_BUCKETS.map((bucket) => ({
             label: bucket.label,
             value: candidates.filter(
-                c => (c.yearsOfExperience ?? -1) >= bucket.min && (c.yearsOfExperience ?? -1) <= bucket.max
+                (c) =>
+                    (c.yearsOfExperience ?? -1) >= bucket.min &&
+                    (c.yearsOfExperience ?? -1) <= bucket.max,
             ).length,
         }));
 
@@ -42,19 +47,20 @@ export function useCandidatesOverview() {
 
         const now = new Date();
 
-        const monthStarts = Array.from({ length: 6 }, (_, i) => startOfMonth(subMonths(now, 5 - i)));
+        const monthStarts = Array.from({ length: 6 }, (_, i) =>
+            startOfMonth(subMonths(now, 5 - i)),
+        );
 
         // No dedicated "HiredAt" field exists — same approximation as Time To Hire,
         // using updatedAt as the point a candidate reached the Hired stage.
-        const hiringTrend = monthStarts.map(monthStart => ({
+        const hiringTrend = monthStarts.map((monthStart) => ({
             month: format(monthStart, "MMM"),
             value: candidates.filter(
-                c => c.stage === CandidateStage.Hired && isSameMonth(c.updatedAt, monthStart)
+                (c) => c.stage === CandidateStage.Hired && isSameMonth(c.updatedAt, monthStart),
             ).length,
         }));
 
         return {
-
             byStage,
 
             activeCount,
@@ -66,11 +72,8 @@ export function useCandidatesOverview() {
             recentCandidates,
 
             hiringTrend,
-
         };
-
     }, [candidates]);
 
     return { ...overview, isLoading };
-
 }

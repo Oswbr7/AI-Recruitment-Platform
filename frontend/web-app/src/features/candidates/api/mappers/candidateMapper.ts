@@ -2,9 +2,7 @@ import type { Candidate } from "../../models/Candidate";
 import type { CandidateResponse } from "../dto/CandidateResponse";
 
 export function toCandidate(response: CandidateResponse): Candidate {
-
     return {
-
         id: response.id,
 
         firstName: response.firstName,
@@ -44,7 +42,5 @@ export function toCandidate(response: CandidateResponse): Candidate {
         createdAt: new Date(response.createdAt),
 
         updatedAt: new Date(response.updatedAt),
-
     };
-
 }

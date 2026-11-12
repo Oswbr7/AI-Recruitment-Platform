@@ -1,5 +1,4 @@
 export interface UpdateInterviewRequest {
-
     title: string;
 
     description?: string;
@@ -13,5 +12,4 @@ export interface UpdateInterviewRequest {
     meetingUrl?: string;
 
     location?: string;
-
 }

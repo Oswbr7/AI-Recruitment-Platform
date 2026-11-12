@@ -11,15 +11,10 @@ import { useAddCandidateNote } from "../../hooks/useAddCandidateNote";
 import { NoteCard } from "./NoteCard";
 
 interface Props {
-
     candidateId: string;
-
 }
 
-export function CandidateNotesSection({
-    candidateId,
-}: Props) {
-
+export function CandidateNotesSection({ candidateId }: Props) {
     const [content, setContent] = useState("");
 
     const { data: notes, isLoading } = useCandidateNotes(candidateId);
@@ -27,37 +22,29 @@ export function CandidateNotesSection({
     const addNote = useAddCandidateNote(candidateId);
 
     const handleAdd = () => {
-
-        if (!content.trim())
-            return;
+        if (!content.trim()) return;
 
         addNote.mutate(content.trim(), {
             onSuccess: () => setContent(""),
         });
-
     };
 
     return (
-
         <Card>
-
             <CardHeader>
                 <CardTitle>Notes</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
-
                 <div className="space-y-2">
-
                     <Textarea
                         rows={3}
                         placeholder="Add a note about this candidate..."
                         value={content}
-                        onChange={event => setContent(event.target.value)}
+                        onChange={(event) => setContent(event.target.value)}
                     />
 
                     <div className="flex justify-end">
-
                         <Button
                             size="sm"
                             disabled={!content.trim() || addNote.isPending}
@@ -66,34 +53,22 @@ export function CandidateNotesSection({
                             <Send className="mr-1.5 h-3.5 w-3.5" />
                             Add Note
                         </Button>
-
                     </div>
-
                 </div>
 
                 {isLoading ? null : !notes?.length ? (
-
                     <EmptyState
                         title="No notes yet"
                         description="Add the first note about this candidate."
                     />
-
                 ) : (
-
                     <div className="space-y-3">
-
-                        {notes.map(note => (
+                        {notes.map((note) => (
                             <NoteCard key={note.id} candidateId={candidateId} note={note} />
                         ))}
-
                     </div>
-
                 )}
-
             </CardContent>
-
         </Card>
-
     );
-
 }

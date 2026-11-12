@@ -4,7 +4,6 @@ import { useCompanies } from "@/features/companies/hooks/useCompanies";
 import { useInterviews } from "@/features/interviews/hooks/useInterviews";
 
 export function useDashboardSourceData() {
-
     const jobsQuery = useJobs();
 
     const candidatesQuery = useCandidates({ pageSize: 200 });
@@ -14,7 +13,6 @@ export function useDashboardSourceData() {
     const interviewsQuery = useInterviews({ pageSize: 200 });
 
     return {
-
         jobs: jobsQuery.data ?? [],
 
         candidates: candidatesQuery.data?.items ?? [],
@@ -34,7 +32,5 @@ export function useDashboardSourceData() {
             candidatesQuery.isError ||
             companiesQuery.isError ||
             interviewsQuery.isError,
-
     };
-
 }

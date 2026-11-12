@@ -4,13 +4,7 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 
 import type { Control, FieldPath, FieldValues } from "react-hook-form";
 
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
 
@@ -29,7 +23,6 @@ export function PasswordField<T extends FieldValues>({
     label,
     placeholder,
 }: PasswordFieldProps<T>) {
-
     const [showPassword, setShowPassword] = useState(false);
 
     return (
@@ -37,18 +30,12 @@ export function PasswordField<T extends FieldValues>({
             control={control}
             name={name}
             render={({ field }) => (
-
                 <FormItem>
-
                     <FormLabel>{label}</FormLabel>
 
                     <FormControl>
-
                         <div className="relative">
-
-                            <Lock
-                                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                            />
+                            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 
                             <Input
                                 {...field}
@@ -70,15 +57,11 @@ export function PasswordField<T extends FieldValues>({
                                     <Eye className="h-4 w-4" />
                                 )}
                             </Button>
-
                         </div>
-
                     </FormControl>
 
                     <FormMessage />
-
                 </FormItem>
-
             )}
         />
     );

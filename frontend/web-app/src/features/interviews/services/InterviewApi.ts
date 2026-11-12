@@ -11,91 +11,71 @@ import type { GetInterviewsParams } from "../types/GetInterviewsParams";
 import type { RescheduleInterviewRequest } from "../types/RescheduleInterviewRequest";
 
 export const interviewApi = {
-
     async schedule(request: ScheduleInterviewRequest): Promise<ScheduleInterviewResponse> {
-
         const response = await interviewsApi.post<ApiResponse<ScheduleInterviewResponse>>(
             "/interviews",
-            request
+            request,
         );
 
         return response.data.data;
-
     },
 
     async getPaged(params: GetInterviewsParams): Promise<PagedResult<Interview>> {
-
         const response = await interviewsApi.get<ApiResponse<PagedResult<InterviewResponse>>>(
             "/interviews",
-            { params }
+            { params },
         );
 
         return {
-
             ...response.data.data,
 
             items: response.data.data.items.map(toInterview),
-
         };
-
     },
 
     async getById(id: string): Promise<Interview> {
-
         const response = await interviewsApi.get<ApiResponse<InterviewResponse>>(
-            `/interviews/${id}`
+            `/interviews/${id}`,
         );
 
         return toInterview(response.data.data);
-
     },
 
     async update(id: string, request: UpdateInterviewRequest): Promise<Interview> {
-
         const response = await interviewsApi.put<ApiResponse<InterviewResponse>>(
             `/interviews/${id}`,
-            request
+            request,
         );
 
         return toInterview(response.data.data);
-
     },
 
     async remove(id: string): Promise<void> {
-
         await interviewsApi.delete(`/interviews/${id}`);
-
     },
 
     async cancel(id: string): Promise<Interview> {
-
         const response = await interviewsApi.post<ApiResponse<InterviewResponse>>(
-            `/interviews/${id}/cancel`
+            `/interviews/${id}/cancel`,
         );
 
         return toInterview(response.data.data);
-
     },
 
     async complete(id: string): Promise<Interview> {
-
         const response = await interviewsApi.post<ApiResponse<InterviewResponse>>(
-            `/interviews/${id}/complete`
+            `/interviews/${id}/complete`,
         );
 
         return toInterview(response.data.data);
-
     },
 
     async reschedule(id: string, request: RescheduleInterviewRequest): Promise<Interview> {
-
         const response = await interviewsApi.post<ApiResponse<InterviewResponse>>(
             `/interviews/${id}/reschedule`,
-            request
+            request,
         );
 
         return toInterview(response.data.data);
-
     },
-
 };

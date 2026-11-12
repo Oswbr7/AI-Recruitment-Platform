@@ -1,5 +1,4 @@
 export interface CreateJobRequest {
-
     title: string;
 
     description: string;
@@ -21,5 +20,4 @@ export interface CreateJobRequest {
     currency?: string;
 
     companyId?: string;
-
 }

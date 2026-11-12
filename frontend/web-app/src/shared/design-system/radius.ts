@@ -1,5 +1,4 @@
 export const Radius = {
-
     sm: "rounded-md",
 
     md: "rounded-lg",
@@ -7,5 +6,4 @@ export const Radius = {
     lg: "rounded-xl",
 
     xl: "rounded-2xl",
-
 };

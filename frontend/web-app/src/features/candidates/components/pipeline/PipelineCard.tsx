@@ -5,25 +5,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { Candidate } from "../../models/Candidate";
 
 interface Props {
-
     candidate: Candidate;
-
 }
 
-export function PipelineCard({
-    candidate,
-}: Props) {
-
+export function PipelineCard({ candidate }: Props) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
         id: candidate.id,
     });
 
-    const style = transform
-        ? { transform: CSS.Translate.toString(transform) }
-        : undefined;
+    const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
 
     return (
-
         <Card
             ref={setNodeRef}
             style={style}
@@ -32,9 +24,7 @@ export function PipelineCard({
             {...listeners}
             {...attributes}
         >
-
             <CardContent>
-
                 <p className="text-sm font-medium">
                     {candidate.firstName} {candidate.lastName}
                 </p>
@@ -43,14 +33,8 @@ export function PipelineCard({
                     {candidate.headline || candidate.currentPosition || "—"}
                 </p>
 
-                <p className="text-xs text-muted-foreground">
-                    {candidate.email}
-                </p>
-
+                <p className="text-xs text-muted-foreground">{candidate.email}</p>
             </CardContent>
-
         </Card>
-
     );
-
 }

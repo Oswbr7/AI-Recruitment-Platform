@@ -1,5 +1,4 @@
 export const Breakpoints = {
-
     mobile: "sm",
 
     tablet: "md",
@@ -7,5 +6,4 @@ export const Breakpoints = {
     laptop: "lg",
 
     desktop: "xl",
-
 };

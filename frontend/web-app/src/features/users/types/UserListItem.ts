@@ -1,9 +1,8 @@
 export const ROLE_VALUES = ["Candidate", "Recruiter", "Admin"] as const;
 
-export type RoleValue = typeof ROLE_VALUES[number];
+export type RoleValue = (typeof ROLE_VALUES)[number];
 
 export interface UserListItem {
-
     id: string;
 
     fullName: string;
@@ -11,5 +10,4 @@ export interface UserListItem {
     email: string;
 
     role: string;
-
 }

@@ -4,7 +4,6 @@ import type { UpdateInterviewRequest } from "../../types/UpdateInterviewRequest"
 import type { Interview } from "../../models/Interview";
 
 function toPaddedDateParts(date: Date) {
-
     const year = date.getFullYear();
 
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -16,19 +15,14 @@ function toPaddedDateParts(date: Date) {
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return {
-
         date: `${year}-${month}-${day}`,
 
         time: `${hours}:${minutes}`,
-
     };
-
 }
 
 export function toScheduleInterviewRequest(values: InterviewFormValues): ScheduleInterviewRequest {
-
     return {
-
         candidateId: values.candidateId,
 
         jobId: values.jobId,
@@ -50,15 +44,11 @@ export function toScheduleInterviewRequest(values: InterviewFormValues): Schedul
         meetingUrl: values.meetingUrl || undefined,
 
         location: values.location || undefined,
-
     };
-
 }
 
 export function toUpdateInterviewRequest(values: InterviewFormValues): UpdateInterviewRequest {
-
     return {
-
         title: values.title,
 
         description: values.description || undefined,
@@ -72,17 +62,13 @@ export function toUpdateInterviewRequest(values: InterviewFormValues): UpdateInt
         meetingUrl: values.meetingUrl || undefined,
 
         location: values.location || undefined,
-
     };
-
 }
 
 export function toInterviewFormValues(interview: Interview): InterviewFormValues {
-
     const { date, time } = toPaddedDateParts(interview.scheduledAt);
 
     return {
-
         candidateId: interview.candidateId,
 
         jobId: interview.jobId,
@@ -106,7 +92,5 @@ export function toInterviewFormValues(interview: Interview): InterviewFormValues
         meetingUrl: interview.meetingUrl ?? "",
 
         location: interview.location ?? "",
-
     };
-
 }

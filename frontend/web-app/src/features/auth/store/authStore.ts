@@ -4,17 +4,13 @@ import { persist } from "zustand/middleware";
 import type { User } from "../types";
 
 type AuthState = {
-
     accessToken: string | null;
 
     user: User | null;
 
     isAuthenticated: boolean;
 
-    login: (
-        token: string,
-        user: User
-    ) => void;
+    login: (token: string, user: User) => void;
 
     logout: () => void;
 };
@@ -44,6 +40,6 @@ export const useAuthStore = create<AuthState>()(
         }),
         {
             name: "auth-storage",
-        }
-    )
+        },
+    ),
 );

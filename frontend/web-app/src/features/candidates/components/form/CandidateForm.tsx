@@ -3,25 +3,17 @@ import { useForm, type Resolver } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
 
-import {
-    EntitySheetFooter,
-} from "@/shared/components/entity";
+import { EntitySheetFooter } from "@/shared/components/entity";
 
-import {
-    FormActions,
-} from "@/shared/components/form";
+import { FormActions } from "@/shared/components/form";
 
-import {
-    candidateSchema,
-    type CandidateFormValues,
-} from "../../schemas/candidateSchema";
+import { candidateSchema, type CandidateFormValues } from "../../schemas/candidateSchema";
 
 import { PersonalSection } from "./sections/PersonalSection";
 import { ProfileSection } from "./sections/ProfileSection";
 import { LinksAndCompensationSection } from "./sections/LinksAndCompensationSection";
 
 interface CandidateFormProps {
-
     initialValues?: Partial<CandidateFormValues>;
 
     isSubmitting?: boolean;
@@ -29,11 +21,9 @@ interface CandidateFormProps {
     onCancel: () => void;
 
     onSubmit: (values: CandidateFormValues) => void | Promise<void>;
-
 }
 
 const defaultValues: CandidateFormValues = {
-
     firstName: "",
 
     lastName: "",
@@ -62,86 +52,51 @@ const defaultValues: CandidateFormValues = {
 
     expectedSalary: undefined,
 
-    currency: "USD"
-
+    currency: "USD",
 };
 
 export function CandidateForm({
-
     initialValues,
 
     isSubmitting = false,
 
     onCancel,
 
-    onSubmit
-
+    onSubmit,
 }: CandidateFormProps) {
-
     const form = useForm<CandidateFormValues>({
-
         resolver: zodResolver(candidateSchema) as Resolver<CandidateFormValues>,
 
         defaultValues: {
-
             ...defaultValues,
 
-            ...initialValues
-
-        }
-
+            ...initialValues,
+        },
     });
 
     return (
-
         <Form {...form}>
-
             <form
-
                 onSubmit={form.handleSubmit(onSubmit)}
 
                 className="flex h-full flex-col"
-
             >
-
                 <div className="flex-1 space-y-10 p-6">
+                    <PersonalSection control={form.control} />
 
-                    <PersonalSection
+                    <ProfileSection control={form.control} />
 
-                        control={form.control}
-
-                    />
-
-                    <ProfileSection
-
-                        control={form.control}
-
-                    />
-
-                    <LinksAndCompensationSection
-
-                        control={form.control}
-
-                    />
-
+                    <LinksAndCompensationSection control={form.control} />
                 </div>
 
                 <EntitySheetFooter>
-
                     <FormActions
-
                         isSubmitting={isSubmitting}
 
                         onCancel={onCancel}
-
                     />
-
                 </EntitySheetFooter>
-
             </form>
-
         </Form>
-
     );
-
 }

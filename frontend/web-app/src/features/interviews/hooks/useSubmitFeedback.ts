@@ -6,16 +6,13 @@ import { interviewFeedbackApi } from "../services/InterviewFeedbackApi";
 import type { SubmitInterviewFeedbackRequest } from "../types/SubmitInterviewFeedbackRequest";
 
 export function useSubmitFeedback(interviewId: string) {
-
     const queryClient = useQueryClient();
 
     return useMutation({
-
         mutationFn: (request: SubmitInterviewFeedbackRequest) =>
             interviewFeedbackApi.submit(interviewId, request),
 
         onSuccess: () => {
-
             toast.success("Feedback submitted.");
 
             queryClient.invalidateQueries({
@@ -25,15 +22,10 @@ export function useSubmitFeedback(interviewId: string) {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.interviews.detail(interviewId),
             });
-
         },
 
         onError: () => {
-
             toast.error("Unable to submit feedback.");
-
-        }
-
+        },
     });
-
 }

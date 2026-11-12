@@ -1,5 +1,4 @@
 export interface UpdateCompanyContactRequest {
-
     firstName: string;
 
     lastName: string;
@@ -11,5 +10,4 @@ export interface UpdateCompanyContactRequest {
     position?: string;
 
     isPrimaryContact: boolean;
-
 }

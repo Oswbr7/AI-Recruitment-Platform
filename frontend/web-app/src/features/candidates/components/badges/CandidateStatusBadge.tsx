@@ -8,23 +8,9 @@ const variantByStatus: Record<Candidate["status"], "success" | "warning" | "info
 };
 
 interface Props {
-
     status: Candidate["status"];
-
 }
 
-export function CandidateStatusBadge({
-    status,
-}: Props) {
-
-    return (
-
-        <StatusBadge variant={variantByStatus[status]}>
-
-            {status}
-
-        </StatusBadge>
-
-    );
-
+export function CandidateStatusBadge({ status }: Props) {
+    return <StatusBadge variant={variantByStatus[status]}>{status}</StatusBadge>;
 }

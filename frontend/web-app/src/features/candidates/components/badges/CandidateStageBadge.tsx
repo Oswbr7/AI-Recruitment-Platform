@@ -13,23 +13,9 @@ const variantByStage: Record<Candidate["stage"], "success" | "warning" | "info" 
 };
 
 interface Props {
-
     stage: Candidate["stage"];
-
 }
 
-export function CandidateStageBadge({
-    stage,
-}: Props) {
-
-    return (
-
-        <StatusBadge variant={variantByStage[stage]}>
-
-            {stage}
-
-        </StatusBadge>
-
-    );
-
+export function CandidateStageBadge({ stage }: Props) {
+    return <StatusBadge variant={variantByStage[stage]}>{stage}</StatusBadge>;
 }

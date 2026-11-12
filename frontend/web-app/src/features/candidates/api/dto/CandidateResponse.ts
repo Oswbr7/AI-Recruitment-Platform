@@ -1,5 +1,4 @@
 export interface CandidateResponse {
-
     id: string;
 
     firstName: string;
@@ -39,5 +38,4 @@ export interface CandidateResponse {
     createdAt: string;
 
     updatedAt: string;
-
 }

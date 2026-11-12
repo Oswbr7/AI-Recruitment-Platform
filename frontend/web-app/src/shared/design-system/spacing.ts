@@ -1,5 +1,4 @@
 export const Spacing = {
-
     page: "p-6",
 
     section: "space-y-8",
@@ -7,5 +6,4 @@ export const Spacing = {
     card: "p-6",
 
     form: "space-y-6",
-
 };

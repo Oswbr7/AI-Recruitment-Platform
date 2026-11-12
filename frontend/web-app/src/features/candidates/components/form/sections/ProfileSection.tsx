@@ -1,12 +1,6 @@
 import type { Control } from "react-hook-form";
 
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,61 +14,39 @@ interface Props {
 }
 
 export function ProfileSection({ control }: Props) {
-
     return (
-
-        <FormSection
-            title="Professional Profile"
-            description="Current role and background."
-        >
-
+        <FormSection title="Professional Profile" description="Current role and background.">
             <div className="grid gap-5">
-
                 <FormField
                     control={control}
                     name="headline"
                     render={({ field }) => (
-
                         <FormItem>
-
                             <FormLabel>Headline</FormLabel>
 
                             <FormControl>
-                                <Input
-                                    placeholder="Senior Backend Developer"
-                                    {...field}
-                                />
+                                <Input placeholder="Senior Backend Developer" {...field} />
                             </FormControl>
 
                             <FormMessage />
-
                         </FormItem>
-
                     )}
                 />
 
                 <div className="grid md:grid-cols-2 gap-5">
-
                     <FormField
                         control={control}
                         name="currentCompany"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>Current Company</FormLabel>
 
                                 <FormControl>
-                                    <Input
-                                        placeholder="Acme Inc."
-                                        {...field}
-                                    />
+                                    <Input placeholder="Acme Inc." {...field} />
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
 
@@ -82,34 +54,24 @@ export function ProfileSection({ control }: Props) {
                         control={control}
                         name="currentPosition"
                         render={({ field }) => (
-
                             <FormItem>
-
                                 <FormLabel>Current Position</FormLabel>
 
                                 <FormControl>
-                                    <Input
-                                        placeholder="Backend Engineer"
-                                        {...field}
-                                    />
+                                    <Input placeholder="Backend Engineer" {...field} />
                                 </FormControl>
 
                                 <FormMessage />
-
                             </FormItem>
-
                         )}
                     />
-
                 </div>
 
                 <FormField
                     control={control}
                     name="yearsOfExperience"
                     render={({ field }) => (
-
                         <FormItem>
-
                             <FormLabel>Years of Experience</FormLabel>
 
                             <FormControl>
@@ -123,9 +85,7 @@ export function ProfileSection({ control }: Props) {
                             </FormControl>
 
                             <FormMessage />
-
                         </FormItem>
-
                     )}
                 />
 
@@ -133,32 +93,22 @@ export function ProfileSection({ control }: Props) {
                     control={control}
                     name="summary"
                     render={({ field }) => (
-
                         <FormItem>
-
                             <FormLabel>Summary</FormLabel>
 
                             <FormControl>
-
                                 <Textarea
                                     rows={6}
                                     placeholder="Brief background and highlights..."
                                     {...field}
                                 />
-
                             </FormControl>
 
                             <FormMessage />
-
                         </FormItem>
-
                     )}
                 />
-
             </div>
-
         </FormSection>
-
     );
-
 }

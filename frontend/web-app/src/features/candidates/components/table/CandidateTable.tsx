@@ -16,18 +16,17 @@ import { useDeleteCandidate } from "../../hooks/useDeleteCandidate";
 import { candidateColumns } from "./CandidateColumns";
 import { DeleteCandidateDialog } from "../DeleteCandidateDialog";
 
-const stageOptions = Object.values(CandidateStage).map(value => ({
+const stageOptions = Object.values(CandidateStage).map((value) => ({
     label: value,
     value,
 }));
 
-const statusOptions = Object.values(CandidateStatus).map(value => ({
+const statusOptions = Object.values(CandidateStatus).map((value) => ({
     label: value,
     value,
 }));
 
 interface Props {
-
     candidates: Candidate[];
 
     pageCount: number;
@@ -47,11 +46,9 @@ interface Props {
     columnFilters: ColumnFiltersState;
 
     onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-
 }
 
 export function CandidateTable({
-
     candidates,
     pageCount,
     pagination,
@@ -62,9 +59,7 @@ export function CandidateTable({
     onGlobalFilterChange,
     columnFilters,
     onColumnFiltersChange,
-
 }: Props) {
-
     const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
 
     const [pendingIds, setPendingIds] = useState<string[]>([]);
@@ -74,21 +69,15 @@ export function CandidateTable({
     const deleteCandidate = useDeleteCandidate();
 
     const handleBulkDeleteConfirm = async () => {
-
-        await Promise.allSettled(
-            pendingIds.map(id => deleteCandidate.mutateAsync(id))
-        );
+        await Promise.allSettled(pendingIds.map((id) => deleteCandidate.mutateAsync(id)));
 
         setBulkDeleteOpen(false);
 
         clearSelectionFn?.();
-
     };
 
     return (
-
         <>
-
             <DataTable
                 columns={candidateColumns}
                 data={candidates}
@@ -106,10 +95,8 @@ export function CandidateTable({
                 onGlobalFilterChange={onGlobalFilterChange}
                 columnFilters={columnFilters}
                 onColumnFiltersChange={onColumnFiltersChange}
-                renderFilters={table => (
-
+                renderFilters={(table) => (
                     <>
-
                         <DataTableFacetedFilter
                             column={table.getColumn("stage")}
                             title="Stage"
@@ -121,14 +108,10 @@ export function CandidateTable({
                             title="Status"
                             options={statusOptions}
                         />
-
                     </>
-
                 )}
                 renderBulkActions={(selectedRows, clearSelection) => (
-
                     <div className="flex items-center gap-2">
-
                         <span className="text-sm text-muted-foreground">
                             {selectedRows.length} selected
                         </span>
@@ -137,7 +120,7 @@ export function CandidateTable({
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                                setPendingIds(selectedRows.map(candidate => candidate.id));
+                                setPendingIds(selectedRows.map((candidate) => candidate.id));
                                 setClearSelectionFn(() => clearSelection);
                                 setBulkDeleteOpen(true);
                             }}
@@ -145,9 +128,7 @@ export function CandidateTable({
                             <Trash2 className="mr-1.5 h-4 w-4" />
                             Delete
                         </Button>
-
                     </div>
-
                 )}
             />
 
@@ -158,9 +139,6 @@ export function CandidateTable({
                 isLoading={deleteCandidate.isPending}
                 onConfirm={handleBulkDeleteConfirm}
             />
-
         </>
-
     );
-
 }

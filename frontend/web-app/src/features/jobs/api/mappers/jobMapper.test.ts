@@ -39,12 +39,14 @@ describe("toJob", () => {
     });
 
     it("null del DTO -> undefined del modelo (salarios, moneda, empresa)", () => {
-        const job = toJob(fixture({
-            salaryMin: null,
-            salaryMax: null,
-            currency: null,
-            companyId: null,
-        }));
+        const job = toJob(
+            fixture({
+                salaryMin: null,
+                salaryMax: null,
+                currency: null,
+                companyId: null,
+            }),
+        );
 
         expect(job.salaryMin).toBeUndefined();
         expect(job.salaryMax).toBeUndefined();

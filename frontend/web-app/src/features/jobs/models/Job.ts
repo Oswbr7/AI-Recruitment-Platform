@@ -5,7 +5,7 @@ export const JobStatus = {
     Archived: "Archived",
 } as const;
 
-export type JobStatus = typeof JobStatus[keyof typeof JobStatus];
+export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus];
 
 export const EmploymentType = {
     FullTime: "FullTime",
@@ -15,7 +15,7 @@ export const EmploymentType = {
     Temporary: "Temporary",
 } as const;
 
-export type EmploymentType = typeof EmploymentType[keyof typeof EmploymentType];
+export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType];
 
 export const ExperienceLevel = {
     EntryLevel: "EntryLevel",
@@ -26,7 +26,7 @@ export const ExperienceLevel = {
     Executive: "Executive",
 } as const;
 
-export type ExperienceLevel = typeof ExperienceLevel[keyof typeof ExperienceLevel];
+export type ExperienceLevel = (typeof ExperienceLevel)[keyof typeof ExperienceLevel];
 
 export const RemoteType = {
     OnSite: "OnSite",
@@ -34,10 +34,9 @@ export const RemoteType = {
     Hybrid: "Hybrid",
 } as const;
 
-export type RemoteType = typeof RemoteType[keyof typeof RemoteType];
+export type RemoteType = (typeof RemoteType)[keyof typeof RemoteType];
 
 export interface Job {
-
     id: string;
 
     title: string;

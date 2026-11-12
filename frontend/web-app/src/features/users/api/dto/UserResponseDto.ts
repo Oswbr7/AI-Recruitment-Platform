@@ -1,5 +1,4 @@
 export interface UserResponseDto {
-
     id: string;
 
     firstName: string;
@@ -9,5 +8,4 @@ export interface UserResponseDto {
     email: string;
 
     role: string;
-
 }

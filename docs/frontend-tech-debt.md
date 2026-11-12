@@ -17,6 +17,7 @@
 | Sin script `typecheck` / `engines.node` | ✅ `"typecheck": "tsc -b"` + `engines.node >= 24` (batería) |
 | Password registro min 6 (backend 8... inversa) | ✅ Alineado a **min 8 en ambos lados** (batería) |
 | `Sidebar.menu` legacy duplicado sin uso | ✅ Export eliminado; el menú real es `shared/constants/navigation.ts` (batería) |
+| Sin Prettier / script `format` | ✅ Prettier instalado (`.prettierrc`: tabWidth 4, doble quote, printWidth 100), `.prettierignore` excluye `src/components/ui` (shadcn generado), scripts `format`/`format:check` + gate en CI (2026-11-06) |
 
 ## Corrección de entradas falsas (batería 2026-11-06)
 
@@ -35,15 +36,12 @@
 2. **`shared/components/entity/` sin uso** — `EntitySheet`, `EntitySheetHeader`,
    `EntitySheetFooter` con barrel completo pero ningún consumidor. Era para un
    futuro drawer de detalle: o se usa en esa feature, o se borra.
-3. **Prettier** — diferido a sesión propia: instalar devDependency, `.prettierrc`
-   (decisiones de config) y scripts `format`/`format:check` (+ posible gate en CI).
-   Hoy solo existe oxlint (2 reglas, sin type-aware).
 
 ### Baja prioridad
 
-4. **Lint/formato**: oxlint con solo 2 reglas activas (`rules-of-hooks`,
-   `only-export-components`) y sin reglas type-aware (subir a type-aware cuando
-   Prettier entre).
+4. **oxlint** con solo 2 reglas activas (`rules-of-hooks`,
+   `only-export-components`) y sin reglas type-aware — subir a type-aware como
+   mejora separada (Prettier ya cubre el formato).
 5. **`shared/services/SessionService.currentUserId()`** decodifica el JWT a mano —
    sigue siendo válido, pero desde el Bloque 2 el backend ya devuelve el usuario
    en el login; candidato a simplificar.

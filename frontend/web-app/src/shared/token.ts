@@ -1,7 +1,5 @@
 export const ThemeTokens = {
-
     color: {
-
         primary: "primary",
 
         secondary: "secondary",
@@ -15,21 +13,17 @@ export const ThemeTokens = {
         info: "info",
 
         muted: "muted",
-
     },
 
     radius: {
-
         sm: "rounded-md",
 
         md: "rounded-lg",
 
         lg: "rounded-xl",
-
     },
 
     spacing: {
-
         xs: "gap-2",
 
         sm: "gap-4",
@@ -37,7 +31,5 @@ export const ThemeTokens = {
         md: "gap-6",
 
         lg: "gap-8",
-
-    }
-
+    },
 } as const;

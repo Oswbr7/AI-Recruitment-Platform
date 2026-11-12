@@ -6,10 +6,9 @@ export const Recommendation = {
     StrongNoHire: "StrongNoHire",
 } as const;
 
-export type Recommendation = typeof Recommendation[keyof typeof Recommendation];
+export type Recommendation = (typeof Recommendation)[keyof typeof Recommendation];
 
 export interface InterviewFeedback {
-
     id: string;
 
     interviewId: string;

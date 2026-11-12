@@ -1,5 +1,4 @@
 export interface GetCompaniesParams {
-
     page?: number;
 
     pageSize?: number;
@@ -15,5 +14,4 @@ export interface GetCompaniesParams {
     sortBy?: string;
 
     sortDirection?: string;
-
 }

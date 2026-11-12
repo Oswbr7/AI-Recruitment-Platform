@@ -8,19 +8,16 @@ import { JobStatusBadge } from "../badges/JobStatusBadge";
 import { JobActionsMenu } from "../actions/JobActionsMenu";
 
 export const jobColumns: ColumnDef<Job>[] = [
-
     {
-
         id: "select",
 
         header: ({ table }) => (
             <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 indeterminate={
-                    table.getIsSomePageRowsSelected() &&
-                    !table.getIsAllPageRowsSelected()
+                    table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
                 }
-                onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
@@ -28,7 +25,7 @@ export const jobColumns: ColumnDef<Job>[] = [
         cell: ({ row }) => (
             <Checkbox
                 checked={row.getIsSelected()}
-                onCheckedChange={value => row.toggleSelected(!!value)}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
                 aria-label="Select row"
             />
         ),
@@ -36,77 +33,49 @@ export const jobColumns: ColumnDef<Job>[] = [
         enableSorting: false,
 
         enableHiding: false,
-
     },
 
     {
-
         accessorKey: "title",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Title" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
     },
 
     {
-
         accessorKey: "department",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Department" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Department" />,
     },
 
     {
-
         accessorKey: "location",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Location" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Location" />,
     },
 
     {
-
         accessorKey: "employmentType",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Employment" />
-        ),
-
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Employment" />,
     },
 
     {
-
         accessorKey: "status",
 
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Status" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
 
-        cell: ({ row }) => (
-            <JobStatusBadge status={row.original.status} />
-        ),
+        cell: ({ row }) => <JobStatusBadge status={row.original.status} />,
 
         filterFn: "arrIncludesSome",
-
     },
 
     {
-
         id: "actions",
 
-        cell: ({ row }) => (
-            <JobActionsMenu job={row.original} />
-        ),
+        cell: ({ row }) => <JobActionsMenu job={row.original} />,
 
         enableSorting: false,
 
         enableHiding: false,
-
     },
-
 ];

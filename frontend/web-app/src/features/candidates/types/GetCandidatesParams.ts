@@ -1,5 +1,4 @@
 export interface GetCandidatesParams {
-
     page?: number;
 
     pageSize?: number;
@@ -13,5 +12,4 @@ export interface GetCandidatesParams {
     sortBy?: string;
 
     sortDirection?: string;
-
 }

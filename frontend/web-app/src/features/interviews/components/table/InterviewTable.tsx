@@ -20,18 +20,17 @@ import { useJobs } from "@/features/jobs/hooks/useJobs";
 import { getInterviewColumns } from "./InterviewColumns";
 import { DeleteInterviewDialog } from "../DeleteInterviewDialog";
 
-const statusOptions = Object.values(InterviewStatus).map(value => ({
+const statusOptions = Object.values(InterviewStatus).map((value) => ({
     label: value,
     value,
 }));
 
-const stageOptions = Object.values(InterviewStage).map(value => ({
+const stageOptions = Object.values(InterviewStage).map((value) => ({
     label: value,
     value,
 }));
 
 interface Props {
-
     interviews: Interview[];
 
     pageCount: number;
@@ -59,11 +58,9 @@ interface Props {
     dateTo: string;
 
     onDateToChange: (value: string) => void;
-
 }
 
 export function InterviewTable({
-
     interviews,
     pageCount,
     pagination,
@@ -78,9 +75,7 @@ export function InterviewTable({
     onDateFromChange,
     dateTo,
     onDateToChange,
-
 }: Props) {
-
     const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
 
     const [pendingIds, setPendingIds] = useState<string[]>([]);
@@ -96,64 +91,52 @@ export function InterviewTable({
     const { data: recruiters } = useRecruiters();
 
     const recruiterOptions = useMemo(
-        () => (recruiters ?? []).map(r => ({ label: `${r.firstName} ${r.lastName}`, value: r.id })),
-        [recruiters]
+        () =>
+            (recruiters ?? []).map((r) => ({ label: `${r.firstName} ${r.lastName}`, value: r.id })),
+        [recruiters],
     );
 
     const candidateNameById = useMemo(() => {
-
         const map: Record<string, string> = {};
 
         for (const candidate of candidatesData?.items ?? [])
             map[candidate.id] = `${candidate.firstName} ${candidate.lastName}`;
 
         return map;
-
     }, [candidatesData]);
 
     const jobTitleById = useMemo(() => {
-
         const map: Record<string, string> = {};
 
-        for (const job of jobs ?? [])
-            map[job.id] = job.title;
+        for (const job of jobs ?? []) map[job.id] = job.title;
 
         return map;
-
     }, [jobs]);
 
     const recruiterNameById = useMemo(() => {
-
         const map: Record<string, string> = {};
 
         for (const recruiter of recruiters ?? [])
             map[recruiter.id] = `${recruiter.firstName} ${recruiter.lastName}`;
 
         return map;
-
     }, [recruiters]);
 
     const columns = useMemo(
         () => getInterviewColumns(candidateNameById, jobTitleById, recruiterNameById),
-        [candidateNameById, jobTitleById, recruiterNameById]
+        [candidateNameById, jobTitleById, recruiterNameById],
     );
 
     const handleBulkDeleteConfirm = async () => {
-
-        await Promise.allSettled(
-            pendingIds.map(id => deleteInterview.mutateAsync(id))
-        );
+        await Promise.allSettled(pendingIds.map((id) => deleteInterview.mutateAsync(id)));
 
         setBulkDeleteOpen(false);
 
         clearSelectionFn?.();
-
     };
 
     return (
-
         <>
-
             <DataTable
                 columns={columns}
                 data={interviews}
@@ -171,10 +154,8 @@ export function InterviewTable({
                 onGlobalFilterChange={onGlobalFilterChange}
                 columnFilters={columnFilters}
                 onColumnFiltersChange={onColumnFiltersChange}
-                renderFilters={table => (
-
+                renderFilters={(table) => (
                     <>
-
                         <DataTableFacetedFilter
                             column={table.getColumn("status")}
                             title="Status"
@@ -196,24 +177,20 @@ export function InterviewTable({
                         <Input
                             type="date"
                             value={dateFrom}
-                            onChange={event => onDateFromChange(event.target.value)}
+                            onChange={(event) => onDateFromChange(event.target.value)}
                             className="h-7 w-36"
                         />
 
                         <Input
                             type="date"
                             value={dateTo}
-                            onChange={event => onDateToChange(event.target.value)}
+                            onChange={(event) => onDateToChange(event.target.value)}
                             className="h-7 w-36"
                         />
-
                     </>
-
                 )}
                 renderBulkActions={(selectedRows, clearSelection) => (
-
                     <div className="flex items-center gap-2">
-
                         <span className="text-sm text-muted-foreground">
                             {selectedRows.length} selected
                         </span>
@@ -222,7 +199,7 @@ export function InterviewTable({
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                                setPendingIds(selectedRows.map(interview => interview.id));
+                                setPendingIds(selectedRows.map((interview) => interview.id));
                                 setClearSelectionFn(() => clearSelection);
                                 setBulkDeleteOpen(true);
                             }}
@@ -230,9 +207,7 @@ export function InterviewTable({
                             <Trash2 className="mr-1.5 h-4 w-4" />
                             Delete
                         </Button>
-
                     </div>
-
                 )}
             />
 
@@ -243,9 +218,6 @@ export function InterviewTable({
                 isLoading={deleteInterview.isPending}
                 onConfirm={handleBulkDeleteConfirm}
             />
-
         </>
-
     );
-
 }

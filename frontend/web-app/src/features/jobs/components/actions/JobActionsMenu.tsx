@@ -31,15 +31,10 @@ import { JobSheet } from "../sheet";
 import { DeleteJobDialog } from "../DeleteJobDialog";
 
 interface Props {
-
     job: Job;
-
 }
 
-export function JobActionsMenu({
-    job,
-}: Props) {
-
+export function JobActionsMenu({ job }: Props) {
     const navigate = useNavigate();
 
     const [editOpen, setEditOpen] = useState(false);
@@ -54,25 +49,19 @@ export function JobActionsMenu({
     const deleteJob = useDeleteJob();
 
     const handleDelete = () => {
-
         deleteJob.mutate(job.id, {
             onSuccess: () => setDeleteOpen(false),
         });
-
     };
 
     return (
-
         <>
-
             <DropdownMenu>
-
                 <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
                     <MoreHorizontal className="h-4 w-4" />
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-
                     <DropdownMenuItem onClick={() => navigate(`/jobs/${job.id}`)}>
                         <Eye className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                         View
@@ -120,23 +109,14 @@ export function JobActionsMenu({
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => setDeleteOpen(true)}
-                    >
+                    <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
                         <Trash2 className="mr-1.5 h-3.5 w-3.5" />
                         Delete
                     </DropdownMenuItem>
-
                 </DropdownMenuContent>
-
             </DropdownMenu>
 
-            <JobSheet
-                job={job}
-                open={editOpen}
-                onOpenChange={setEditOpen}
-            />
+            <JobSheet job={job} open={editOpen} onOpenChange={setEditOpen} />
 
             <DeleteJobDialog
                 open={deleteOpen}
@@ -145,9 +125,6 @@ export function JobActionsMenu({
                 isLoading={deleteJob.isPending}
                 onConfirm={handleDelete}
             />
-
         </>
-
     );
-
 }

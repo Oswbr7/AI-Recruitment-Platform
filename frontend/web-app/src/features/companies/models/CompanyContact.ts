@@ -1,5 +1,4 @@
 export interface CompanyContact {
-
     id: string;
 
     companyId: string;

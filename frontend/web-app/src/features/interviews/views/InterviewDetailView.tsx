@@ -20,13 +20,10 @@ import { InterviewFeedbackSection } from "../components/feedback/InterviewFeedba
 import { InterviewTimeline } from "../components/timeline/InterviewTimeline";
 
 interface Props {
-
     id: string;
-
 }
 
 export function InterviewDetailView({ id }: Props) {
-
     const navigate = useNavigate();
 
     const [editOpen, setEditOpen] = useState(false);
@@ -41,95 +38,80 @@ export function InterviewDetailView({ id }: Props) {
 
     const { data: feedback } = useInterviewFeedback(id);
 
-    const recruiter = recruiters?.find(r => r.id === interview?.recruiterId);
+    const recruiter = recruiters?.find((r) => r.id === interview?.recruiterId);
 
     if (isLoading) {
-
         return (
-
             <div className="space-y-6">
                 <Skeleton className="h-8 w-40" />
                 <Skeleton className="h-64 w-full" />
             </div>
-
         );
-
     }
 
     if (isError || !interview) {
-
         return (
-
             <div className="space-y-4">
-
                 <Button variant="ghost" onClick={() => navigate("/interviews")}>
                     <ArrowLeft className="mr-1.5 h-4 w-4" />
                     Back to Interviews
                 </Button>
 
                 <p className="text-sm text-muted-foreground">Interview not found.</p>
-
             </div>
-
         );
-
     }
 
     return (
-
         <div className="space-y-6">
-
             <div className="flex items-center justify-between">
-
                 <Button variant="ghost" onClick={() => navigate("/interviews")}>
                     <ArrowLeft className="mr-1.5 h-4 w-4" />
                     Back to Interviews
                 </Button>
 
                 <div className="flex items-center gap-2">
-
                     <Button onClick={() => setEditOpen(true)}>
                         <Pencil className="mr-1.5 h-4 w-4" />
                         Edit
                     </Button>
 
                     <InterviewActionsMenu interview={interview} />
-
                 </div>
-
             </div>
 
             <Card>
-
                 <CardHeader>
-
                     <div className="flex items-center justify-between">
-
                         <CardTitle className="text-2xl">{interview.title}</CardTitle>
 
                         <div className="flex items-center gap-2">
                             <InterviewStageBadge stage={interview.interviewStage} />
                             <InterviewStatusBadge status={interview.status} />
                         </div>
-
                     </div>
-
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-
                     <div className="grid gap-4 sm:grid-cols-2">
-
                         <DetailField
                             label="Candidate"
-                            value={candidate ? `${candidate.firstName} ${candidate.lastName}` : undefined}
+                            value={
+                                candidate
+                                    ? `${candidate.firstName} ${candidate.lastName}`
+                                    : undefined
+                            }
                         />
 
                         <DetailField label="Job" value={job?.title} />
 
                         <DetailField
                             label="Recruiter"
-                            value={recruiter ? `${recruiter.firstName} ${recruiter.lastName}` : undefined}
+                            value={
+                                recruiter
+                                    ? `${recruiter.firstName} ${recruiter.lastName}`
+                                    : undefined
+                            }
                         />
 
                         <DetailField label="Interview Type" value={interview.interviewType} />
@@ -139,10 +121,7 @@ export function InterviewDetailView({ id }: Props) {
                             value={interview.scheduledAt.toLocaleString()}
                         />
 
-                        <DetailField
-                            label="Duration"
-                            value={`${interview.durationMinutes} min`}
-                        />
+                        <DetailField label="Duration" value={`${interview.durationMinutes} min`} />
 
                         <DetailField
                             label="Meeting URL"
@@ -156,59 +135,33 @@ export function InterviewDetailView({ id }: Props) {
                             label="Overall Score"
                             value={interview.overallScore?.toString()}
                         />
-
                     </div>
 
                     <div>
-
-                        <p className="text-sm font-medium text-muted-foreground">
-                            Description
-                        </p>
+                        <p className="text-sm font-medium text-muted-foreground">Description</p>
 
                         <p className="mt-1 whitespace-pre-wrap text-sm">
                             {interview.description || "—"}
                         </p>
-
                     </div>
-
                 </CardContent>
-
             </Card>
 
             <InterviewFeedbackSection interviewId={interview.id} />
 
             <InterviewTimeline interview={interview} feedback={feedback ?? []} />
 
-            <InterviewSheet
-                interview={interview}
-                open={editOpen}
-                onOpenChange={setEditOpen}
-            />
-
+            <InterviewSheet interview={interview} open={editOpen} onOpenChange={setEditOpen} />
         </div>
-
     );
-
 }
 
-function DetailField({
-    label,
-    value,
-    href,
-}: {
-    label: string;
-    value?: string;
-    href?: string;
-}) {
-
+function DetailField({ label, value, href }: { label: string; value?: string; href?: string }) {
     return (
-
         <div>
-
             <p className="text-sm font-medium text-muted-foreground">{label}</p>
 
             {href ? (
-
                 <a
                     href={href}
                     target="_blank"
@@ -217,15 +170,9 @@ function DetailField({
                 >
                     {value}
                 </a>
-
             ) : (
-
                 <p className="mt-1 text-sm">{value || "—"}</p>
-
             )}
-
         </div>
-
     );
-
 }

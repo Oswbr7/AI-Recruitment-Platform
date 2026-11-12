@@ -19,15 +19,10 @@ import { CompanySheet } from "../sheet";
 import { DeleteCompanyDialog } from "../DeleteCompanyDialog";
 
 interface Props {
-
     company: Company;
-
 }
 
-export function CompanyActionsMenu({
-    company,
-}: Props) {
-
+export function CompanyActionsMenu({ company }: Props) {
     const navigate = useNavigate();
 
     const [editOpen, setEditOpen] = useState(false);
@@ -39,25 +34,19 @@ export function CompanyActionsMenu({
     const restoreCompany = useRestoreCompany();
 
     const handleDelete = () => {
-
         deleteCompany.mutate(company.id, {
             onSuccess: () => setDeleteOpen(false),
         });
-
     };
 
     return (
-
         <>
-
             <DropdownMenu>
-
                 <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
                     <MoreHorizontal className="h-4 w-4" />
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-
                     <DropdownMenuItem onClick={() => navigate(`/company/${company.id}`)}>
                         <Eye className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                         View
@@ -71,40 +60,27 @@ export function CompanyActionsMenu({
                     <DropdownMenuSeparator />
 
                     {company.status === CompanyStatus.Active ? (
-
                         <DropdownMenuItem onClick={() => archiveCompany.mutate(company.id)}>
                             <Archive className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                             Archive
                         </DropdownMenuItem>
-
                     ) : (
-
                         <DropdownMenuItem onClick={() => restoreCompany.mutate(company.id)}>
                             <RotateCcw className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
                             Restore
                         </DropdownMenuItem>
-
                     )}
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => setDeleteOpen(true)}
-                    >
+                    <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
                         <Trash2 className="mr-1.5 h-3.5 w-3.5" />
                         Delete
                     </DropdownMenuItem>
-
                 </DropdownMenuContent>
-
             </DropdownMenu>
 
-            <CompanySheet
-                company={company}
-                open={editOpen}
-                onOpenChange={setEditOpen}
-            />
+            <CompanySheet company={company} open={editOpen} onOpenChange={setEditOpen} />
 
             <DeleteCompanyDialog
                 open={deleteOpen}
@@ -113,9 +89,6 @@ export function CompanyActionsMenu({
                 isLoading={deleteCompany.isPending}
                 onConfirm={handleDelete}
             />
-
         </>
-
     );
-
 }

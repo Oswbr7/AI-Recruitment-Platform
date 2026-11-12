@@ -1,5 +1,4 @@
 export interface ScheduleInterviewRequest {
-
     candidateId: string;
 
     jobId: string;
@@ -21,5 +20,4 @@ export interface ScheduleInterviewRequest {
     meetingUrl?: string;
 
     location?: string;
-
 }
