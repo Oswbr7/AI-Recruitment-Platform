@@ -1,4 +1,4 @@
-namespace JobService.Application.Jobs.Queries.GetJobs;
+namespace JobService.Application.Features.Jobs.GetJobs;
 
 public sealed class JobResponse
 {

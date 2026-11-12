@@ -1,5 +1,5 @@
 using JobService.Application.Features.Jobs.Common;
-using JobService.Application.Jobs.Queries.GetJobs;
+using JobService.Application.Features.Jobs.GetJobs;
 using JobService.Domain.Repositories;
 using MediatR;
 

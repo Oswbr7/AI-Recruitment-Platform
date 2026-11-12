@@ -5,15 +5,6 @@ import { useLayoutStore } from "@/shared/store/layoutStore";
 import { AppLogo } from "../common/AppLogo";
 import { NavigationMenu } from "./NavigationMenu";
 import { UserSection } from "../common/UserSection";
-import {
-    LayoutDashboard,
-    Users,
-    BriefcaseBusiness,
-    Building2,
-    BrainCircuit,
-    CalendarDays,
-    Settings
-} from "lucide-react";
 
 export function Sidebar() {
 
@@ -54,49 +45,3 @@ export function Sidebar() {
     );
 
 }
-
-export const menu = [
-
-    {
-        title: "Dashboard",
-        icon: LayoutDashboard,
-        href: "/"
-    },
-
-    {
-        title: "Candidates",
-        icon: Users,
-        href: "/candidates"
-    },
-
-    {
-        title: "Jobs",
-        icon: BriefcaseBusiness,
-        href: "/jobs"
-    },
-
-    {
-        title: "Companies",
-        icon: Building2,
-        href: "/companies"
-    },
-
-    {
-        title: "AI Matching",
-        icon: BrainCircuit,
-        href: "/matching"
-    },
-
-    {
-        title: "Interviews",
-        icon: CalendarDays,
-        href: "/interviews"
-    },
-
-    {
-        title: "Settings",
-        icon: Settings,
-        href: "/settings"
-    }
-
-];

@@ -1,20 +1,28 @@
-# Frontend — deuda técnica vigente (revisión 2026-11-06)
+# Frontend — deuda técnica vigente (revisión 2026-11-06, batería aplicada)
 
 > Reescrito tras los Bloques 1 y 2 (2026-11-02). El documento original (2026-07-23)
 > listaba archivos vacíos y duplicados que ya fueron eliminados o conectados —
-> ver "Resuelto" abajo. Esto es lo que **sigue pendiente**, verificado contra el
-> código actual.
+> ver "Resuelto" abajo. Segunda pasada 2026-11-06 (batería de deuda): se
+> corrigieron entradas falsas y se resolvieron los items mecánicos.
 
 ## Resuelto (no acción requerida)
 
-| Hallazgo original (2026-07-23) | Estado |
+| Hallazgo original | Estado |
 |---|---|
-| Archivos vacíos/huérfanos en `shared/components` (Logo, Navbar, Sidebar, dashboard/*, common/*) | ✅ Eliminados en Bloque 1 (18 archivos + carpeta `@/` del CLI de shadcn) |
-| `EmptyState` duplicado (vacío vs `empty-state/`) | ✅ El vacío eliminado; el real conectado al `DataTable` (prop `emptyTitle`/`emptyDescription`) en Bloque 2 |
-| `Loading` vs `LoadingSpinner` sin uso | ✅ El vacío eliminado; `LoadingSpinner` conectado al `DataTable` (prop `isLoading`) en Bloque 2 |
-| `data-table/` con archivos "vacíos" | ✅ Aclaración: nunca estuvieron vacíos (2.6–7.3 KB); la feature está construida y conectada |
-| 5 clientes Axios copiados | ✅ Unificados en `createApiClient` (`shared/api/httpClient.ts`) con interceptores JWT + 401-logout |
-| `UiShowcasePage` en rutas de producción | ✅ Ruta dev-only (`import.meta.env.DEV`) + lazy, fuera del bundle de prod |
+| Archivos vacíos/huérfanos en `shared/components` | ✅ Eliminados en Bloque 1 (18 archivos + carpeta `@/`) |
+| `EmptyState`/`Loading` duplicados sin uso | ✅ Conectados al `DataTable` en Bloque 2 |
+| 5 clientes Axios copiados | ✅ Unificados en `createApiClient` (Bloque 2) |
+| `UiShowcasePage` en rutas de producción | ✅ Dev-only + lazy (Bloque 2) |
+| `shadcn` como dependencia runtime | ✅ Movido a devDependencies (batería 2026-11-06) |
+| Sin script `typecheck` / `engines.node` | ✅ `"typecheck": "tsc -b"` + `engines.node >= 24` (batería) |
+| Password registro min 6 (backend 8... inversa) | ✅ Alineado a **min 8 en ambos lados** (batería) |
+| `Sidebar.menu` legacy duplicado sin uso | ✅ Export eliminado; el menú real es `shared/constants/navigation.ts` (batería) |
+
+## Corrección de entradas falsas (batería 2026-11-06)
+
+- ~~`ExistsByTaxIdAsync` sin uso~~ — **falso positivo**: lo consumen
+  `CreateCompanyValidator` y `UpdateCompanyValidator` (validación FluentValidation,
+  arquitectura correcta). Se retira de la deuda.
 
 ## Pendiente (verificado 2026-11-06)
 
@@ -22,26 +30,34 @@
 
 1. **Barrels incompletos** — `shared/components/form/index.ts` solo reexporta
    `FormSection` y `FormActions`; `TextField`, `PasswordField`, `SubmitButton` y
-   `SearchInput` existen pero no se reexportan (se importan por ruta larga).
-   Decisión pendiente: completar el barrel o eliminarlo (import explícito).
+   `SearchInput` existen pero no se reexportan. Decisión pendiente: completar el
+   barrel o eliminarlo (import explícito).
 2. **`shared/components/entity/` sin uso** — `EntitySheet`, `EntitySheetHeader`,
    `EntitySheetFooter` con barrel completo pero ningún consumidor. Era para un
-   futuro drawer de detalle de Job/Candidate: o se usa en esa feature, o se borra.
-3. **`shadcn` como dependencia runtime** en `package.json` — es una CLI de
-   desarrollo; debería ser devDependency (o invocarse vía `npx`).
+   futuro drawer de detalle: o se usa en esa feature, o se borra.
+3. **Prettier** — diferido a sesión propia: instalar devDependency, `.prettierrc`
+   (decisiones de config) y scripts `format`/`format:check` (+ posible gate en CI).
+   Hoy solo existe oxlint (2 reglas, sin type-aware).
 
 ### Baja prioridad
 
 4. **Lint/formato**: oxlint con solo 2 reglas activas (`rules-of-hooks`,
-   `only-export-components`) y sin reglas type-aware; no hay Prettier ni script
-   `format`. Scripts `typecheck`/`format` y `engines.node` en `package.json`
-   tampoco existen.
+   `only-export-components`) y sin reglas type-aware (subir a type-aware cuando
+   Prettier entre).
 5. **`shared/services/SessionService.currentUserId()`** decodifica el JWT a mano —
    sigue siendo válido, pero desde el Bloque 2 el backend ya devuelve el usuario
-   en el login; candidato a simplificar (usar `currentUser()` del store).
-6. **Tests**: cero cobertura automatizada (ver sesión de tests 2026-11-06 en
-   `docs/sessions/` — piloto en curso).
+   en el login; candidato a simplificar.
+6. **Tests de componentes** — Testing Library para `DataTable` (isLoading/empty),
+   `ProtectedRoute` (guards de rol), formularios. 22 tests hoy, todos de lógica pura.
 7. **Bundle de 1.3 MB** (warning de Vite): code-splitting por ruta
    (`React.lazy` en `AppRouter`) cuando haga falta optimizar.
-8. **`src/shared/components/PlaceholderSection.tsx`** usa `EmptyState` correctamente
-   pero conviene verificar si sigue referenciado por alguna página; si no, borrarlo.
+8. **`PlaceholderSection.tsx`** — **intencional**: secciones "coming soon" en
+   vistas de detalle (Skills/Experience/Education del candidato, Recruiters de
+   empresa). No es deuda; es roadmap visible. Volverá a evaluarse cuando existan
+   esas features.
+
+### Backend relacionado (para no perder el hilo)
+
+9. **CS8618** (nullable props en entidades de dominio) — 13 warnings pendientes
+   en job/candidate/company/interview. Mecánico pero toca 4 dominios: sesión
+   dedicada (`required` o inicialización en factories).

@@ -1,5 +1,5 @@
 using JobService.Application.Features.Jobs.Reopen;
-using JobService.Application.Jobs.Queries.GetJobs;
+using JobService.Application.Features.Jobs.GetJobs;
 using BuildingBlocks.Application.Common.Http;
 using MediatR;
 

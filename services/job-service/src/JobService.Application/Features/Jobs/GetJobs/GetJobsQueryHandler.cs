@@ -2,7 +2,7 @@ using JobService.Application.Features.Jobs.Common;
 using JobService.Domain.Repositories;
 using MediatR;
 
-namespace JobService.Application.Jobs.Queries.GetJobs;
+namespace JobService.Application.Features.Jobs.GetJobs;
 
 public sealed class GetJobsQueryHandler
     : IRequestHandler<GetJobsQuery, List<JobResponse>>

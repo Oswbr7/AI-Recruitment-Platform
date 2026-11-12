@@ -19,10 +19,11 @@ export const registerSchema = z.object({
         .min(1, "Email is required.")
         .email("Please enter a valid email address."),
 
-    // Paridad con RegisterUserCommandValidator del backend (min 6).
+    // Paridad con RegisterUserCommandValidator del backend (min 8, igual
+    // que el login).
     password: z
         .string()
-        .min(6, "Password must contain at least 6 characters.")
+        .min(8, "Password must contain at least 8 characters.")
 
 });
 

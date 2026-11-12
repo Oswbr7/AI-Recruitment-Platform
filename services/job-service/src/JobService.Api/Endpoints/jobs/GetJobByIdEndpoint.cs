@@ -1,5 +1,5 @@
 using JobService.Application.Features.Jobs.GetJobById;
-using JobService.Application.Jobs.Queries.GetJobs;
+using JobService.Application.Features.Jobs.GetJobs;
 using BuildingBlocks.Application.Common.Http;
 using MediatR;
 

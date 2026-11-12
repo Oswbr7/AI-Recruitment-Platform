@@ -14,7 +14,8 @@ public class RegisterUserCommandValidator
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .MinimumLength(6);
+            // Paridad con la UI (loginSchema del frontend exige 8).
+            .MinimumLength(8);
 
         RuleFor(x => x.FirstName)
             .NotEmpty();

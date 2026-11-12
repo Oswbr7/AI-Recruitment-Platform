@@ -12,7 +12,11 @@ public sealed class GetUsersEndpoint : IEndpoint
         app.MapGet("/api/users", Handle)
             .WithName("GetUsers")
             .WithTags("Users")
-            .RequireAuthorization();
+            // El directorio de usuarios lo consumen el admin de usuarios
+            // (Admin) y el scheduling de entrevistas (Recruiter). El rol
+            // Candidate queda fuera: no enumera usuarios.
+            .RequireAuthorization(policy =>
+                policy.RequireRole(nameof(UserRole.Admin), nameof(UserRole.Recruiter)));
     }
 
     private static async Task<IResult> Handle(

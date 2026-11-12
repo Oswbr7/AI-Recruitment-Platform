@@ -1,4 +1,4 @@
-using JobService.Application.Jobs.Queries.GetJobs;
+using JobService.Application.Features.Jobs.GetJobs;
 using JobService.Domain.Entities;
 
 namespace JobService.Application.Features.Jobs.Common;

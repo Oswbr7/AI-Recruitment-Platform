@@ -1,5 +1,5 @@
 using JobService.Application.Features.Jobs.Update;
-using JobService.Application.Jobs.Queries.GetJobs;
+using JobService.Application.Features.Jobs.GetJobs;
 using JobService.Domain.Enums;
 using BuildingBlocks.Application.Common.Http;
 using MediatR;
