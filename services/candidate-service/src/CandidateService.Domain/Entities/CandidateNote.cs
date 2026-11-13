@@ -6,7 +6,7 @@ public class CandidateNote
 
     public Guid CandidateId { get; private set; }
 
-    public string Content { get; private set; }
+    public string Content { get; private set; } = string.Empty;
 
     public DateTime CreatedAt { get; private set; }
 

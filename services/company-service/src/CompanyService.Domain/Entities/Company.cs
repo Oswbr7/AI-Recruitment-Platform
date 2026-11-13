@@ -6,7 +6,7 @@ public class Company
 {
     public Guid Id { get; private set; }
 
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
 
     public string? LegalName { get; private set; }
 

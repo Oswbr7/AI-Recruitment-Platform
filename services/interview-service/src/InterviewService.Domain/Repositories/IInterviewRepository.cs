@@ -42,10 +42,13 @@ public interface IInterviewRepository
     /// <summary>
     /// true si el recruiter ya tiene una entrevista Scheduled cuyo rango
     /// [ScheduledAt, ScheduledAt + DurationMinutes) se solapa con el dado.
+    /// excludeInterviewId permite excluir una entrevista del chequeo (caso
+    /// del reschedule: la propia entrevista no se choca consigo misma).
     /// </summary>
     Task<bool> HasOverlapForRecruiterAsync(
         Guid recruiterId,
         DateTime scheduledAt,
         int durationMinutes,
+        Guid? excludeInterviewId,
         CancellationToken cancellationToken);
 }

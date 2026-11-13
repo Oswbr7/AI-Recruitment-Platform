@@ -39,23 +39,21 @@
 
 ### Baja prioridad
 
-4. **oxlint** con solo 2 reglas activas (`rules-of-hooks`,
+3. **oxlint** con solo 2 reglas activas (`rules-of-hooks`,
    `only-export-components`) y sin reglas type-aware — subir a type-aware como
    mejora separada (Prettier ya cubre el formato).
-5. **`shared/services/SessionService.currentUserId()`** decodifica el JWT a mano —
+4. **`shared/services/SessionService.currentUserId()`** decodifica el JWT a mano —
    sigue siendo válido, pero desde el Bloque 2 el backend ya devuelve el usuario
    en el login; candidato a simplificar.
-6. **Tests de componentes** — Testing Library para `DataTable` (isLoading/empty),
+5. **Tests de componentes** — Testing Library para `DataTable` (isLoading/empty),
    `ProtectedRoute` (guards de rol), formularios. 22 tests hoy, todos de lógica pura.
-7. **Bundle de 1.3 MB** (warning de Vite): code-splitting por ruta
+6. **Bundle de 1.3 MB** (warning de Vite): code-splitting por ruta
    (`React.lazy` en `AppRouter`) cuando haga falta optimizar.
-8. **`PlaceholderSection.tsx`** — **intencional**: secciones "coming soon" en
+7. **`PlaceholderSection.tsx`** — **intencional**: secciones "coming soon" en
    vistas de detalle (Skills/Experience/Education del candidato, Recruiters de
    empresa). No es deuda; es roadmap visible. Volverá a evaluarse cuando existan
    esas features.
 
-### Backend relacionado (para no perder el hilo)
-
-9. **CS8618** (nullable props en entidades de dominio) — 13 warnings pendientes
-   en job/candidate/company/interview. Mecánico pero toca 4 dominios: sesión
-   dedicada (`required` o inicialización en factories).
+> Nota: los warnings CS8618 del backend (antes listados aquí) se resolvieron el
+> 2026-11-06 (`= string.Empty` en las props no-nulables de las 6 entidades) —
+> el build del backend está en **0 warnings**.

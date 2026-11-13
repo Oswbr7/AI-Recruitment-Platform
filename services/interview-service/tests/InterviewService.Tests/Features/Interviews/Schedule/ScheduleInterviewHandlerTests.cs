@@ -78,7 +78,7 @@ public class ScheduleInterviewHandlerTests
 
         _interviews.Setup(x => x.HasOverlapForRecruiterAsync(
                 command.RecruiterId, command.ScheduledAt, command.DurationMinutes,
-                It.IsAny<CancellationToken>()))
+                null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         await Assert.ThrowsAsync<InvalidOperationException>(() =>

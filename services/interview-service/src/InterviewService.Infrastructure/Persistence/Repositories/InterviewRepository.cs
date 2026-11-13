@@ -148,6 +148,7 @@ public class InterviewRepository : IInterviewRepository
         Guid recruiterId,
         DateTime scheduledAt,
         int durationMinutes,
+        Guid? excludeInterviewId,
         CancellationToken cancellationToken)
     {
         var end = scheduledAt.AddMinutes(durationMinutes);
@@ -160,7 +161,8 @@ public class InterviewRepository : IInterviewRepository
                     // Solapamiento de intervalos: inicia antes de que la
                     // otra termine Y termina despues de que la otra inicie.
                     x.ScheduledAt < end &&
-                    x.ScheduledAt.AddMinutes(x.DurationMinutes) > scheduledAt,
+                    x.ScheduledAt.AddMinutes(x.DurationMinutes) > scheduledAt &&
+                    (excludeInterviewId == null || x.Id != excludeInterviewId.Value),
                 cancellationToken);
     }
 }

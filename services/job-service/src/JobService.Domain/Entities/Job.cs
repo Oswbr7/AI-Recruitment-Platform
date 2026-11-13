@@ -6,13 +6,13 @@ public class Job
 {
     public Guid Id { get; private set; }
 
-    public string Title { get; private set; }
+    public string Title { get; private set; } = string.Empty;
 
-    public string Description { get; private set; }
+    public string Description { get; private set; } = string.Empty;
 
-    public string Department { get; private set; }
+    public string Department { get; private set; } = string.Empty;
 
-    public string Location { get; private set; }
+    public string Location { get; private set; } = string.Empty;
 
     public EmploymentType EmploymentType { get; private set; }
 

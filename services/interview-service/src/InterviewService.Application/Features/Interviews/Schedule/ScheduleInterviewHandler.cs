@@ -37,6 +37,7 @@ public sealed class ScheduleInterviewHandler
             request.RecruiterId,
             request.ScheduledAt,
             request.DurationMinutes,
+            excludeInterviewId: null,
             cancellationToken);
 
         if (overlaps)
