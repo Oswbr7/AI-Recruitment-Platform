@@ -13,6 +13,7 @@
     <Project Path="services/auth-service/src/AuthService.Infrastructure/AuthService.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/services/auth-service/tests/">
+    <Project Path="services/auth-service/tests/AuthService.IntegrationTests/AuthService.IntegrationTests.csproj" />
     <Project Path="services/auth-service/tests/AuthService.Tests/AuthService.Tests.csproj" />
   </Folder>
   <Folder Name="/tools/">
