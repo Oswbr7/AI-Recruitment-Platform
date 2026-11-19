@@ -30,3 +30,6 @@ app.MapEndpoints();
 app.MapPlatformHealthChecks();
 
 app.Run();
+
+// Expone el Program a WebApplicationFactory (tests de integracion).
+public partial class Program;
