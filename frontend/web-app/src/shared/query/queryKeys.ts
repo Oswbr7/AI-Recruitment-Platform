@@ -47,4 +47,10 @@ export const queryKeys = {
     users: {
         all: ["users"] as const,
     },
+
+    applications: {
+        all: ["applications"] as const,
+
+        list: (filters?: object) => [...queryKeys.applications.all, "list", filters] as const,
+    },
 };

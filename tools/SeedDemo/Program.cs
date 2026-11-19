@@ -123,6 +123,7 @@ try
     var carlos = candidateIds["carlos.ruiz@demo.local"];
     var ana = candidateIds["ana.martin@demo.local"];
     var sofia = candidateIds["sofia.hernandez@demo.local"];
+    var jorge = candidateIds["jorge.perez@demo.local"];
 
     await EnsureInterview(
         maria, jobIds["Backend Developer (.NET)"], recruiterId,
@@ -147,6 +148,20 @@ try
         "Entrevista RRHH - Sofia", "Video", "HRInterview",
         DateTime.UtcNow.AddDays(5), 45, recruiterToken);
 
+    // ------------------------------------------------------------------
+    // 6. Aplicaciones (backbone del dominio ATS) — el funnel del dashboard
+    // ------------------------------------------------------------------
+    await EnsureApplication(
+        maria, jobIds["Backend Developer (.NET)"], "Interviewing", recruiterToken);
+    await EnsureApplication(
+        carlos, jobIds["Frontend Developer (React)"], "Applied", recruiterToken);
+    await EnsureApplication(
+        ana, jobIds["Data Engineer"], "Offered", recruiterToken);
+    await EnsureApplication(
+        jorge, jobIds["Backend Developer (.NET)"], "Rejected", recruiterToken);
+    await EnsureApplication(
+        sofia, jobIds["Frontend Developer (React)"], "Reviewing", recruiterToken);
+
     Console.WriteLine();
     Console.WriteLine("[ok] Seed completo. Login: {0} / {1}", config.AdminEmail, config.AdminPassword);
     return 0;
@@ -162,7 +177,6 @@ catch (Exception ex)
 // =============================================================================
 // Helpers
 // =============================================================================
-
 HttpRequestMessage Authorized(HttpMethod method, string url, string token)
 {
     var request = new HttpRequestMessage(method, url);
@@ -454,6 +468,84 @@ async Task EnsureFeedback(Guid interviewId, Guid recruiterId, string token)
 
     await Send(submit, "envio de feedback de Ana");
     Console.WriteLine("[ok] feedback de Ana enviado");
+}
+
+/// <summary>
+/// Idempotente por (candidato, vacante): busca una aplicación existente del
+/// par; si falta, la crea; después la mueve por la máquina de estados
+/// (Applied → Reviewing → Interviewing → Offered, o Rejected/Withdrawn)
+/// hasta el estado objetivo del demo.
+/// </summary>
+async Task EnsureApplication(
+    Guid candidateId,
+    Guid jobId,
+    string targetStatus,
+    string token)
+{
+    var list = Authorized(HttpMethod.Get,
+        $"{config.CandidatesApi}/applications?candidateId={candidateId}&pageSize=50", token);
+    var response = await Send(list, "busqueda de aplicaciones");
+    using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+    Guid applicationId = Guid.Empty;
+    var currentStatus = string.Empty;
+
+    foreach (var item in doc.RootElement.GetProperty("data").GetProperty("items").EnumerateArray())
+    {
+        if (item.GetProperty("jobId").GetGuid() == jobId)
+        {
+            applicationId = item.GetProperty("id").GetGuid();
+            currentStatus = item.GetProperty("status").GetString() ?? string.Empty;
+            break;
+        }
+    }
+
+    if (applicationId == Guid.Empty)
+    {
+        var create = Authorized(HttpMethod.Post, $"{config.CandidatesApi}/applications", token);
+        create.Content = JsonContent.Create(new
+        {
+            candidateId,
+            jobId,
+            source = "Portal",
+        }, options: json);
+
+        var created = await Send(create, "creacion de aplicacion");
+        using var createdDoc = JsonDocument.Parse(await created.Content.ReadAsStringAsync());
+        applicationId = createdDoc.RootElement.GetProperty("data").GetProperty("id").GetGuid();
+        currentStatus = "Applied";
+        Console.WriteLine($"[ok] aplicacion {candidateId} -> {jobId} creada");
+    }
+    else
+    {
+        Console.WriteLine($"[skip] aplicacion {candidateId} -> {jobId} ya existe");
+    }
+
+    // Cadena de transiciones hasta el estado objetivo (orden del dominio).
+    var forward = new Dictionary<string, string>
+    {
+        ["Applied"] = "start-review",
+        ["Reviewing"] = "to-interviewing",
+        ["Interviewing"] = "offer",
+    };
+
+    while (!string.Equals(currentStatus, targetStatus, StringComparison.OrdinalIgnoreCase))
+    {
+        var verb = targetStatus.Equals("Rejected", StringComparison.OrdinalIgnoreCase)
+            ? "reject"
+            : targetStatus.Equals("Withdrawn", StringComparison.OrdinalIgnoreCase)
+                ? "withdraw"
+                : forward.GetValueOrDefault(currentStatus)
+                    ?? throw new InvalidOperationException(
+                        $"No hay transicion definida de '{currentStatus}' a '{targetStatus}'.");
+
+        var transition = Authorized(HttpMethod.Post,
+            $"{config.CandidatesApi}/applications/{applicationId}/{verb}", token);
+        var transitioned = await Send(transition, $"transicion {verb} de aplicacion");
+        using var tDoc = JsonDocument.Parse(await transitioned.Content.ReadAsStringAsync());
+        currentStatus = tDoc.RootElement.GetProperty("data").GetProperty("status").GetString()
+            ?? string.Empty;
+    }
 }
 
 // =============================================================================

@@ -31,4 +31,9 @@ describe("queryKeys", () => {
     it("users tiene su propio dominio para invalidar la lista de admin", () => {
         expect(queryKeys.users.all).toEqual(["users"]);
     });
+
+    it("applications deriva de all con filtros", () => {
+        const filters = { jobId: "job-1", status: "Applied" };
+        expect(queryKeys.applications.list(filters)).toEqual(["applications", "list", filters]);
+    });
 });

@@ -19,6 +19,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { DashboardLayout } from "@/shared/layouts/DashboardLayout";
 import { MatchingPage } from "@/features/matching/pages/MatchingPage";
 import { UsersAdminPage } from "@/features/users/pages/UsersAdminPage";
+import { ApplicationsPage } from "@/features/applications/pages/ApplicationsPage";
 import { SettingsPage } from "@/features/settings/pages/SettingsPage";
 
 // Showcase interno de componentes: SOLO disponible en desarrollo.
@@ -93,6 +94,15 @@ export function AppRouter() {
                         element={
                             <ProtectedRoute roles={["Admin"]}>
                                 <UsersAdminPage />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="applications"
+                        element={
+                            <ProtectedRoute roles={["Admin", "Recruiter"]}>
+                                <ApplicationsPage />
                             </ProtectedRoute>
                         }
                     />

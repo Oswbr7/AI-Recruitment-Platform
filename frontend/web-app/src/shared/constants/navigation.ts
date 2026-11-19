@@ -3,6 +3,7 @@ import {
     BriefcaseBusiness,
     Building2,
     CalendarDays,
+    FileText,
     LayoutDashboard,
     Settings,
     UserCog,
@@ -42,6 +43,12 @@ export const navigation: NavItem[] = [
         title: "AI Matching",
         href: "/matching",
         icon: BrainCircuit,
+    },
+    {
+        title: "Applications",
+        href: "/applications",
+        icon: FileText,
+        roles: ["Admin", "Recruiter"],
     },
     {
         title: "Interviews",

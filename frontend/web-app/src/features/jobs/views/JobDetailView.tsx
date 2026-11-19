@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useApplications } from "@/features/applications/hooks/useApplications";
+import { ApplicationsTable } from "@/features/applications/components/ApplicationsTable";
+import { useCandidates } from "@/features/candidates/hooks/useCandidates";
+
 import { useJobDetail } from "../hooks/useJobDetail";
 import { JobStatusBadge } from "../components/badges/JobStatusBadge";
 import { JobActionsMenu } from "../components/actions/JobActionsMenu";
@@ -21,6 +25,17 @@ export function JobDetailView({ id }: Props) {
     const [editOpen, setEditOpen] = useState(false);
 
     const { data: job, isLoading, isError } = useJobDetail(id);
+
+    const { data: applicationsData, isLoading: applicationsLoading } = useApplications({
+        jobId: id,
+        pageSize: 100,
+    });
+    const { data: candidatesData } = useCandidates({ page: 1, pageSize: 100 });
+
+    const candidateName = (candidateId: string) => {
+        const candidate = candidatesData?.items.find((c) => c.id === candidateId);
+        return candidate ? `${candidate.firstName} ${candidate.lastName}` : "Unknown";
+    };
 
     if (isLoading) {
         return (
@@ -98,6 +113,22 @@ export function JobDetailView({ id }: Props) {
 
                         <p className="mt-1 whitespace-pre-wrap text-sm">{job.description}</p>
                     </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Applicants</CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                    <ApplicationsTable
+                        applications={applicationsData?.items}
+                        isLoading={applicationsLoading}
+                        candidateName={candidateName}
+                        emptyTitle="No applicants yet"
+                        emptyDescription="Applications submitted for this job will appear here."
+                    />
                 </CardContent>
             </Card>
 

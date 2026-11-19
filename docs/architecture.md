@@ -62,7 +62,7 @@ Los 5 servicios (`auth`, `job`, `candidate`, `company`, `interview`) siguen la m
 |---|---|---|---|---|
 | `auth-service` | 5000 | `recruitmentdb` | `/api/auth/*`, `/api/users/*` | Minimal API como los demás (migrado 2026-11-02); login devuelve `{accessToken, expiresAt, user}` |
 | `job-service` | 5001 | `jobservicedb` | `/api/jobs/*` | Paginado (`PagedResponse<T>`, desde 2026-11-06; antes era el único listado sin paginar) |
-| `candidate-service` | 5002 | `candidatedb` | `/api/candidates/*` | Paginado (`PagedResponse<T>`); incluye sub-recurso de Notes |
+| `candidate-service` | 5002 | `candidatedb` | `/api/candidates/*` | Paginado (`PagedResponse<T>`); sub-recursos: Notes y **Applications** (`/api/applications` — pipeline Applied→Reviewing→Interviewing→Offered + terminales Rejected/Withdrawn; una activa por candidato+vacante → 409; existe desde 2026-11-19, ver `docs/sessions/2026-11-19-applications.md`) |
 | `company-service` | 5003 | `companydb` | `/api/companies/*` | Paginado; incluye sub-recurso de Contacts |
 | `interview-service` | 5004 | `interviewdb` | `/api/interviews/*` | Paginado; incluye sub-recurso de Feedback; `ScheduleInterview` valida duplicado candidato+vacante y solapamiento de agenda del recruiter (`InvalidOperationException` → 409) |
 | `postgres` | 5432 | (contenedor único, una BD por servicio) | — | Un solo contenedor Postgres 17 sirve las 5 bases |
