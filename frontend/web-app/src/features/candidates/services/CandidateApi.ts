@@ -81,3 +81,28 @@ export const candidateApi = {
         return toCandidate(response.data.data);
     },
 };
+
+export const myProfileApi = {
+    async getMine(): Promise<Candidate | null> {
+        const response = await candidatesApi.get<ApiResponse<CandidateResponse>>("/candidates/me");
+
+        return toCandidate(response.data.data);
+    },
+
+    async createMine(request: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone?: string;
+        location?: string;
+        headline?: string;
+        summary?: string;
+    }): Promise<Candidate> {
+        const response = await candidatesApi.post<ApiResponse<CandidateResponse>>(
+            "/candidates/me",
+            request,
+        );
+
+        return toCandidate(response.data.data);
+    },
+};

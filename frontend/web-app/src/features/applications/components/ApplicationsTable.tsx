@@ -46,6 +46,17 @@ const ACTIONS: Record<
     ],
 };
 
+/** El candidato solo puede retirarse de lo suyo. */
+const CANDIDATE_ACTIONS: Record<
+    string,
+    { transition: string; label: string; variant?: "destructive" | "outline" }[]
+> = {
+    Applied: [{ transition: "withdraw", label: "Withdraw application", variant: "outline" }],
+    Reviewing: [{ transition: "withdraw", label: "Withdraw application", variant: "outline" }],
+    Interviewing: [{ transition: "withdraw", label: "Withdraw application", variant: "outline" }],
+    Offered: [{ transition: "withdraw", label: "Withdraw application", variant: "outline" }],
+};
+
 interface Props {
     applications: Application[] | undefined;
 
@@ -59,6 +70,9 @@ interface Props {
     emptyTitle?: string;
 
     emptyDescription?: string;
+
+    /** "recruiter" (default): gestion completa. "candidate": solo Withdraw. */
+    actionsMode?: "recruiter" | "candidate";
 }
 
 export function ApplicationsTable({
@@ -68,6 +82,7 @@ export function ApplicationsTable({
     jobTitle,
     emptyTitle = "No applications yet",
     emptyDescription = "Submitted applications will appear here.",
+    actionsMode = "recruiter",
 }: Props) {
     const transition = useApplicationTransition();
 
@@ -88,6 +103,12 @@ export function ApplicationsTable({
                     ),
             },
         );
+    }
+
+    function actionsFor(status: string) {
+        return actionsMode === "candidate"
+            ? (CANDIDATE_ACTIONS[status] ?? [])
+            : (ACTIONS[status] ?? []);
     }
 
     return (
@@ -130,7 +151,7 @@ export function ApplicationsTable({
                             <TableCell>
                                 {!TERMINAL.includes(application.status) && (
                                     <div className="flex gap-2">
-                                        {(ACTIONS[application.status] ?? []).map((action) => (
+                                        {actionsFor(application.status).map((action) => (
                                             <Button
                                                 key={action.transition}
                                                 size="sm"

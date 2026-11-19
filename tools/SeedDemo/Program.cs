@@ -162,6 +162,16 @@ try
     await EnsureApplication(
         sofia, jobIds["Frontend Developer (React)"], "Reviewing", recruiterToken);
 
+    // ------------------------------------------------------------------
+    // 7. Usuario Candidate de demo: perfil propio + "mis aplicaciones"
+    // ------------------------------------------------------------------
+    var candidateToken = await EnsureCandidateUser();
+    var demoCandidateId = await EnsureMyProfile(candidateToken);
+    await EnsureApplication(
+        demoCandidateId, jobIds["Backend Developer (.NET)"], "Reviewing", recruiterToken);
+    await EnsureApplication(
+        demoCandidateId, jobIds["Data Engineer"], "Applied", recruiterToken);
+
     Console.WriteLine();
     Console.WriteLine("[ok] Seed completo. Login: {0} / {1}", config.AdminEmail, config.AdminPassword);
     return 0;
@@ -177,6 +187,71 @@ catch (Exception ex)
 // =============================================================================
 // Helpers
 // =============================================================================
+
+/// <summary>
+/// Registra (idempotente) el usuario candidate de demo y devuelve su token.
+/// El seed asume base vacía de usuarios: admin (1er registro) -> recruiter
+/// (2do) -> candidate (3ro). Si la base ya tenía usuarios, sus roles pueden
+/// no coincidir — el seed lo imprime y sigue.
+/// </summary>
+async Task<string> EnsureCandidateUser()
+{
+    var email = Environment.GetEnvironmentVariable("CANDIDATE_EMAIL") ?? "candidate@demo.local";
+
+    var response = await http.PostAsJsonAsync(
+        $"{config.AuthApi}/auth/register",
+        new { email, password = config.AdminPassword, firstName = "Candidato", lastName = "Demo" },
+        json);
+
+    if (response.StatusCode == HttpStatusCode.Conflict)
+        Console.WriteLine($"[skip] usuario {email} ya existe");
+    else
+        Console.WriteLine($"[ok] usuario {email} creado");
+
+    using var doc = JsonDocument.Parse(
+        await (await http.PostAsJsonAsync(
+            $"{config.AuthApi}/auth/login",
+            new { email, password = config.AdminPassword },
+            json)).Content.ReadAsStringAsync());
+
+    return doc.RootElement.GetProperty("accessToken").GetString()
+        ?? throw new InvalidOperationException($"login de {email} fallo.");
+}
+
+/// <summary>Perfil candidato del usuario demo (idempotente); devuelve su id.</summary>
+async Task<Guid> EnsureMyProfile(string candidateToken)
+{
+    var get = Authorized(HttpMethod.Get, $"{config.CandidatesApi}/candidates/me", candidateToken);
+    var getResponse = await http.SendAsync(get);
+
+    if (getResponse.StatusCode == HttpStatusCode.NotFound)
+    {
+        var create = Authorized(HttpMethod.Post, $"{config.CandidatesApi}/candidates/me", candidateToken);
+        create.Content = JsonContent.Create(new
+        {
+            firstName = "Candidato",
+            lastName = "Demo",
+            email = "candidate@demo.local",
+            headline = "Full stack developer en busqueda de nuevas oportunidades",
+        }, options: json);
+
+        var created = await Send(create, "creacion de perfil candidate demo");
+        Console.WriteLine("[ok] perfil candidate demo creado");
+        using var createdDoc = JsonDocument.Parse(await created.Content.ReadAsStringAsync());
+        return createdDoc.RootElement.GetProperty("data").GetProperty("id").GetGuid();
+    }
+
+    if (!getResponse.IsSuccessStatusCode)
+    {
+        var body = await getResponse.Content.ReadAsStringAsync();
+        throw new InvalidOperationException(
+            $"consulta de perfil fallo con {(int)getResponse.StatusCode}: {body}");
+    }
+
+    Console.WriteLine("[skip] el perfil candidate demo ya existe");
+    using var doc = JsonDocument.Parse(await getResponse.Content.ReadAsStringAsync());
+    return doc.RootElement.GetProperty("data").GetProperty("id").GetGuid();
+}
 HttpRequestMessage Authorized(HttpMethod method, string url, string token)
 {
     var request = new HttpRequestMessage(method, url);

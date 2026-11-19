@@ -37,6 +37,20 @@ export const applicationsApi = {
         };
     },
 
+    // Solo las MIS aplicaciones (resolucion sub -> candidato en el backend).
+    // Devuelve PagedResult para mantener la forma del hook.
+    async getMine(params: { page?: number; pageSize?: number }): Promise<PagedResult<Application>> {
+        const response = await candidatesApi.get<ApiResponse<PagedResult<ApplicationResponseDto>>>(
+            "/applications/mine",
+            { params },
+        );
+
+        return {
+            ...response.data.data,
+            items: response.data.data.items.map(toApplication),
+        };
+    },
+
     async submit(request: {
         candidateId: string;
         jobId: string;

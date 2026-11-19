@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, Pencil, Send } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useApplications } from "@/features/applications/hooks/useApplications";
+import { useMyApplications } from "@/features/applications/hooks/useApplications";
+import { useSubmitApplication } from "@/features/applications/hooks/useApplications";
 import { ApplicationsTable } from "@/features/applications/components/ApplicationsTable";
 import { useCandidates } from "@/features/candidates/hooks/useCandidates";
+import { useMyProfile } from "@/features/candidates/hooks/useMyProfile";
+import { useAuthStore } from "@/features/auth/store/authStore";
 
 import { useJobDetail } from "../hooks/useJobDetail";
 import { JobStatusBadge } from "../components/badges/JobStatusBadge";
@@ -31,6 +36,36 @@ export function JobDetailView({ id }: Props) {
         pageSize: 100,
     });
     const { data: candidatesData } = useCandidates({ page: 1, pageSize: 100 });
+
+    // Apply: solo rol Candidate, con perfil propio creado y sin aplicar aun.
+    const role = useAuthStore((s) => s.user?.role);
+    const { data: myProfile } = useMyProfile();
+    const { data: myApplications } = useMyApplications();
+    const submitApplication = useSubmitApplication();
+
+    const isCandidate = role === "Candidate";
+    const alreadyApplied = isCandidate && (myApplications?.items ?? []).some((a) => a.jobId === id);
+
+    function handleApply() {
+        if (!myProfile) return;
+
+        submitApplication.mutate(
+            {
+                candidateId: myProfile.id,
+                jobId: id,
+                source: "Portal",
+            },
+            {
+                onSuccess: () => toast.success("Application submitted!"),
+                onError: (error: any) =>
+                    toast.error(
+                        error?.response?.status === 409
+                            ? "You already applied to this job."
+                            : "Could not submit the application.",
+                    ),
+            },
+        );
+    }
 
     const candidateName = (candidateId: string) => {
         const candidate = candidatesData?.items.find((c) => c.id === candidateId);
@@ -68,6 +103,19 @@ export function JobDetailView({ id }: Props) {
                 </Button>
 
                 <div className="flex items-center gap-2">
+                    {isCandidate && myProfile && !alreadyApplied && (
+                        <Button onClick={handleApply} disabled={submitApplication.isPending}>
+                            <Send className="mr-1.5 h-4 w-4" />
+                            Apply
+                        </Button>
+                    )}
+
+                    {isCandidate && alreadyApplied && (
+                        <Button variant="outline" disabled>
+                            Applied
+                        </Button>
+                    )}
+
                     <Button onClick={() => setEditOpen(true)}>
                         <Pencil className="mr-1.5 h-4 w-4" />
                         Edit
@@ -116,21 +164,23 @@ export function JobDetailView({ id }: Props) {
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Applicants</CardTitle>
-                </CardHeader>
+            {!isCandidate && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Applicants</CardTitle>
+                    </CardHeader>
 
-                <CardContent>
-                    <ApplicationsTable
-                        applications={applicationsData?.items}
-                        isLoading={applicationsLoading}
-                        candidateName={candidateName}
-                        emptyTitle="No applicants yet"
-                        emptyDescription="Applications submitted for this job will appear here."
-                    />
-                </CardContent>
-            </Card>
+                    <CardContent>
+                        <ApplicationsTable
+                            applications={applicationsData?.items}
+                            isLoading={applicationsLoading}
+                            candidateName={candidateName}
+                            emptyTitle="No applicants yet"
+                            emptyDescription="Applications submitted for this job will appear here."
+                        />
+                    </CardContent>
+                </Card>
+            )}
 
             <JobSheet job={job} open={editOpen} onOpenChange={setEditOpen} />
         </div>

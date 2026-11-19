@@ -17,6 +17,13 @@ export function useApplications(params: GetApplicationsParams) {
     });
 }
 
+export function useMyApplications() {
+    return useQuery({
+        queryKey: [...queryKeys.applications.all, "mine"] as const,
+        queryFn: () => applicationsApi.getMine({ page: 1, pageSize: 100 }),
+    });
+}
+
 export function useSubmitApplication() {
     const queryClient = useQueryClient();
 

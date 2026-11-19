@@ -3,6 +3,7 @@ import {
     BriefcaseBusiness,
     Building2,
     CalendarDays,
+    ClipboardList,
     FileText,
     LayoutDashboard,
     Settings,
@@ -49,6 +50,12 @@ export const navigation: NavItem[] = [
         href: "/applications",
         icon: FileText,
         roles: ["Admin", "Recruiter"],
+    },
+    {
+        title: "My Applications",
+        href: "/my-applications",
+        icon: ClipboardList,
+        roles: ["Candidate"],
     },
     {
         title: "Interviews",

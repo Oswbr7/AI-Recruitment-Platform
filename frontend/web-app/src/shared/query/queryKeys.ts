@@ -10,6 +10,8 @@ export const queryKeys = {
     candidates: {
         all: ["candidates"] as const,
 
+        me: ["candidates", "me"] as const,
+
         list: (filters?: object) => [...queryKeys.candidates.all, "list", filters] as const,
 
         detail: (id: string) => [...queryKeys.candidates.all, "detail", id] as const,
