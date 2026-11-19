@@ -9,6 +9,9 @@ public interface ICandidateRepository
 
     Task<Candidate?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
+    /// <summary>Perfil vinculado a un usuario (auth-service), para "mis aplicaciones".</summary>
+    Task<Candidate?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+
     Task<(List<Candidate> Items, int TotalCount)> GetPagedAsync(
         int page,
         int pageSize,

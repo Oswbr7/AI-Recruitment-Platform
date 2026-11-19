@@ -97,12 +97,19 @@ namespace CandidateService.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
                     b.Property<int?>("YearsOfExperience")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("\"UserId\" IS NOT NULL");
 
                     b.ToTable("Candidates", (string)null);
                 });

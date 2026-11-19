@@ -36,6 +36,13 @@ public class Candidate
 
     public string? Currency { get; private set; }
 
+    /// <summary>
+    /// Usuario (auth-service) dueño de este perfil. Null para perfiles
+    /// creados por recruiters sin vínculo de cuenta. Habilita "mis
+    /// aplicaciones": sub del JWT -> candidato -> aplicaciones.
+    /// </summary>
+    public Guid? UserId { get; private set; }
+
     public CandidateStage Stage { get; private set; }
 
     public CandidateStatus Status { get; private set; }
@@ -61,7 +68,8 @@ public class Candidate
         string? currentPosition,
         int? yearsOfExperience,
         decimal? expectedSalary,
-        string? currency)
+        string? currency,
+        Guid? userId)
     {
         Id = Guid.NewGuid();
 
@@ -95,6 +103,8 @@ public class Candidate
 
         Currency = currency;
 
+        UserId = userId;
+
         Stage = CandidateStage.Applied;
 
         Status = CandidateStatus.Active;
@@ -119,7 +129,8 @@ public class Candidate
         string? currentPosition = null,
         int? yearsOfExperience = null,
         decimal? expectedSalary = null,
-        string? currency = null)
+        string? currency = null,
+        Guid? userId = null)
     {
         return new Candidate(
             firstName,
@@ -136,7 +147,8 @@ public class Candidate
             currentPosition,
             yearsOfExperience,
             expectedSalary,
-            currency);
+            currency,
+            userId);
     }
 
     public void UpdateProfile(

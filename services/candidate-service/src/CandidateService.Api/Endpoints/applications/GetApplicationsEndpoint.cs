@@ -13,7 +13,10 @@ public sealed class GetApplicationsEndpoint : IEndpoint
         app.MapGet("/api/applications", Handle)
             .WithName("GetApplications")
             .WithTags("Applications")
-            .RequireAuthorization();
+            // Filtros libres por candidato/vacante = vista de gestión.
+            // Los Candidates usan GET /api/applications/mine (solo lo suyo).
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Admin", "Recruiter"));
     }
 
     private static async Task<IResult> Handle(

@@ -25,6 +25,12 @@ public class CandidateRepository : ICandidateRepository
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
+    public async Task<Candidate?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _context.Candidates
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+    }
+
     public async Task<(List<Candidate> Items, int TotalCount)> GetPagedAsync(
         int page,
         int pageSize,

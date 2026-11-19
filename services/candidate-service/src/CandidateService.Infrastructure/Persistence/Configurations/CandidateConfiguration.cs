@@ -24,6 +24,12 @@ public class CandidateConfiguration : IEntityTypeConfiguration<Candidate>
             .HasMaxLength(200)
             .IsRequired();
 
+        // Un perfil candidato por usuario; los perfiles de recruiters
+        // (UserId null) quedan fuera del indice (filtro parcial Postgres).
+        builder.HasIndex(x => x.UserId)
+            .IsUnique()
+            .HasFilter("\"UserId\" IS NOT NULL");
+
         builder.Property(x => x.Phone)
             .HasMaxLength(30);
 
