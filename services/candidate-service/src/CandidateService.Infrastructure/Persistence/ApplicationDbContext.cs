@@ -15,6 +15,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<CandidateNote> CandidateNotes => Set<CandidateNote>();
 
+    public DbSet<JobApplication> JobApplications => Set<JobApplication>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(

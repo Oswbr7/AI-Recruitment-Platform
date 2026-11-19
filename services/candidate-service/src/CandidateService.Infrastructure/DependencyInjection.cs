@@ -26,6 +26,7 @@ public static class DependencyInjection
 
         services.AddScoped<ICandidateRepository, CandidateRepository>();
         services.AddScoped<ICandidateNoteRepository, CandidateNoteRepository>();
+        services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddHealthChecks().AddPlatformDatabaseCheck(connectionString);
